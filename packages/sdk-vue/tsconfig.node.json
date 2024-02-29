@@ -1,0 +1,10 @@
+{
+  "extends": "tsconfig/vue-library.json",
+  "compilerOptions": {
+    "composite": true
+  },
+  "include": [
+    "vite.config.ts",
+    "package.json"
+  ]
+}

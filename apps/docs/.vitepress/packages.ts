@@ -128,6 +128,7 @@ export const packagesSidebar = {
         },
         { text: '@tma.js/sdk-react', link: prefixed('/typescript/tma-js-sdk-react') },
         { text: '@tma.js/sdk-solid', link: prefixed('/typescript/tma-js-sdk-solid') },
+        { text: '@tma.js/sdk-vue', link: prefixed('/typescript/tma-js-sdk-vue') },
         {
           text: '@tma.js/solid-router-integration',
           link: prefixed('/typescript/tma-js-solid-router-integration'),

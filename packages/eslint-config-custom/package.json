@@ -9,7 +9,7 @@
     "eslint-config-airbnb-typescript": "^17.1.0",
     "eslint-plugin-import": "^2.29.0",
     "eslint-plugin-simple-import-sort": "^10.0.0",
-    "eslint-plugin-solid": "^0.13.0"
+    "eslint-plugin-vue": "^9.21.1"
   },
   "publishConfig": {
     "access": "public"
