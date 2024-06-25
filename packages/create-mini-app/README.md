@@ -4,17 +4,17 @@
 
 [docs-badge]: https://img.shields.io/badge/documentation-blue?logo=gitbook&logoColor=white
 
-[sdk-code-link]: https://github.com/Telegram-Mini-Apps/telegram-apps/tree/master/packages/create-mini-app
+[code-link]: https://github.com/Telegram-Mini-Apps/telegram-apps/tree/master/packages/create-mini-app
 
-[sdk-docs-link]: https://docs.telegram-mini-apps.com/packages/telegram-apps-create-mini-app
+[docs-link]: https://docs.telegram-mini-apps.com/packages/telegram-apps-create-mini-app
 
-[sdk-npm-link]: https://npmjs.com/package/@telegram-apps/create-mini-app
+[npm-link]: https://npmjs.com/package/@telegram-apps/create-mini-app
 
-[sdk-npm-badge]: https://img.shields.io/npm/v/@telegram-apps/create-mini-app?logo=npm
+[npm-badge]: https://img.shields.io/npm/v/@telegram-apps/create-mini-app?logo=npm
 
-[![NPM][sdk-npm-badge]][sdk-npm-link]
-[![docs-badge]][sdk-docs-link]
-[![code-badge]][sdk-code-link]
+[![NPM][npm-badge]][npm-link]
+[![docs-badge]][docs-link]
+[![code-badge]][code-link]
 
 CLI tool to scaffold your new mini application on the Telegram Mini Apps platform.
 

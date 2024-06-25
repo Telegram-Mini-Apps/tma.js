@@ -4,20 +4,20 @@
 
 [docs-badge]: https://img.shields.io/badge/documentation-blue?logo=gitbook&logoColor=white
 
-[sdk-code-link]: https://github.com/Telegram-Mini-Apps/telegram-apps/tree/master/packages/sdk
+[link]: https://github.com/Telegram-Mini-Apps/telegram-apps/tree/master/packages/sdk
 
-[sdk-docs-link]: https://docs.telegram-mini-apps.com/packages/telegram-apps-sdk
+[docs-link]: https://docs.telegram-mini-apps.com/packages/telegram-apps-sdk
 
-[sdk-npm-link]: https://npmjs.com/package/@telegram-apps/sdk
+[npm-link]: https://npmjs.com/package/@telegram-apps/sdk
 
-[sdk-npm-badge]: https://img.shields.io/npm/v/@telegram-apps/sdk?logo=npm
+[npm-badge]: https://img.shields.io/npm/v/@telegram-apps/sdk?logo=npm
 
-[sdk-size-badge]: https://img.shields.io/bundlephobia/minzip/@telegram-apps/sdk
+[size-badge]: https://img.shields.io/bundlephobia/minzip/@telegram-apps/sdk
 
-[![NPM][sdk-npm-badge]][sdk-npm-link]
-![Size][sdk-size-badge]
-[![docs-badge]][sdk-docs-link]
-[![code-badge]][sdk-code-link]
+[![NPM][npm-badge]][npm-link]
+![Size][size-badge]
+[![docs-badge]][docs-link]
+[![code-badge]][link]
 
 Made from scratch TypeScript library for seamless communication with Telegram Mini Apps
 functionality.
