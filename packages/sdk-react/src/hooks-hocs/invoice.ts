@@ -1,4 +1,4 @@
-import { initInvoice } from '@tma.js/sdk';
+import { initInvoice } from '@telegram-apps/sdk';
 
 import { createHOCs } from '../createHOCs.js';
 import { createHooks } from '../createHooks.js';

@@ -8,7 +8,7 @@ import type { Version } from '@/version/types.js';
 
 /**
  * @see Usage: https://docs.telegram-mini-apps.com/platform/haptic-feedback
- * @see API: https://docs.telegram-mini-apps.com/packages/tma-js-sdk/components/haptic-feedback
+ * @see API: https://docs.telegram-mini-apps.com/packages/telegram-apps-sdk/components/haptic-feedback
  */
 export class HapticFeedback
   extends WithSupports<'impactOccurred' | 'notificationOccurred' | 'selectionChanged'> {

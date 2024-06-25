@@ -37,7 +37,7 @@ export type StorageValue<K extends StorageKey> = StorageParams[K];
  * @param key - storage key.
  */
 function formatKey(key: StorageKey): string {
-  return `tma.js/${key.replace(/[A-Z]/g, (m) => `-${m.toLowerCase()}`)}`;
+  return `telegram-apps/${key.replace(/[A-Z]/g, (m) => `-${m.toLowerCase()}`)}`;
 }
 
 /**

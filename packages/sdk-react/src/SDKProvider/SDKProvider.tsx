@@ -1,6 +1,6 @@
-import { CleanupFn, initWeb, isIframe, setDebug } from '@tma.js/sdk';
+import { CleanupFn, initWeb, isIframe, setDebug } from '@telegram-apps/sdk';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import type { AnyFn } from '@tma.js/sdk';
+import type { AnyFn } from '@telegram-apps/sdk';
 
 import { SDKContext } from './SDKContext.js';
 import {

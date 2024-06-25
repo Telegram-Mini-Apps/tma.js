@@ -1,4 +1,4 @@
-import { initViewport } from '@tma.js/sdk';
+import { initViewport } from '@telegram-apps/sdk';
 
 import { createHOCs } from '../createHOCs.js';
 import { createHooks } from '../createHooks.js';

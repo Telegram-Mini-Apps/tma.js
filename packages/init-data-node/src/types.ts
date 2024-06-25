@@ -1,4 +1,4 @@
-import { InitDataParsed } from '@tma.js/sdk';
+import { InitDataParsed } from '@telegram-apps/sdk';
 
 export interface SignData extends Omit<InitDataParsed, 'authDate' | 'hash'> {
 }

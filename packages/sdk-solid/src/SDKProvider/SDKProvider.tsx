@@ -1,4 +1,4 @@
-import { AnyFn, CleanupFn, initWeb, isIframe, setDebug } from '@tma.js/sdk';
+import { AnyFn, CleanupFn, initWeb, isIframe, setDebug } from '@telegram-apps/sdk';
 import {
   Accessor,
   type Component,

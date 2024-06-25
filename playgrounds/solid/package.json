@@ -19,8 +19,8 @@
   },
   "dependencies": {
     "@solidjs/router": "^0.13.1",
-    "@tma.js/sdk-solid": "workspace:*",
-    "@tma.js/solid-router-integration": "workspace:*",
+    "@telegram-apps/sdk-solid": "workspace:*",
+    "@telegram-apps/solid-router-integration": "workspace:*",
     "@tonconnect/ui": "^2.0.0",
     "eruda": "^3.0.1",
     "solid-js": "^1.8.16"

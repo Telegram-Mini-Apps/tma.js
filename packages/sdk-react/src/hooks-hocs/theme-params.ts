@@ -1,4 +1,4 @@
-import { initThemeParams } from '@tma.js/sdk';
+import { initThemeParams } from '@telegram-apps/sdk';
 
 import { createHOCs } from '../createHOCs.js';
 import { createHooks } from '../createHooks.js';

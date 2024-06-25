@@ -7,7 +7,7 @@ import type { Version } from '@/version/types.js';
 
 /**
  * @see Usage: https://docs.telegram-mini-apps.com/platform/popup
- * @see API: https://docs.telegram-mini-apps.com/packages/tma-js-sdk/components/popup
+ * @see API: https://docs.telegram-mini-apps.com/packages/telegram-apps-sdk/components/popup
  */
 export class Popup extends WithSupportsAndTrackableState<PopupState, 'open'> {
   constructor(isOpened: boolean, version: Version, private readonly postEvent: PostEvent) {

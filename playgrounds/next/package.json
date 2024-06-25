@@ -10,7 +10,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@tma.js/sdk-react": "workspace:*",
+    "@telegram-apps/sdk-react": "workspace:*",
     "@tonconnect/ui-react": "^2.0.2",
     "eruda": "^3.0.1",
     "next": "14.2.3",

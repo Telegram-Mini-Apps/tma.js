@@ -1,4 +1,4 @@
-import { InitData, InitDataParsed } from '@tma.js/sdk';
+import { InitData, InitDataParsed } from '@telegram-apps/sdk';
 import { createHmac } from 'node:crypto';
 
 import { sign as baseSign } from '../sign.js';

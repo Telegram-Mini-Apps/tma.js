@@ -4,7 +4,7 @@
 
 [docs-badge]: https://img.shields.io/badge/documentation-blue?logo=gitbook&logoColor=white
 
-[sdk-code-link]: https://github.com/Telegram-Mini-Apps/tma.js/tree/master/packages/create-mini-app
+[sdk-code-link]: https://github.com/Telegram-Mini-Apps/telegram-apps/tree/master/packages/create-mini-app
 
 [sdk-docs-link]: https://docs.telegram-mini-apps.com/packages/telegram-apps-create-mini-app
 

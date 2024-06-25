@@ -15,8 +15,8 @@
   },
   "dependencies": {
     "@telegram-apps/telegram-ui": "^2.1.4",
-    "@tma.js/react-router-integration": "workspace:*",
-    "@tma.js/sdk-react": "workspace:*",
+    "@telegram-apps/react-router-integration": "workspace:*",
+    "@telegram-apps/sdk-react": "workspace:*",
     "@tonconnect/ui-react": "^2.0.5",
     "eruda": "^3.0.1",
     "react": "^18.2.0",

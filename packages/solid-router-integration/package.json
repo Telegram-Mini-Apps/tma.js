@@ -1,16 +1,16 @@
 {
-  "name": "@tma.js/solid-router-integration",
-  "version": "5.0.3",
+  "name": "@telegram-apps/solid-router-integration",
+  "version": "1.0.0",
   "description": "@solidjs/router integration for navigation.",
   "author": "Vladislav Kibenko <wolfram.deus@gmail.com>",
-  "homepage": "https://github.com/Telegram-Mini-Apps/tma.js#readme",
+  "homepage": "https://github.com/Telegram-Mini-Apps/telegram-apps#readme",
   "repository": {
     "type": "git",
-    "url": "git@github.com:Telegram-Mini-Apps/tma.js.git",
+    "url": "git@github.com:Telegram-Mini-Apps/telegram-apps.git",
     "directory": "packages/solid-router-integration"
   },
   "bugs": {
-    "url": "https://github.com/Telegram-Mini-Apps/tma.js/issues"
+    "url": "https://github.com/Telegram-Mini-Apps/telegram-apps/issues"
   },
   "keywords": [
     "telegram-mini-apps",
@@ -43,12 +43,12 @@
   },
   "peerDependencies": {
     "@solidjs/router": "^0.13.1",
-    "@tma.js/sdk": "workspace:^",
+    "@telegram-apps/sdk": "workspace:^",
     "solid-js": "^1.8.16"
   },
   "devDependencies": {
     "@solidjs/router": "^0.13.1",
-    "@tma.js/sdk": "workspace:*",
+    "@telegram-apps/sdk": "workspace:*",
     "solid-js": "^1.8.16",
     "tsconfig": "workspace:*"
   },

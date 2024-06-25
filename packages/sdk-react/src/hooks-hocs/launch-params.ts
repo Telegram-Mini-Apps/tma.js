@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { type LaunchParams, retrieveLaunchParams } from '@tma.js/sdk';
+import { type LaunchParams, retrieveLaunchParams } from '@telegram-apps/sdk';
 
 /**
  * @returns Launch parameters.

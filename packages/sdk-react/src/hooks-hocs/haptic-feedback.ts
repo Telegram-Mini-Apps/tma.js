@@ -1,4 +1,4 @@
-import { initHapticFeedback } from '@tma.js/sdk';
+import { initHapticFeedback } from '@telegram-apps/sdk';
 
 import { createHOCs } from '../createHOCs.js';
 import { createHooks } from '../createHooks.js';

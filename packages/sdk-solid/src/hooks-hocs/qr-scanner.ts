@@ -1,4 +1,4 @@
-import { initQRScanner } from '@tma.js/sdk';
+import { initQRScanner } from '@telegram-apps/sdk';
 
 import { createHOC } from '../createHOC.js';
 import { createHook } from '../createHook.js';

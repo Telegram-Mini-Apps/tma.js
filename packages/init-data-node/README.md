@@ -1,18 +1,18 @@
-# @tma.js/init-data-node
+# @telegram-apps/init-data-node
 
 [code-badge]: https://img.shields.io/badge/source-black?logo=github
 
 [docs-badge]: https://img.shields.io/badge/documentation-blue?logo=gitbook&logoColor=white
 
-[init-data-node-code-link]: https://github.com/Telegram-Mini-Apps/tma.js/tree/master/packages/init-data-node
+[init-data-node-code-link]: https://github.com/Telegram-Mini-Apps/telegram-apps/tree/master/packages/init-data-node
 
-[init-data-node-docs-link]: https://docs.telegram-mini-apps.com/packages/tma-js-init-data-node
+[init-data-node-docs-link]: https://docs.telegram-mini-apps.com/packages/telegram-apps-init-data-node
 
-[init-data-node-npm-link]: https://npmjs.com/package/@tma.js/init-data-node
+[init-data-node-npm-link]: https://npmjs.com/package/@telegram-apps/init-data-node
 
-[init-data-node-npm-badge]: https://img.shields.io/npm/v/@tma.js/init-data-node?logo=npm
+[init-data-node-npm-badge]: https://img.shields.io/npm/v/@telegram-apps/init-data-node?logo=npm
 
-[init-data-node-size-badge]: https://img.shields.io/bundlephobia/minzip/@tma.js/init-data-node
+[init-data-node-size-badge]: https://img.shields.io/bundlephobia/minzip/@telegram-apps/init-data-node
 
 [![NPM][init-data-node-npm-badge]][init-data-node-npm-link]
 ![Size][init-data-node-size-badge]

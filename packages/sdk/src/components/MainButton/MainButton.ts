@@ -15,7 +15,7 @@ type Emitter = EventEmitter<MainButtonEvents>;
 
 /**
  * @see Usage: https://docs.telegram-mini-apps.com/platform/main-button
- * @see API: https://docs.telegram-mini-apps.com/packages/tma-js-sdk/components/main-button
+ * @see API: https://docs.telegram-mini-apps.com/packages/telegram-apps-sdk/components/main-button
  */
 export class MainButton extends WithStateUtils<MainButtonState> {
   private readonly postEvent: PostEvent;

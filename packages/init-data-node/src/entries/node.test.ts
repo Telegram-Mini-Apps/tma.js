@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import type { InitDataParsed } from '@tma.js/sdk';
+import type { InitDataParsed } from '@telegram-apps/sdk';
 
 import { validate, sign, signData } from './node';
 

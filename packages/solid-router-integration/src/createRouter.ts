@@ -1,5 +1,5 @@
 import { type BaseRouterProps, createRouter as createSolidRouter } from '@solidjs/router';
-import { type BrowserNavigator, getHash, urlToPath } from '@tma.js/sdk';
+import { type BrowserNavigator, getHash, urlToPath } from '@telegram-apps/sdk';
 import type { Component } from 'solid-js';
 
 /**

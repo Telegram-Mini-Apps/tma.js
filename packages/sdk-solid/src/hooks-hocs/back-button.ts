@@ -1,4 +1,4 @@
-import { initBackButton } from '@tma.js/sdk';
+import { initBackButton } from '@telegram-apps/sdk';
 
 import { createHOC } from '../createHOC.js';
 import { createHook } from '../createHook.js';

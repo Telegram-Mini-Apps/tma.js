@@ -1,4 +1,4 @@
-import { initClosingBehavior } from '@tma.js/sdk';
+import { initClosingBehavior } from '@telegram-apps/sdk';
 
 import { createHOC } from '../createHOC.js';
 import { createHook } from '../createHook.js';

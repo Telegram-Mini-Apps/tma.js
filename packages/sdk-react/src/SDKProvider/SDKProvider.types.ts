@@ -1,4 +1,4 @@
-import type { AnyFn, CleanupFn } from '@tma.js/sdk';
+import type { AnyFn, CleanupFn } from '@telegram-apps/sdk';
 import type { PropsWithChildren } from 'react';
 
 export interface SDKProviderProps extends PropsWithChildren {

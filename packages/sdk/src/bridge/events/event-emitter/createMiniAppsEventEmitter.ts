@@ -112,7 +112,7 @@ export function createMiniAppsEventEmitter(): [
     // Desktop version of Telegram is sometimes not sending the viewport_changed
     // event. For example, when the MainButton is shown. That's why we should
     // add our own listener to make sure, viewport information is always fresh.
-    // Issue: https://github.com/Telegram-Mini-Apps/tma.js/issues/10
+    // Issue: https://github.com/Telegram-Mini-Apps/telegram-apps/issues/10
     onWindow('resize', () => {
       mainEmitter.emit('viewport_changed', {
         width: window.innerWidth,
@@ -146,7 +146,7 @@ export function createMiniAppsEventEmitter(): [
         mainEmitter.emit(...(data ? [eventType, data] : [eventType]) as [any, any]);
       } catch (cause) {
         logger.error(
-          `An error occurred processing the "${eventType}" event from the Telegram application. Please, file an issue here: https://github.com/Telegram-Mini-Apps/tma.js/issues/new/choose`,
+          `An error occurred processing the "${eventType}" event from the Telegram application. Please, file an issue here: https://github.com/Telegram-Mini-Apps/telegram-apps/issues/new/choose`,
           message,
           cause,
         );

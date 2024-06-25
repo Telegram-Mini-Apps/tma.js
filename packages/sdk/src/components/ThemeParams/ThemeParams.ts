@@ -9,7 +9,7 @@ import type { ThemeParamsParsed, ThemeParamsState } from './types.js';
 
 /**
  * @see Usage: https://docs.telegram-mini-apps.com/platform/theming
- * @see API: https://docs.telegram-mini-apps.com/packages/tma-js-sdk/components/theme-params
+ * @see API: https://docs.telegram-mini-apps.com/packages/telegram-apps-sdk/components/theme-params
  */
 export class ThemeParams extends WithTrackableState<ThemeParamsState> {
   /**
