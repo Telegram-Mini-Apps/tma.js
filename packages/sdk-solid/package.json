@@ -1,6 +1,6 @@
 {
   "name": "@telegram-apps/sdk-solid",
-  "version": "1.0.0",
+  "version": "0.0.0",
   "description": "Solid JS bindings for Mini Apps client SDK.",
   "author": "Vladislav Kibenko <wolfram.deus@gmail.com>",
   "homepage": "https://github.com/Telegram-Mini-Apps/telegram-apps#readme",

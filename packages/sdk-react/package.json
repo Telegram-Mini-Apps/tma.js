@@ -1,6 +1,6 @@
 {
   "name": "@telegram-apps/sdk-react",
-  "version": "1.0.0",
+  "version": "0.0.0",
   "description": "React bindings for Mini Apps client SDK. Contains hooks, components and other useful tools which allow usage of React along with Mini Apps client SDK.",
   "author": "Vladislav Kibenko <wolfram.deus@gmail.com>",
   "homepage": "https://github.com/Telegram-Mini-Apps/telegram-apps#readme",

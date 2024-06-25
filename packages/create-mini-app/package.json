@@ -1,6 +1,6 @@
 {
   "name": "@telegram-apps/create-mini-app",
-  "version": "1.0.0",
+  "version": "0.0.0",
   "description": "CLI tool to scaffold your new mini application on the Telegram Mini Apps platform.",
   "author": "Vladislav Kibenko <wolfram.deus@gmail.com>",
   "homepage": "https://github.com/Telegram-Mini-Apps/telegram-apps#readme",

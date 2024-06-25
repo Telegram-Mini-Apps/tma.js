@@ -1,6 +1,6 @@
 {
   "name": "@telegram-apps/solid-router-integration",
-  "version": "1.0.0",
+  "version": "0.0.0",
   "description": "@solidjs/router integration for navigation.",
   "author": "Vladislav Kibenko <wolfram.deus@gmail.com>",
   "homepage": "https://github.com/Telegram-Mini-Apps/telegram-apps#readme",
