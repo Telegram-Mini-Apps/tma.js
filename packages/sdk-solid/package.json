@@ -40,7 +40,7 @@
     "build": "vite build"
   },
   "dependencies": {
-    "@telegram-apps/sdk": "workspace:*"
+    "@telegram-apps/sdk": "workspace:^"
   },
   "peerDependencies": {
     "solid-js": "^1.0.0"

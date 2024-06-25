@@ -40,7 +40,7 @@
     "build": "vite build"
   },
   "dependencies": {
-    "@telegram-apps/sdk": "workspace:*"
+    "@telegram-apps/sdk": "workspace:^"
   },
   "peerDependencies": {
     "@types/react": "^17.0.0 || ^18.0.0",
