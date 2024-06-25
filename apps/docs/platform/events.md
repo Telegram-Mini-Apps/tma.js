@@ -78,13 +78,13 @@ type and assign it to all 3 paths.
 ## Listening to Events
 
 Handling all possible environments for a developer's application can be challenging. To simplify
-this process, the community developed the [@tma.js/sdk](../packages/tma-js-sdk) package, which
+this process, the community developed the [@telegram-apps/sdk](../packages/telegram-apps-sdk) package, which
 greatly eases integration.
 
 Here's how to use it:
 
 ```ts
-import { on } from '@tma.js/sdk';
+import { on } from '@telegram-apps/sdk';
 
 // Start listening to "viewport_changed" event. Returned value
 // is a function, which removes this event listener.
@@ -97,7 +97,7 @@ removeListener();
 ```
 
 You can learn more about calling methods in the
-package's [documentation](../packages/tma-js-sdk/methods-and-events#listening-to-events).
+package's [documentation](../packages/telegram-apps-sdk/methods-and-events#listening-to-events).
 
 ## Available Events
 

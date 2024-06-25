@@ -54,7 +54,7 @@ export default defineConfig({
 
     editLink: {
       text: 'Edit this page on GitHub',
-      pattern: 'https://github.com/telegram-mini-apps/tma.js/edit/master/apps/docs/:path',
+      pattern: 'https://github.com/telegram-mini-apps/telegram-apps/edit/master/apps/docs/:path',
     },
 
     nav: [

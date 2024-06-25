@@ -64,7 +64,7 @@ Here is the HTML and CSS you can use:
       My application goes here.
     </div>
   </div>
-  <script src="https://unpkg.com/@tma.js/sdk@2.5.0/dist/index.iife.js"></script>
+  <script src="https://unpkg.com/@telegram-apps/sdk@2.5.0/dist/index.iife.js"></script>
   <script>
     (function() {
       var { retrieveLaunchParams, postEvent } = window.tmajs.sdk;

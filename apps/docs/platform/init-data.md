@@ -11,10 +11,10 @@ and init data specifically.
 ## Retrieving
 
 To extract init data, developer can use the `retrieveLaunchParams` function
-from [@tma.js/sdk](../packages/tma-js-sdk.md).
+from [@telegram-apps/sdk](../packages/telegram-apps-sdk).
 
 ```typescript
-import { retrieveLaunchParams } from '@tma.js/sdk';
+import { retrieveLaunchParams } from '@telegram-apps/sdk';
 
 const { initDataRaw, initData } = retrieveLaunchParams();
 ```
@@ -48,7 +48,7 @@ carried out on the server side.
 Here is how a developer could send init data to server:
 
 ```typescript
-import { retrieveLaunchParams } from '@tma.js/sdk';
+import { retrieveLaunchParams } from '@telegram-apps/sdk';
 
 const { initDataRaw } = retrieveLaunchParams();
 
@@ -103,7 +103,7 @@ attacker.
 To avoid possible problems related to the init data validation process, we recommend utilizing well-established and
 tested packages:
 
-- For Node: [@tma.js/init-data-node](../packages/tma-js-init-data-node.md)
+- For Node: [@telegram-apps/init-data-node](../packages/telegram-apps-init-data-node)
 - For GoLang: [init-data-golang](../packages/init-data-golang.md)
 
 :::

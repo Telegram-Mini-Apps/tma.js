@@ -15,7 +15,7 @@ hero:
       link: /platform/about
     - theme: alt
       text: Packages
-      link: /packages/tma-js-sdk
+      link: /packages/telegram-apps-sdk
 
 features:
   - icon: 💻
@@ -26,6 +26,6 @@ features:
     details: Platform requires knowledge of only web-based technologies
   - icon: 🧑
     title: Better user experience
-    details: Simplifies user communication with project connected with Telegram
+    details: Simplifies user communication with a project connected with Telegram
 ---
 
