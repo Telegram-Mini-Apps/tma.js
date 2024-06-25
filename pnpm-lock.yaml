@@ -162,7 +162,7 @@ importers:
   packages/sdk-react:
     dependencies:
       '@telegram-apps/sdk':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../sdk
     devDependencies:
       '@types/react':
@@ -178,7 +178,7 @@ importers:
   packages/sdk-solid:
     dependencies:
       '@telegram-apps/sdk':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../sdk
       solid-js:
         specifier: ^1.0.0
