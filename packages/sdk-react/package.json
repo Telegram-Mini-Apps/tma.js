@@ -1,16 +1,16 @@
 {
-  "name": "@tma.js/sdk-react",
-  "version": "2.2.5",
+  "name": "@telegram-apps/sdk-react",
+  "version": "0.0.0",
   "description": "React bindings for Mini Apps client SDK. Contains hooks, components and other useful tools which allow usage of React along with Mini Apps client SDK.",
   "author": "Vladislav Kibenko <wolfram.deus@gmail.com>",
-  "homepage": "https://github.com/Telegram-Mini-Apps/tma.js#readme",
+  "homepage": "https://github.com/Telegram-Mini-Apps/telegram-apps#readme",
   "repository": {
     "type": "git",
-    "url": "git@github.com:Telegram-Mini-Apps/tma.js.git",
+    "url": "git@github.com:Telegram-Mini-Apps/telegram-apps.git",
     "directory": "packages/sdk-react"
   },
   "bugs": {
-    "url": "https://github.com/Telegram-Mini-Apps/tma.js/issues"
+    "url": "https://github.com/Telegram-Mini-Apps/telegram-apps/issues"
   },
   "keywords": [
     "telegram-mini-apps",
@@ -40,7 +40,7 @@
     "build": "vite build"
   },
   "dependencies": {
-    "@tma.js/sdk": "workspace:*"
+    "@telegram-apps/sdk": "workspace:^"
   },
   "peerDependencies": {
     "@types/react": "^17.0.0 || ^18.0.0",

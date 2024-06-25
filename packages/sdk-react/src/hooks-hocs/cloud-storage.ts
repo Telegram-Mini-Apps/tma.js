@@ -1,4 +1,4 @@
-import { initCloudStorage } from '@tma.js/sdk';
+import { initCloudStorage } from '@telegram-apps/sdk';
 
 import { createHOCs } from '../createHOCs.js';
 import { createHooks } from '../createHooks.js';

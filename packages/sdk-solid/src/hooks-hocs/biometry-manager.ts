@@ -1,4 +1,4 @@
-import { initBiometryManager } from '@tma.js/sdk';
+import { initBiometryManager } from '@telegram-apps/sdk';
 
 import { createHOC } from '../createHOC.js';
 import { createHook } from '../createHook.js';

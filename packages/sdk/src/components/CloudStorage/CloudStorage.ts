@@ -15,7 +15,7 @@ function objectFromKeys<K extends string, V>(keys: K[], value: V): Record<K, V> 
 // TODO: Usage.
 
 /**
- * @see API: https://docs.telegram-mini-apps.com/packages/tma-js-sdk/components/cloud-storage
+ * @see API: https://docs.telegram-mini-apps.com/packages/telegram-apps-sdk/components/cloud-storage
  */
 export class CloudStorage extends WithSupports<'delete' | 'get' | 'getKeys' | 'set'> {
   constructor(

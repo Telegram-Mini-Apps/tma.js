@@ -10,7 +10,7 @@ type Emitter = EventEmitter<BackButtonEvents>;
 
 /**
  * @see Usage: https://docs.telegram-mini-apps.com/platform/back-button
- * @see API: https://docs.telegram-mini-apps.com/packages/tma-js-sdk/components/back-button
+ * @see API: https://docs.telegram-mini-apps.com/packages/telegram-apps-sdk/components/back-button
  */
 export class BackButton extends WithSupportsAndStateUtils<BackButtonState, 'show' | 'hide'> {
   constructor(isVisible: boolean, version: Version, private readonly postEvent: PostEvent) {

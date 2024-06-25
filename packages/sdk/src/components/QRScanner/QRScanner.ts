@@ -8,7 +8,7 @@ import { QRScannerOpenOptions, QRScannerState } from './types.js';
 // TODO: Usage
 
 /**
- * @see API: https://docs.telegram-mini-apps.com/packages/tma-js-sdk/components/qr-scanner
+ * @see API: https://docs.telegram-mini-apps.com/packages/telegram-apps-sdk/components/qr-scanner
  */
 export class QRScanner extends WithSupportsAndTrackableState<QRScannerState, 'close' | 'open'> {
   constructor(isOpened: boolean, version: Version, private readonly postEvent: PostEvent) {

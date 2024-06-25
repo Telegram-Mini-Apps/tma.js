@@ -1,16 +1,16 @@
 {
-  "name": "@tma.js/sdk-solid",
-  "version": "2.1.8",
+  "name": "@telegram-apps/sdk-solid",
+  "version": "0.0.0",
   "description": "Solid JS bindings for Mini Apps client SDK.",
   "author": "Vladislav Kibenko <wolfram.deus@gmail.com>",
-  "homepage": "https://github.com/Telegram-Mini-Apps/tma.js#readme",
+  "homepage": "https://github.com/Telegram-Mini-Apps/telegram-apps#readme",
   "repository": {
     "type": "git",
-    "url": "git@github.com:Telegram-Mini-Apps/tma.js.git",
+    "url": "git@github.com:Telegram-Mini-Apps/telegram-apps.git",
     "directory": "packages/sdk-solid"
   },
   "bugs": {
-    "url": "https://github.com/Telegram-Mini-Apps/tma.js/issues"
+    "url": "https://github.com/Telegram-Mini-Apps/telegram-apps/issues"
   },
   "keywords": [
     "telegram-mini-apps",
@@ -40,7 +40,7 @@
     "build": "vite build"
   },
   "dependencies": {
-    "@tma.js/sdk": "workspace:*"
+    "@telegram-apps/sdk": "workspace:^"
   },
   "peerDependencies": {
     "solid-js": "^1.0.0"

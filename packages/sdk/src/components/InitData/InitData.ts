@@ -7,7 +7,7 @@ import type {
 
 /**
  * @see Usage: https://docs.telegram-mini-apps.com/platform/init-data
- * @see API: https://docs.telegram-mini-apps.com/packages/tma-js-sdk/init-data
+ * @see API: https://docs.telegram-mini-apps.com/packages/telegram-apps-sdk/init-data
  */
 export class InitData {
   constructor(private readonly initData: InitDataParsed) {

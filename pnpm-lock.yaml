@@ -117,7 +117,7 @@ importers:
 
   packages/init-data-node:
     dependencies:
-      '@tma.js/sdk':
+      '@telegram-apps/sdk':
         specifier: workspace:^
         version: link:../sdk
     devDependencies:
@@ -130,7 +130,7 @@ importers:
 
   packages/react-router-integration:
     dependencies:
-      '@tma.js/sdk':
+      '@telegram-apps/sdk':
         specifier: workspace:^
         version: link:../sdk
       '@types/react':
@@ -140,7 +140,7 @@ importers:
         specifier: ^17.0.0 || ^18.0.0
         version: 18.3.1
     devDependencies:
-      '@tma.js/sdk-react':
+      '@telegram-apps/sdk-react':
         specifier: workspace:*
         version: link:../sdk-react
       react-router-dom:
@@ -161,8 +161,8 @@ importers:
 
   packages/sdk-react:
     dependencies:
-      '@tma.js/sdk':
-        specifier: workspace:*
+      '@telegram-apps/sdk':
+        specifier: workspace:^
         version: link:../sdk
     devDependencies:
       '@types/react':
@@ -177,8 +177,8 @@ importers:
 
   packages/sdk-solid:
     dependencies:
-      '@tma.js/sdk':
-        specifier: workspace:*
+      '@telegram-apps/sdk':
+        specifier: workspace:^
         version: link:../sdk
       solid-js:
         specifier: ^1.0.0
@@ -193,7 +193,7 @@ importers:
       '@solidjs/router':
         specifier: ^0.13.1
         version: 0.13.3(solid-js@1.8.17)
-      '@tma.js/sdk':
+      '@telegram-apps/sdk':
         specifier: workspace:*
         version: link:../sdk
       solid-js:
@@ -219,7 +219,7 @@ importers:
 
   playgrounds/next:
     dependencies:
-      '@tma.js/sdk-react':
+      '@telegram-apps/sdk-react':
         specifier: workspace:*
         version: link:../../packages/sdk-react
       '@tonconnect/ui-react':
@@ -259,15 +259,15 @@ importers:
 
   playgrounds/react:
     dependencies:
+      '@telegram-apps/react-router-integration':
+        specifier: workspace:*
+        version: link:../../packages/react-router-integration
+      '@telegram-apps/sdk-react':
+        specifier: workspace:*
+        version: link:../../packages/sdk-react
       '@telegram-apps/telegram-ui':
         specifier: ^2.1.4
         version: 2.1.4(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@tma.js/react-router-integration':
-        specifier: workspace:*
-        version: link:../../packages/react-router-integration
-      '@tma.js/sdk-react':
-        specifier: workspace:*
-        version: link:../../packages/sdk-react
       '@tonconnect/ui-react':
         specifier: ^2.0.5
         version: 2.0.5(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -338,10 +338,10 @@ importers:
       '@solidjs/router':
         specifier: ^0.13.1
         version: 0.13.3(solid-js@1.8.17)
-      '@tma.js/sdk-solid':
+      '@telegram-apps/sdk-solid':
         specifier: workspace:*
         version: link:../../packages/sdk-solid
-      '@tma.js/solid-router-integration':
+      '@telegram-apps/solid-router-integration':
         specifier: workspace:*
         version: link:../../packages/solid-router-integration
       '@tonconnect/ui':

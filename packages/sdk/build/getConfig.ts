@@ -36,7 +36,7 @@ export function getConfig({
         emptyOutDir: false,
         sourcemap: true,
         lib: {
-          name: 'tmajs.sdk',
+          name: 'telegramApps.sdk',
           entry: input,
           formats,
           fileName: filename,

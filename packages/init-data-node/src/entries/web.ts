@@ -1,4 +1,4 @@
-import { InitData, InitDataParsed } from '@tma.js/sdk';
+import { InitData, InitDataParsed } from '@telegram-apps/sdk';
 
 import { sign as baseSign } from '../sign.js';
 import { signData as baseSignData } from '../signData.js';

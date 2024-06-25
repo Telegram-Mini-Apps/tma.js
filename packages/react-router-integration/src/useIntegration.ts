@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { Location, Navigator, To, NavigateOptions } from 'react-router-dom';
-import { BrowserNavigator, createSafeURL, urlToPath } from '@tma.js/sdk';
+import { BrowserNavigator, createSafeURL, urlToPath } from '@telegram-apps/sdk';
 
 /**
  * Uses the passed Mini Apps navigator and returns a tuple containing reactive values

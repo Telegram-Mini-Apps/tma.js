@@ -17,7 +17,7 @@ function truncate(value: number): number {
 
 /**
  * @see Usage: https://docs.telegram-mini-apps.com/platform/viewport
- * @see API: https://docs.telegram-mini-apps.com/packages/tma-js-sdk/components/viewport
+ * @see API: https://docs.telegram-mini-apps.com/packages/telegram-apps-sdk/components/viewport
  */
 export class Viewport extends WithTrackableState<ViewportState> {
   private readonly postEvent: PostEvent;

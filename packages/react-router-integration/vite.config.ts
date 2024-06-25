@@ -10,7 +10,7 @@ export default defineConfig({
     emptyOutDir: true,
     sourcemap: true,
     rollupOptions: {
-      external: ['@tma.js/sdk-react', 'react', 'react-router-dom'],
+      external: ['@telegram-apps/sdk-react', 'react', 'react-router-dom'],
     },
     lib: {
       entry: 'src/index.ts',

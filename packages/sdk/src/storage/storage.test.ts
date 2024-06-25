@@ -12,7 +12,7 @@ describe('setStorageValue', () => {
     setStorageValue('backButton', { isVisible: false });
 
     expect(fn).toHaveBeenCalledOnce();
-    expect(fn).toHaveBeenCalledWith('tma.js/back-button', '{"isVisible":false}');
+    expect(fn).toHaveBeenCalledWith('telegram-apps/back-button', '{"isVisible":false}');
   });
 });
 
@@ -21,7 +21,7 @@ describe('getStorageValue', () => {
     const getItem = vi.spyOn(sessionStorage, 'getItem').mockImplementation(() => '{"isVisible":false}');
     let value = getStorageValue('backButton');
     expect(getItem).toHaveBeenCalledOnce();
-    expect(getItem).toHaveBeenCalledWith('tma.js/back-button');
+    expect(getItem).toHaveBeenCalledWith('telegram-apps/back-button');
     expect(value).toStrictEqual({ isVisible: false });
 
     getItem.mockImplementation(() => null);

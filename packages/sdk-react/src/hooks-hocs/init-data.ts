@@ -1,4 +1,4 @@
-import { initInitData } from '@tma.js/sdk';
+import { initInitData } from '@telegram-apps/sdk';
 
 import { createHooks } from '../createHooks.js';
 import { createHOCs } from '../createHOCs.js';

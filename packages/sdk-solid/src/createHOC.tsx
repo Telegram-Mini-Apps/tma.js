@@ -1,5 +1,5 @@
 import { type Component, mergeProps } from 'solid-js';
-import type { PartialBy } from '@tma.js/sdk';
+import type { PartialBy } from '@telegram-apps/sdk';
 
 import type { Hook } from './createHook.js';
 

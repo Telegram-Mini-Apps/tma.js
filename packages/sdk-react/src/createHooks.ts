@@ -1,4 +1,4 @@
-import { type CleanupFn, isSSR, type AnyFn, If } from '@tma.js/sdk';
+import { type CleanupFn, isSSR, type AnyFn, If } from '@telegram-apps/sdk';
 import { useEffect, useState } from 'react';
 
 import { useSDK } from './SDKProvider/SDKContext.js';

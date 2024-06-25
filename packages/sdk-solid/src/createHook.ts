@@ -1,4 +1,4 @@
-import { AnyFn } from '@tma.js/sdk';
+import { AnyFn } from '@telegram-apps/sdk';
 
 import { useSDK } from './SDKProvider/SDKContext.js';
 import type { FactorySignal } from './SDKProvider/SDKProvider.types.js';

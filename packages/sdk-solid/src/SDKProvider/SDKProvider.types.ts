@@ -1,4 +1,4 @@
-import type { AnyFn, CleanupFn } from '@tma.js/sdk';
+import type { AnyFn, CleanupFn } from '@telegram-apps/sdk';
 import type { ParentProps } from 'solid-js';
 
 export interface SDKProviderProps extends ParentProps {

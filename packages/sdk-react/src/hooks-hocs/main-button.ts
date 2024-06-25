@@ -1,4 +1,4 @@
-import { initMainButton } from '@tma.js/sdk';
+import { initMainButton } from '@telegram-apps/sdk';
 
 import { createHOCs } from '../createHOCs.js';
 import { createHooks } from '../createHooks.js';

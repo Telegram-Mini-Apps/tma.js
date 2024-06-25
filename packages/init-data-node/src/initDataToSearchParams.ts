@@ -1,4 +1,4 @@
-import type { InitDataParsed, User } from '@tma.js/sdk';
+import type { InitDataParsed, User } from '@telegram-apps/sdk';
 
 /**
  * Removes undefined properties from the object.

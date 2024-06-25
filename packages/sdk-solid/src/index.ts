@@ -21,4 +21,4 @@ export type {
   SDKContextItem,
   FactorySignal,
 } from './SDKProvider/SDKProvider.types.js';
-export * from '@tma.js/sdk';
+export * from '@telegram-apps/sdk';

@@ -4,5 +4,42 @@
       "source": "/:path*",
       "destination": "/:path*.html"
     }
+  ],
+  "redirects": [
+    {
+      "source": "/packages/tma-js-sdk/:path*",
+      "destination": "/packages/telegram-apps-sdk/:path",
+      "statusCode": 301
+    },
+    {
+      "source": "/packages/tma-js-create-mini-app/:path*",
+      "destination": "/packages/telegram-apps-create-mini-app/:path",
+      "statusCode": 301
+    },
+    {
+      "source": "/packages/tma-js-init-data-node/:path*",
+      "destination": "/packages/telegram-apps-init-data-node/:path",
+      "statusCode": 301
+    },
+    {
+      "source": "/packages/tma-js-react-router-integration/:path*",
+      "destination": "/packages/telegram-apps-react-router-integration/:path",
+      "statusCode": 301
+    },
+    {
+      "source": "/packages/tma-js-sdk-react/:path*",
+      "destination": "/packages/telegram-apps-sdk-react/:path",
+      "statusCode": 301
+    },
+    {
+      "source": "/packages/tma-js-sdk-solid/:path*",
+      "destination": "/packages/telegram-apps-sdk-solid/:path",
+      "statusCode": 301
+    },
+    {
+      "source": "/packages/tma-js-sdk-solid-router-integration/:path*",
+      "destination": "/packages/telegram-apps-solid-router-integration/:path",
+      "statusCode": 301
+    }
   ]
 }

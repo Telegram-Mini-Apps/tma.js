@@ -1,16 +1,16 @@
 {
-  "name": "@tma.js/react-router-integration",
-  "version": "4.0.3",
+  "name": "@telegram-apps/react-router-integration",
+  "version": "0.0.0",
   "description": "Navigator integration for the react-router-dom package.",
   "author": "Vladislav Kibenko <wolfram.deus@gmail.com>",
-  "homepage": "https://github.com/Telegram-Mini-Apps/tma.js#readme",
+  "homepage": "https://github.com/Telegram-Mini-Apps/telegram-apps#readme",
   "repository": {
     "type": "git",
-    "url": "git@github.com:Telegram-Mini-Apps/tma.js.git",
+    "url": "git@github.com:Telegram-Mini-Apps/telegram-apps.git",
     "directory": "packages/react-router-integration"
   },
   "bugs": {
-    "url": "https://github.com/Telegram-Mini-Apps/tma.js/issues"
+    "url": "https://github.com/Telegram-Mini-Apps/telegram-apps/issues"
   },
   "keywords": [
     "telegram-mini-apps",
@@ -43,7 +43,7 @@
     "build": "vite build"
   },
   "peerDependencies": {
-    "@tma.js/sdk": "workspace:^",
+    "@telegram-apps/sdk": "workspace:^",
     "@types/react": "^17.0.0 || ^18.0.0",
     "react": "^17.0.0 || ^18.0.0",
     "react-router-dom": "^6.22.3"
@@ -51,13 +51,10 @@
   "peerDependenciesMeta": {
     "@types/react": {
       "optional": true
-    },
-    "react-router-dom": {
-      "optional": true
     }
   },
   "devDependencies": {
-    "@tma.js/sdk-react": "workspace:*",
+    "@telegram-apps/sdk-react": "workspace:*",
     "react-router-dom": "^6.22.3",
     "tsconfig": "workspace:*"
   },

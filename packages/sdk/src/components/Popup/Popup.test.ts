@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 // import {emitDesktopEvent, mockDesktop} from '../../../tests';
 // import { Popup } from './Popup';
-// import {Bridge} from '@tma.js/bridge';
+// import {Bridge} from '@telegram-apps/bridge';
 // import {PopupParams} from './types';
 // import {preparePopupParams} from './utils';
 

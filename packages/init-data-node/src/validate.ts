@@ -1,4 +1,4 @@
-import type { InitData, InitDataParsed } from '@tma.js/sdk';
+import type { InitData, InitDataParsed } from '@telegram-apps/sdk';
 
 import { initDataToSearchParams } from './initDataToSearchParams.js';
 import type { SignDataAsyncFn, SignDataSyncFn } from './types.js';

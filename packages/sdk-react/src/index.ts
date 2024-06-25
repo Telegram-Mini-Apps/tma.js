@@ -1,4 +1,4 @@
-export * from '@tma.js/sdk';
+export * from '@telegram-apps/sdk';
 export * from './hooks-hocs/back-button.js';
 export * from './hooks-hocs/biometry-manager.js';
 export * from './hooks-hocs/closing-behavior.js';
