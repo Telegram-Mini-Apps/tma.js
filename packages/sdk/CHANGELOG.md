@@ -1,4 +1,4 @@
-# @tma.js/sdk
+# @telegram-apps/sdk
 
 ## 2.5.1
 
