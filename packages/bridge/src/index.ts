@@ -103,6 +103,20 @@ export {
   type RequestFpOptions,
   type RequestFpFn,
 } from '@/utils/request.js';
+export {
+  request2,
+  request2Fp,
+  type Request2CaptureEventFn,
+  type Request2CaptureEventsFn,
+  type Request2CaptureFn,
+  type Request2CaptureFnEventsPayload,
+  type Request2Fn,
+  type Request2Options,
+  type Request2Result,
+  type Request2Error,
+  type Request2FpOptions,
+  type Request2FpFn,
+} from '@/utils/request2.js';
 //#endregion
 
 //#region misc

@@ -29,6 +29,7 @@ import type {
   RequestError,
   RequestFpOptions,
   RequestOptions,
+  RequestCaptureFnEventsPayload,
 } from './request.js';
 
 type AnyEventName = EventName | EventName[];
@@ -39,6 +40,8 @@ export type Request2CaptureEventFn<E extends EventName> = RequestCaptureEventFn<
 export type Request2CaptureFn<E extends AnyEventName> = RequestCaptureFn<E>;
 export type Request2Options<E extends AnyEventName> = RequestOptions<E>;
 export type Request2FpOptions<E extends AnyEventName> = RequestFpOptions<E>;
+export type Request2CaptureFnEventsPayload<E extends EventName[]> =
+  RequestCaptureFnEventsPayload<E>;
 export type Request2Result<E extends AnyEventName> =
   E extends (infer U extends EventName)[]
     ? U extends infer K extends EventName
