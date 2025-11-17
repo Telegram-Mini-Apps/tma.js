@@ -1,12 +1,12 @@
 import type { Version } from '@tma.js/types';
 
+import { getReleaseVersion } from '@/methods/getReleaseVersion.js';
 import type {
   MethodName,
   MethodNameWithVersionedParams,
   MethodVersionedParams,
 } from '@/methods/types/index.js';
 import { compareVersions } from '@/utils/compareVersions.js';
-import { getReleaseVersion } from '@/methods/getReleaseVersion.js';
 
 /**
  * Returns true in case, passed parameter in specified method is supported.

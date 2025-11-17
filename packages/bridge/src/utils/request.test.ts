@@ -1,3 +1,7 @@
+import { TimeoutError } from 'better-promises';
+import * as E from 'fp-ts/Either';
+import * as TE from 'fp-ts/TaskEither';
+import { pipe } from 'fp-ts/function';
 import { createWindow } from 'test-utils';
 import {
   afterEach,
@@ -7,14 +11,10 @@ import {
   it,
   vi,
 } from 'vitest';
-import { TimeoutError } from 'better-promises';
-import { pipe } from 'fp-ts/function';
-import * as TE from 'fp-ts/TaskEither';
-import * as E from 'fp-ts/Either';
 
+import { emitEvent } from '@/events/emitEvent.js';
 import { resetGlobals } from '@/globals.js';
 import { postEventFp as globalPostEventFp } from '@/methods/postEvent.js';
-import { emitEvent } from '@/events/emitEvent.js';
 
 import { request, requestFp } from './request.js';
 

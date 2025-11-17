@@ -1,3 +1,5 @@
+import * as E from 'fp-ts/Either';
+import { createWindow } from 'test-utils';
 import {
   expect,
   describe,
@@ -5,11 +7,9 @@ import {
   vi,
   beforeEach,
 } from 'vitest';
-import { createWindow } from 'test-utils';
-import * as E from 'fp-ts/Either';
 
-import { resetGlobals, setTargetOrigin } from '@/globals.js';
 import { UnknownEnvError } from '@/errors.js';
+import { resetGlobals, setTargetOrigin } from '@/globals.js';
 
 import { postEvent, postEventFp } from './postEvent.js';
 

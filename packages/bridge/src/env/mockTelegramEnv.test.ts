@@ -1,10 +1,11 @@
-import { it, expect, afterEach, vi, describe } from 'vitest';
 import { createWindow } from 'test-utils';
+import { it, expect, afterEach, vi, describe } from 'vitest';
 
-import { mockTelegramEnv } from './mockTelegramEnv.js';
 import { resetGlobals } from '@/globals.js';
 import { retrieveLaunchParams } from '@/launch-params.js';
 import { postEvent } from '@/methods/postEvent.js';
+
+import { mockTelegramEnv } from './mockTelegramEnv.js';
 
 afterEach(() => {
   vi.restoreAllMocks();

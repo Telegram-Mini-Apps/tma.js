@@ -1,8 +1,8 @@
 import { signal, computed } from '@tma.js/signals';
 import { createLogger, type Logger } from '@tma.js/toolkit';
 
-import type { SubscribeListener } from '@/events/types/index.js';
 import { off, offAll, on } from '@/events/emitter.js';
+import type { SubscribeListener } from '@/events/types/index.js';
 import type { PostMessage } from '@/methods/postMessage.js';
 
 /**

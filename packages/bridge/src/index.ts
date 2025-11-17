@@ -6,8 +6,8 @@ export { mockTelegramEnv } from '@/env/mockTelegramEnv.js';
 //#endregion
 
 //#region events
-export { emitEvent } from '@/events/emitEvent.js';
 export { off, offAll, on } from '@/events/emitter.js';
+export { emitEvent } from '@/events/emitEvent.js';
 export type {
   EventListener,
   SubscribeListener,

@@ -1,5 +1,5 @@
-import { pipe } from 'fp-ts/function';
 import * as E from 'fp-ts/Either';
+import { pipe } from 'fp-ts/function';
 import { function as fn, is, looseObject } from 'valibot';
 
 import { hasWebviewProxy } from '@/env/hasWebviewProxy.js';
