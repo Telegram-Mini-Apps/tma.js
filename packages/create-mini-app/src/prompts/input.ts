@@ -8,9 +8,9 @@ import {
 } from '@inquirer/core';
 import figures from 'figures';
 
-import { spaces } from '../utils/spaces.js';
-import { lines } from '../utils/lines.js';
 import type { CustomTheme } from '../types.js';
+import { lines } from '../utils/lines.js';
+import { spaces } from '../utils/spaces.js';
 
 export const input = createPrompt<string, {
   /**

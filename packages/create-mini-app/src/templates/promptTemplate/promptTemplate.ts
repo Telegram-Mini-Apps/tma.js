@@ -14,14 +14,13 @@ import ansiEscapes from 'ansi-escapes';
 import chalk from 'chalk';
 import figures from 'figures';
 
-import { lines } from '../../utils/lines.js';
-import { findTemplate } from '../templates.js';
-import { spaces } from '../../utils/spaces.js';
-import type { Template } from '../types.js';
-import type { CustomTheme } from '../../types.js';
-
 import { findTitleByNameAndValue, sections } from './sections.js';
 import type { Cell, SelectedChoices } from './types.js';
+import type { CustomTheme } from '../../types.js';
+import { lines } from '../../utils/lines.js';
+import { spaces } from '../../utils/spaces.js';
+import { findTemplate } from '../templates.js';
+import type { Template } from '../types.js';
 
 //#region Table settings.
 const CORNER_TOP_LEFT = figures.lineDownBoldRightBold; // ┌
