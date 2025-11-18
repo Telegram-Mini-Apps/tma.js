@@ -2,6 +2,7 @@ export * from './features/BackButton/exports.js';
 export * from './features/Biometry/exports.js';
 export * from './features/ClosingBehavior/exports.js';
 export * from './features/CloudStorage/exports.js';
+export * from './features/DeviceStorage/exports.js';
 export * from './features/emoji-status/exports.js';
 export * from './features/HapticFeedback/exports.js';
 export * from './features/home-screen/exports.js';
