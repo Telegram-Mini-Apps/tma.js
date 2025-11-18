@@ -229,7 +229,8 @@ export function requestFp<
 
 /**
  * @see requestFp
- * @deprecated To be removed in the next major version. Use `request2` instead.
+ * @deprecated To be removed in the next major update. Use `request2` instead, it provides
+ * a proper way of handling multiple events.
  */
 export function request<M extends MethodNameWithRequiredParams, E extends AnyEventName>(
   method: M,
@@ -239,7 +240,8 @@ export function request<M extends MethodNameWithRequiredParams, E extends AnyEve
 
 /**
  * @see requestFp
- * @deprecated To be removed in the next major version. Use `request2` instead.
+ * @deprecated To be removed in the next major update. Use `request2` instead, it provides
+ * a proper way of handling multiple events.
  */
 export function request<M extends MethodNameWithOptionalParams, E extends AnyEventName>(
   method: M,
@@ -249,7 +251,8 @@ export function request<M extends MethodNameWithOptionalParams, E extends AnyEve
 
 /**
  * @see requestFp
- * @deprecated To be removed in the next major version. Use `request2` instead.
+ * @deprecated To be removed in the next major update. Use `request2` instead, it provides
+ * a proper way of handling multiple events.
  */
 export function request<M extends MethodNameWithoutParams, E extends AnyEventName>(
   method: M,
