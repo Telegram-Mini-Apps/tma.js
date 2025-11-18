@@ -1,5 +1,5 @@
-import { describe, expect, it } from 'vitest';
 import { Version } from '@tma.js/types';
+import { describe, expect, it } from 'vitest';
 
 import { FunctionUnavailableError } from '@/errors.js';
 
@@ -120,7 +120,7 @@ export function testSafetyPure<C>({
                 `should return true if version is ${versions.min}`,
                 async () => {
                   const component = instantiate({ isTma: true, version: versions.min });
-                  await mount!(component);
+                  await mount(component);
                   expect(get(component).isAvailable()).toBe(true);
                 },
               );
@@ -129,7 +129,7 @@ export function testSafetyPure<C>({
                 'should return true if mini apps env and component is mounted',
                 async () => {
                   const component = instantiate({ isTma: true, version: '0.0' });
-                  await mount!(component);
+                  await mount(component);
                   expect(get(component).isAvailable()).toBe(true);
                 },
               );
@@ -195,7 +195,7 @@ export function testSafetyPure<C>({
                       await expect(
                         (async () => tryCall(instantiate({
                           isTma: true,
-                          version: versions.min
+                          version: versions.min,
                         })))(),
                       )
                         .rejects
@@ -210,7 +210,7 @@ export function testSafetyPure<C>({
                   describe('component is mounted', () => {
                     it('should not throw', async () => {
                       const component = instantiate({ isTma: true, version: versions.min });
-                      await mount!(component);
+                      await mount(component);
                       await expect(
                         (async () => tryCall(component))(),
                       ).resolves.toBeOneOf([undefined, expect.anything()]);
@@ -236,7 +236,7 @@ export function testSafetyPure<C>({
               describe('component is mounted', () => {
                 it('should not throw', async () => {
                   const component = instantiate({ isTma: true, version: versions.min });
-                  await mount!(component);
+                  await mount(component);
                   await expect(
                     (async () => tryCall(component))(),
                   ).resolves.toBeOneOf([undefined, expect.anything()]);

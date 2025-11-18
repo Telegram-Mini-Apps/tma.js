@@ -1,9 +1,10 @@
-import { testIsSupportedPure } from '@test-utils/predefined/testIsSupportedPure.js';
-import { testSafetyPure } from '@test-utils/predefined/testSafetyPure.js';
-import type { InstantiateOptions } from '@test-utils/types.js';
-import { createNoopComponentStorage } from '@test-utils/utils.js';
 import * as E from 'fp-ts/Either';
 import { describe, expect, it, vi } from 'vitest';
+
+import { testIsSupportedPure } from '~/test-utils/predefined/testIsSupportedPure.js';
+import { testSafetyPure } from '~/test-utils/predefined/testSafetyPure.js';
+import type { InstantiateOptions } from '~/test-utils/types.js';
+import { createNoopComponentStorage } from '~/test-utils/utils.js';
 
 import { BackButton, type BackButtonOptions } from '@/features/BackButton/BackButton.js';
 import { createComponentSessionStorage } from '@/helpers/component-storage.js';

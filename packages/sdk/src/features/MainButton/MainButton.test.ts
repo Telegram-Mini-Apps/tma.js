@@ -1,8 +1,9 @@
-import { testSafetyPure } from '@test-utils/predefined/testSafetyPure.js';
-import { InstantiateOptions } from '@test-utils/types.js';
-import { createNoopComponentStorage } from '@test-utils/utils.js';
 import * as E from 'fp-ts/Either';
 import { describe, expect, it, vi } from 'vitest';
+
+import { testSafetyPure } from '~/test-utils/predefined/testSafetyPure.js';
+import { InstantiateOptions } from '~/test-utils/types.js';
+import { createNoopComponentStorage } from '~/test-utils/utils.js';
 
 import {
   MainButton,

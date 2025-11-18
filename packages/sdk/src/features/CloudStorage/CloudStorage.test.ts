@@ -1,7 +1,8 @@
-import { testIsSupportedPure } from '@test-utils/predefined/testIsSupportedPure.js';
-import { testSafetyPure } from '@test-utils/predefined/testSafetyPure.js';
 import * as TE from 'fp-ts/TaskEither';
 import { describe, expect, it, vi } from 'vitest';
+
+import { testIsSupportedPure } from '~/test-utils/predefined/testIsSupportedPure.js';
+import { testSafetyPure } from '~/test-utils/predefined/testSafetyPure.js';
 
 import { CloudStorage } from '@/features/CloudStorage/CloudStorage.js';
 

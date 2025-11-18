@@ -1,8 +1,9 @@
-import { testIsSupportedPure } from '@test-utils/predefined/testIsSupportedPure.js';
-import { testSafetyPure } from '@test-utils/predefined/testSafetyPure.js';
 import { type PostEventFpFn } from '@tma.js/bridge';
 import * as E from 'fp-ts/Either';
 import { describe, expect, it, vi } from 'vitest';
+
+import { testIsSupportedPure } from '~/test-utils/predefined/testIsSupportedPure.js';
+import { testSafetyPure } from '~/test-utils/predefined/testSafetyPure.js';
 
 import { HapticFeedback } from '@/features/HapticFeedback/HapticFeedback.js';
 
