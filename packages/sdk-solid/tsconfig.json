@@ -1,5 +1,4 @@
 {
-  "$schema": "https://json.schemastore.org/tsconfig",
   "extends": "tsconfig/esnext-dom.json",
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
@@ -12,9 +11,6 @@
   "references": [
     {
       "path": "./tsconfig.node.json"
-    },
-    {
-      "path": "./tsconfig.eslint.json"
     }
   ]
 }
