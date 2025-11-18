@@ -1,17 +1,17 @@
 import { RequestError } from '@tma.js/bridge';
-import { pipe } from 'fp-ts/function';
 import * as TE from 'fp-ts/TaskEither';
+import { pipe } from 'fp-ts/function';
 
+import { ShareMessageError } from '@/errors.js';
 import {
   sharedFeatureOptions,
   type SharedFeatureOptions,
 } from '@/fn-options/sharedFeatureOptions.js';
 import { withRequest, type WithRequest } from '@/fn-options/withRequest.js';
 import { withVersion, type WithVersion } from '@/fn-options/withVersion.js';
-import { withChecksFp } from '@/with-checks/withChecksFp.js';
-import { ShareMessageError } from '@/errors.js';
 import type { AsyncOptions } from '@/types.js';
 import { throwifyWithChecksFp } from '@/with-checks/throwifyWithChecksFp.js';
+import { withChecksFp } from '@/with-checks/withChecksFp.js';
 
 interface CreateOptions extends SharedFeatureOptions, WithRequest, WithVersion {
 }

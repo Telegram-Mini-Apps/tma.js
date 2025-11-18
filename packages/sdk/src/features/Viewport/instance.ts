@@ -1,13 +1,13 @@
-import { pipe } from 'fp-ts/function';
-import * as E from 'fp-ts/Either';
 import { retrieveLaunchParamsFp, on, off, type EventName, EventListener } from '@tma.js/bridge';
+import * as E from 'fp-ts/Either';
+import { pipe } from 'fp-ts/function';
 
 import { Viewport, type ViewportState } from '@/features/Viewport/Viewport.js';
 import { sharedFeatureOptions } from '@/fn-options/sharedFeatureOptions.js';
+import { withPostEvent } from '@/fn-options/withPostEvent.js';
+import { withRequest } from '@/fn-options/withRequest.js';
 import { withStateRestore } from '@/fn-options/withStateRestore.js';
 import { withVersion } from '@/fn-options/withVersion.js';
-import { withRequest } from '@/fn-options/withRequest.js';
-import { withPostEvent } from '@/fn-options/withPostEvent.js';
 
 function create() {
   const createListeners = <E extends EventName>(event: E) => {

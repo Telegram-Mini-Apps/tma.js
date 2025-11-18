@@ -1,16 +1,17 @@
-import { describe, expect, it, vi } from 'vitest';
+import { type EventListener, off, on, type RequestFpFn, type EventName, emitEvent } from '@tma.js/bridge';
 import * as E from 'fp-ts/Either';
 import * as TE from 'fp-ts/TaskEither';
-import { type RequestFpFn, type EventName, emitEvent } from '@tma.js/bridge';
-import { type EventListener, off, on } from '@tma.js/bridge';
+import { describe, expect, it, vi } from 'vitest';
+
+import { testIsSupportedPure } from '~/test-utils/predefined/testIsSupportedPure.js';
+import { testSafetyPure } from '~/test-utils/predefined/testSafetyPure.js';
+import { InstantiateOptions } from '~/test-utils/types.js';
+import { createNoopComponentStorage } from '~/test-utils/utils.js';
 
 import { Biometry } from '@/features/Biometry/Biometry.js';
-import { createComponentSessionStorage } from '@/helpers/component-storage.js';
-import { createNoopComponentStorage } from '@test-utils/utils.js';
-import { testIsSupportedPure } from '@test-utils/predefined/testIsSupportedPure.js';
-import { testSafetyPure } from '@test-utils/predefined/testSafetyPure.js';
-import { InstantiateOptions } from '@test-utils/types.js';
+
 import { BiometryOptions } from '@/features/Biometry/types.js';
+import { createComponentSessionStorage } from '@/helpers/component-storage.js';
 
 const MIN_VERSION = '7.2';
 

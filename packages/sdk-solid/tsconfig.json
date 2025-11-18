@@ -12,6 +12,9 @@
   "references": [
     {
       "path": "./tsconfig.node.json"
+    },
+    {
+      "path": "./tsconfig.eslint.json"
     }
   ]
 }

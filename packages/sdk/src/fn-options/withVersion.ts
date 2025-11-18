@@ -1,8 +1,8 @@
 import type { Version } from '@tma.js/types';
 
-import type { MaybeAccessor } from '@/types.js';
-import { version } from '@/globals/version.js';
 import { createFnOption } from '@/fn-options/createFnOption.js';
+import { version } from '@/globals/version.js';
+import type { MaybeAccessor } from '@/types.js';
 
 export interface WithVersion {
   /**

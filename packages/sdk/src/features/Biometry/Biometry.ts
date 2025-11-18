@@ -1,4 +1,3 @@
-import type { Computed } from '@tma.js/signals';
 import type {
   RequestError,
   PostEventError,
@@ -7,13 +6,14 @@ import type {
   EventListener,
   BiometryTokenUpdateStatus,
 } from '@tma.js/bridge';
+import type { Computed } from '@tma.js/signals';
 import { BetterPromise } from 'better-promises';
 import * as E from 'fp-ts/Either';
 import * as TE from 'fp-ts/TaskEither';
 import { pipe } from 'fp-ts/function';
 
-import { createWithChecksFp, WithChecks, WithChecksFp } from '@/with-checks/withChecksFp.js';
-import { createIsSupportedSignal } from '@/helpers/createIsSupportedSignal.js';
+import { AsyncMountable } from '@/composables/AsyncMountable.js';
+import { Stateful } from '@/composables/Stateful.js';
 import { NotAvailableError } from '@/errors.js';
 import type {
   BiometryAuthenticateOptions, BiometryOptions,
@@ -21,10 +21,10 @@ import type {
   BiometryState,
   BiometryUpdateTokenOptions,
 } from '@/features/Biometry/types.js';
+import { createIsSupportedSignal } from '@/helpers/createIsSupportedSignal.js';
 import type { AsyncOptions } from '@/types.js';
-import { Stateful } from '@/composables/Stateful.js';
-import { AsyncMountable } from '@/composables/AsyncMountable.js';
 import { throwifyWithChecksFp } from '@/with-checks/throwifyWithChecksFp.js';
+import { createWithChecksFp, WithChecks, WithChecksFp } from '@/with-checks/withChecksFp.js';
 
 type BiometryTask<T> = TE.TaskEither<RequestError, T>;
 

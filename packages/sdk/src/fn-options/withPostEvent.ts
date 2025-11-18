@@ -1,7 +1,7 @@
 import { type PostEventFpFn } from '@tma.js/bridge';
 
 import { createFnOption } from '@/fn-options/createFnOption.js';
-import { postEventFp } from '@/globals/post-event.js';
+import { postEventFp } from '@/globals/postEvent.js';
 
 export interface WithPostEvent {
   /**

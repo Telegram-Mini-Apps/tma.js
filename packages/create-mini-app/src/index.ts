@@ -1,23 +1,21 @@
 #!/usr/bin/env node
-import process from 'node:process';
-import { rm } from 'node:fs/promises';
-import { resolve } from 'node:path';
-import { URL } from 'node:url';
-import { existsSync } from 'node:fs';
-
 import chalk from 'chalk';
 import { program } from 'commander';
+import { existsSync } from 'node:fs';
+import { rm } from 'node:fs/promises';
+import { resolve } from 'node:path';
+import process from 'node:process';
+import { URL } from 'node:url';
 
 import { cloneTemplate } from './cloneTemplate.js';
-import { isGitInstalled } from './isGitInstalled.js';
-import { promptTemplate } from './templates/promptTemplate/promptTemplate.js';
-import { spawnWithSpinner } from './spawnWithSpinner.js';
-import { lines } from './utils/lines.js';
-import type { TemplateRepository } from './templates/types.js';
-import { input } from './prompts/input.js';
 import { createCustomTheme } from './createCustomTheme.js';
-
+import { isGitInstalled } from './isGitInstalled.js';
+import { input } from './prompts/input.js';
+import { spawnWithSpinner } from './spawnWithSpinner.js';
 import packageJson from '../package.json' with { type: 'json' };
+import { promptTemplate } from './templates/promptTemplate/promptTemplate.js';
+import type { TemplateRepository } from './templates/types.js';
+import { lines } from './utils/lines.js';
 
 program
   .name(packageJson.name)

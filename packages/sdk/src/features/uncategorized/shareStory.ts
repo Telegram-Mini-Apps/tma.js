@@ -1,6 +1,6 @@
-import { pipe } from 'fp-ts/function';
 import type { PostEventError } from '@tma.js/bridge';
 import * as E from 'fp-ts/Either';
+import { pipe } from 'fp-ts/function';
 
 import {
   sharedFeatureOptions,

@@ -2,23 +2,23 @@ import { BetterPromise } from 'better-promises';
 import * as TE from 'fp-ts/TaskEither';
 import { pipe } from 'fp-ts/function';
 
+import { InvokeCustomMethodFailedError } from '@/errors.js';
 import { captureSameReq } from '@/methods/captureSameReq.js';
 import type { CustomMethodName, CustomMethodParams } from '@/methods/types/index.js';
-import { InvokeCustomMethodFailedError } from '@/errors.js';
 
 import {
-  requestFp,
-  type RequestOptions,
-  type RequestFpOptions,
-  type RequestError,
-} from './request.js';
+  request2Fp,
+  type Request2Error,
+  type Request2FpOptions,
+  type Request2Options,
+} from './request2.js';
 
-export type InvokeCustomMethodError = RequestError | InvokeCustomMethodFailedError;
+export type InvokeCustomMethodError = Request2Error | InvokeCustomMethodFailedError;
 
-export type InvokeCustomMethodOptions = Omit<RequestOptions<'custom_method_invoked'>, 'capture'>;
+export type InvokeCustomMethodOptions = Omit<Request2Options<'custom_method_invoked'>, 'capture'>;
 export type InvokeCustomMethodFn = typeof invokeCustomMethod;
 
-export type InvokeCustomMethodFpOptions = Omit<RequestFpOptions<'custom_method_invoked'>, 'capture'>;
+export type InvokeCustomMethodFpOptions = Omit<Request2FpOptions<'custom_method_invoked'>, 'capture'>;
 export type InvokeCustomMethodFpFn = typeof invokeCustomMethodFp;
 
 /**
@@ -47,7 +47,7 @@ export function invokeCustomMethodFp(
   params: object,
   requestId: string,
   options?: InvokeCustomMethodFpOptions,
-): TE.TaskEither<RequestError, unknown>;
+): TE.TaskEither<Request2Error, unknown>;
 
 export function invokeCustomMethodFp(
   method: string,
@@ -56,7 +56,7 @@ export function invokeCustomMethodFp(
   options?: InvokeCustomMethodFpOptions,
 ): TE.TaskEither<InvokeCustomMethodError, unknown> {
   return pipe(
-    requestFp('web_app_invoke_custom_method', 'custom_method_invoked', {
+    request2Fp('web_app_invoke_custom_method', 'custom_method_invoked', {
       ...options || {},
       params: { method, params, req_id: requestId },
       capture: captureSameReq(requestId),

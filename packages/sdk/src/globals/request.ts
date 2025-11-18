@@ -1,8 +1,19 @@
-import { requestFp as _requestFp, type RequestFpFn, type RequestFn } from '@tma.js/bridge';
+import {
+  requestFp as _requestFp,
+  request2Fp as _request2Fp,
+  type RequestFpFn,
+  type RequestFn,
+  type Request2FpFn,
+  type Request2Fn,
+} from '@tma.js/bridge';
 import { BetterPromise } from 'better-promises';
 
-import { postEventFp } from '@/globals/post-event.js';
+import { postEventFp } from '@/globals/postEvent.js';
 
+/**
+ * @deprecated To be removed in the next major update. Use `request2fp` instead, it provides
+ * a proper way of handling multiple events.
+ */
 export const requestFp: RequestFpFn = (method: any, events: any, options: any) => {
   return _requestFp(method, events, {
     postEvent: postEventFp,
@@ -10,6 +21,21 @@ export const requestFp: RequestFpFn = (method: any, events: any, options: any) =
   });
 };
 
+export const request2Fp: Request2FpFn = (method: any, events: any, options: any) => {
+  return _request2Fp(method, events, {
+    postEvent: postEventFp,
+    ...options,
+  });
+};
+
+/**
+ * @deprecated To be removed in the next major update. Use `request` instead, it provides
+ * a proper way of handling multiple events.
+ */
 export const request: RequestFn = (...args: any[]) => {
   return BetterPromise.fn(() => (requestFp as any)(...args)());
+};
+
+export const request2: Request2Fn = (...args: any[]) => {
+  return BetterPromise.fn(() => (request2Fp as any)(...args)());
 };

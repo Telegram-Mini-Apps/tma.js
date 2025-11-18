@@ -1,24 +1,24 @@
-import { computed, type Computed, signal } from '@tma.js/signals';
-import type { ThemeParams as ThemeParamsType, RGB } from '@tma.js/types';
-import { snakeToKebab } from '@tma.js/toolkit';
 import type { EventListener } from '@tma.js/bridge';
+import { computed, type Computed, signal } from '@tma.js/signals';
+import { snakeToKebab } from '@tma.js/toolkit';
+import type { ThemeParams as ThemeParamsType, RGB } from '@tma.js/types';
 import * as E from 'fp-ts/Either';
 
+import { Mountable } from '@/composables/Mountable.js';
+import { Stateful } from '@/composables/Stateful.js';
+import { CSSVarsBoundError } from '@/errors.js';
+import type { SharedFeatureOptions } from '@/fn-options/sharedFeatureOptions.js';
+import type { WithStateRestore } from '@/fn-options/withStateRestore.js';
+import { access } from '@/helpers/access.js';
+import { deleteCssVar, setCssVar } from '@/helpers/css-vars.js';
+import { isColorDark } from '@/helpers/isColorDark.js';
+import type { MaybeAccessor } from '@/types.js';
+import { throwifyWithChecksFp } from '@/with-checks/throwifyWithChecksFp.js';
 import {
   createWithChecksFp,
   type WithChecks,
   type WithChecksFp,
 } from '@/with-checks/withChecksFp.js';
-import { throwifyWithChecksFp } from '@/with-checks/throwifyWithChecksFp.js';
-import { Stateful } from '@/composables/Stateful.js';
-import { Mountable } from '@/composables/Mountable.js';
-import { CSSVarsBoundError } from '@/errors.js';
-import { deleteCssVar, setCssVar } from '@/helpers/css-vars.js';
-import { isColorDark } from '@/helpers/isColorDark.js';
-import type { WithStateRestore } from '@/fn-options/withStateRestore.js';
-import type { SharedFeatureOptions } from '@/fn-options/sharedFeatureOptions.js';
-import type { MaybeAccessor } from '@/types.js';
-import { access } from '@/helpers/access.js';
 
 export type ThemeParamsState = ThemeParamsType;
 

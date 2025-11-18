@@ -1,6 +1,6 @@
-import { pipe } from 'fp-ts/function';
-import * as O from 'fp-ts/Option';
 import { throwifyFpFn, throwifyAnyEither, type AnyFn } from '@tma.js/toolkit';
+import * as O from 'fp-ts/Option';
+import { pipe } from 'fp-ts/function';
 
 import type { WithChecksFp, WithChecks } from '@/with-checks/withChecksFp.js';
 

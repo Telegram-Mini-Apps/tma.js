@@ -1,4 +1,3 @@
-import { BetterPromise } from 'better-promises';
 import {
   type SafeAreaInsets,
   type EventListener,
@@ -7,24 +6,25 @@ import {
   type PostEventError,
 } from '@tma.js/bridge';
 import { Computed, computed, signal } from '@tma.js/signals';
+import { camelToKebab } from '@tma.js/toolkit';
+import { BetterPromise } from 'better-promises';
 import * as E from 'fp-ts/Either';
 import * as TE from 'fp-ts/TaskEither';
 import { pipe } from 'fp-ts/function';
-import { camelToKebab } from '@tma.js/toolkit';
 
-import { Stateful } from '@/composables/Stateful.js';
-import { WithStateRestore } from '@/fn-options/withStateRestore.js';
 import { AsyncMountable } from '@/composables/AsyncMountable.js';
-import { AsyncOptions } from '@/types.js';
-import { createWithChecksFp, WithChecks, WithChecksFp } from '@/with-checks/withChecksFp.js';
-import { throwifyWithChecksFp } from '@/with-checks/throwifyWithChecksFp.js';
-import { SharedFeatureOptions } from '@/fn-options/sharedFeatureOptions.js';
-import { WithVersion } from '@/fn-options/withVersion.js';
-import { WithRequest } from '@/fn-options/withRequest.js';
-import { access } from '@/helpers/access.js';
+import { Stateful } from '@/composables/Stateful.js';
 import { CSSVarsBoundError, FullscreenFailedError } from '@/errors.js';
+import { SharedFeatureOptions } from '@/fn-options/sharedFeatureOptions.js';
 import { WithPostEvent } from '@/fn-options/withPostEvent.js';
+import { WithRequest } from '@/fn-options/withRequest.js';
+import { WithStateRestore } from '@/fn-options/withStateRestore.js';
+import { WithVersion } from '@/fn-options/withVersion.js';
+import { access } from '@/helpers/access.js';
 import { deleteCssVar, setCssVar } from '@/helpers/css-vars.js';
+import { AsyncOptions } from '@/types.js';
+import { throwifyWithChecksFp } from '@/with-checks/throwifyWithChecksFp.js';
+import { createWithChecksFp, WithChecks, WithChecksFp } from '@/with-checks/withChecksFp.js';
 
 type FullscreenError = FullscreenFailedError | RequestError;
 type ViewportChangedEventListener = EventListener<'viewport_changed'>;

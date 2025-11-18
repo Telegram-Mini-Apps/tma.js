@@ -1,6 +1,6 @@
+import { createFnOption } from '@/fn-options/createFnOption.js';
 import { type ComponentStorage, createComponentSessionStorage } from '@/helpers/component-storage.js';
 import { isPageReload } from '@/helpers/navigation.js';
-import { createFnOption } from '@/fn-options/createFnOption.js';
 import type { MaybeAccessor } from '@/types.js';
 
 export interface WithStateRestore<T> {

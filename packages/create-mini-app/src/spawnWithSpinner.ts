@@ -1,6 +1,5 @@
-import { spawn } from 'node:child_process';
-
 import chalk from 'chalk';
+import { spawn } from 'node:child_process';
 import ora from 'ora';
 
 import { CustomTheme } from './types.js';

@@ -1,8 +1,8 @@
 import { computed } from '@tma.js/signals';
 
 import { MainButton } from '@/features/MainButton/MainButton.js';
-import { bottomButtonOptions } from '@/fn-options/bottomButtonOptions.js';
 import { themeParams } from '@/features/ThemeParams/instance.js';
+import { bottomButtonOptions } from '@/fn-options/bottomButtonOptions.js';
 
 export const mainButton = new MainButton(
   bottomButtonOptions('mainButton', 'main_button_pressed', {

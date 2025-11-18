@@ -1,10 +1,11 @@
-import { describe, expect, it, vi } from 'vitest';
 import * as TE from 'fp-ts/TaskEither';
+import { describe, expect, it, vi } from 'vitest';
+
+import { testIsSupportedPure } from '~/test-utils/predefined/testIsSupportedPure.js';
+import { testSafetyPure } from '~/test-utils/predefined/testSafetyPure.js';
+import type { InstantiateOptions } from '~/test-utils/types.js';
 
 import { Invoice, type InvoiceOptions } from '@/features/Invoice/Invoice.js';
-import { testIsSupportedPure } from '@test-utils/predefined/testIsSupportedPure.js';
-import { testSafetyPure } from '@test-utils/predefined/testSafetyPure.js';
-import type { InstantiateOptions } from '@test-utils/types.js';
 
 const MIN_VERSION = '6.1';
 

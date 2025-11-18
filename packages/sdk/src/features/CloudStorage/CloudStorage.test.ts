@@ -1,9 +1,11 @@
-import { describe, expect, it, vi } from 'vitest';
 import * as TE from 'fp-ts/TaskEither';
+import { describe, expect, it, vi } from 'vitest';
+
+import { testIsSupportedPure } from '~/test-utils/predefined/testIsSupportedPure.js';
+import { testSafetyPure } from '~/test-utils/predefined/testSafetyPure.js';
 
 import { CloudStorage } from '@/features/CloudStorage/CloudStorage.js';
-import { testIsSupportedPure } from '@test-utils/predefined/testIsSupportedPure.js';
-import { testSafetyPure } from '@test-utils/predefined/testSafetyPure.js';
+
 import type { InvokeCustomMethodNoRequestIdFn } from '@/fn-options/withInvokeCustomMethod.js';
 
 const MIN_VERSION = '6.9';

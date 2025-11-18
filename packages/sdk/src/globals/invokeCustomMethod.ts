@@ -8,7 +8,7 @@ import {
 import * as TE from 'fp-ts/TaskEither';
 
 import { createRequestId } from '@/globals/createRequestId.js';
-import { postEventFp } from '@/globals/post-event.js';
+import { postEventFp } from '@/globals/postEvent.js';
 
 /**
  * Invokes known custom method. Returns method execution result.

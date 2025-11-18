@@ -1,3 +1,11 @@
 {
-  "extends": "./tsconfig.json"
+  "extends": "tsconfig/esnext-dom.json",
+  "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
+    "jsx": "preserve",
+    "jsxImportSource": "solid-js"
+  },
+  "include": [
+    "src"
+  ]
 }

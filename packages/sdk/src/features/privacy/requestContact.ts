@@ -1,5 +1,8 @@
-import * as TE from 'fp-ts/TaskEither';
+import { PhoneRequestedStatus } from '@tma.js/bridge';
+import { BetterTaskEither, type BetterTaskEitherError } from '@tma.js/toolkit';
+import { pipeJsonToSchema, pipeQueryToSchema } from '@tma.js/transformers';
 import * as E from 'fp-ts/Either';
+import * as TE from 'fp-ts/TaskEither';
 import { pipe } from 'fp-ts/function';
 import {
   safeParse,
@@ -11,25 +14,26 @@ import {
   string,
   transform,
 } from 'valibot';
-import { pipeJsonToSchema, pipeQueryToSchema } from '@tma.js/transformers';
-import { PhoneRequestedStatus } from '@tma.js/bridge';
-import { BetterTaskEither, type BetterTaskEitherError } from '@tma.js/toolkit';
 
-import { type RequestPhoneAccessError, requestPhoneAccessFp } from './requestPhoneAccess.js';
+import { AccessDeniedError, ValidationError } from '@/errors.js';
 import {
   sharedFeatureOptions,
   type SharedFeatureOptions,
 } from '@/fn-options/sharedFeatureOptions.js';
+
 import {
   withInvokeCustomMethod,
   type WithInvokeCustomMethod,
   InvokeCustomMethodError,
 } from '@/fn-options/withInvokeCustomMethod.js';
-import { throwifyWithChecksFp } from '@/with-checks/throwifyWithChecksFp.js';
-import { withChecksFp } from '@/with-checks/withChecksFp.js';
-import { AccessDeniedError, ValidationError } from '@/errors.js';
-import type { AsyncOptions } from '@/types.js';
+
 import { withVersion, type WithVersion } from '@/fn-options/withVersion.js';
+import type { AsyncOptions } from '@/types.js';
+import { throwifyWithChecksFp } from '@/with-checks/throwifyWithChecksFp.js';
+
+import { withChecksFp } from '@/with-checks/withChecksFp.js';
+
+import { type RequestPhoneAccessError, requestPhoneAccessFp } from './requestPhoneAccess.js';
 
 /**
  * Requested contact information.

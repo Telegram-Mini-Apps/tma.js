@@ -4,17 +4,17 @@ import {
   retrieveLaunchParamsFp,
   type RetrieveLaunchParamsError,
   type PostEventError,
+  type PostEventFpFn,
 } from '@tma.js/bridge';
 import { createCbCollector, throwifyFpFn } from '@tma.js/toolkit';
 import type { Version, ThemeParams } from '@tma.js/types';
-import type { PostEventFpFn } from '@tma.js/bridge';
 import * as E from 'fp-ts/Either';
 import { pipe } from 'fp-ts/function';
 
-import { version } from '@/globals/version.js';
-import { postEventFpSignal, postEventFp, postEvent } from '@/globals/post-event.js';
-import { isInlineMode } from '@/globals/inline-mode.js';
+import { isInlineMode } from '@/globals/isInlineMode.js';
+import { postEventFpSignal, postEventFp, postEvent } from '@/globals/postEvent.js';
 import { themeParams } from '@/globals/themeParams.js';
+import { version } from '@/globals/version.js';
 
 export interface InitOptions {
   /**

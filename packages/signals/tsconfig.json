@@ -6,6 +6,9 @@
     },
     {
       "path": "./tsconfig.test.json"
+    },
+    {
+      "path": "./tsconfig.eslint.json"
     }
   ]
 }

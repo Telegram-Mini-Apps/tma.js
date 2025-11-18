@@ -1,19 +1,19 @@
+import type { PostEventError } from '@tma.js/bridge';
 import type { Computed } from '@tma.js/signals';
 import * as E from 'fp-ts/Either';
-import type { PostEventError } from '@tma.js/bridge';
 import { pipe } from 'fp-ts/function';
 
+import { Mountable } from '@/composables/Mountable.js';
+import { Stateful } from '@/composables/Stateful.js';
+import type { SharedFeatureOptions } from '@/fn-options/sharedFeatureOptions.js';
+import type { WithPostEvent } from '@/fn-options/withPostEvent.js';
+import type { WithStateRestore } from '@/fn-options/withStateRestore.js';
+import { throwifyWithChecksFp } from '@/with-checks/throwifyWithChecksFp.js';
 import {
   createWithChecksFp,
   type WithChecks,
   type WithChecksFp,
 } from '@/with-checks/withChecksFp.js';
-import { Stateful } from '@/composables/Stateful.js';
-import { Mountable } from '@/composables/Mountable.js';
-import { throwifyWithChecksFp } from '@/with-checks/throwifyWithChecksFp.js';
-import type { WithStateRestore } from '@/fn-options/withStateRestore.js';
-import type { WithPostEvent } from '@/fn-options/withPostEvent.js';
-import type { SharedFeatureOptions } from '@/fn-options/sharedFeatureOptions.js';
 
 export interface ClosingBehaviorState {
   isConfirmationEnabled: boolean;

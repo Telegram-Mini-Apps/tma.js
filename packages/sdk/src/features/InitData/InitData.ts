@@ -1,9 +1,9 @@
 import { computed, type Computed, signal } from '@tma.js/signals';
+import { throwifyFpFn } from '@tma.js/toolkit';
 import type { InitData as InitDataType } from '@tma.js/types';
 import * as E from 'fp-ts/Either';
 import * as O from 'fp-ts/Option';
 import { pipe } from 'fp-ts/function';
-import { throwifyFpFn } from '@tma.js/toolkit';
 
 export interface InitDataOptions<Err> {
   /**

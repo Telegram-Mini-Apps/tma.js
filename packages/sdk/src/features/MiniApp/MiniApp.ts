@@ -1,34 +1,34 @@
-import type { KnownThemeParamsKey, RGB, ThemeParams } from '@tma.js/types';
-import { type Computed, computed } from '@tma.js/signals';
 import {
   supports,
   type PostEventError,
   type EventPayload,
   type EventListener,
 } from '@tma.js/bridge';
+import { type Computed, computed } from '@tma.js/signals';
+import { signal } from '@tma.js/signals';
 import { createCbCollector, camelToKebab } from '@tma.js/toolkit';
 import { isRGB } from '@tma.js/transformers';
-import { pipe } from 'fp-ts/function';
-import { signal } from '@tma.js/signals';
+import type { KnownThemeParamsKey, RGB, ThemeParams } from '@tma.js/types';
 import * as E from 'fp-ts/Either';
+import { pipe } from 'fp-ts/function';
 
+import { Mountable } from '@/composables/Mountable.js';
+import { Stateful } from '@/composables/Stateful.js';
+import { CSSVarsBoundError, UnknownThemeParamsKeyError } from '@/errors.js';
+import type { SharedFeatureOptions } from '@/fn-options/sharedFeatureOptions.js';
+import type { WithPostEvent } from '@/fn-options/withPostEvent.js';
+import type { WithStateRestore } from '@/fn-options/withStateRestore.js';
+import type { WithVersion } from '@/fn-options/withVersion.js';
+import { access } from '@/helpers/access.js';
+import { deleteCssVar, setCssVar } from '@/helpers/css-vars.js';
 import { isColorDark } from '@/helpers/isColorDark.js';
+import { throwifyWithChecksFp } from '@/with-checks/throwifyWithChecksFp.js';
 import {
   createWithChecksFp,
   type WithChecks,
   withChecksFp,
   type WithChecksFp,
 } from '@/with-checks/withChecksFp.js';
-import { CSSVarsBoundError, UnknownThemeParamsKeyError } from '@/errors.js';
-import type { WithPostEvent } from '@/fn-options/withPostEvent.js';
-import type { SharedFeatureOptions } from '@/fn-options/sharedFeatureOptions.js';
-import type { WithVersion } from '@/fn-options/withVersion.js';
-import { Stateful } from '@/composables/Stateful.js';
-import type { WithStateRestore } from '@/fn-options/withStateRestore.js';
-import { Mountable } from '@/composables/Mountable.js';
-import { access } from '@/helpers/access.js';
-import { throwifyWithChecksFp } from '@/with-checks/throwifyWithChecksFp.js';
-import { deleteCssVar, setCssVar } from '@/helpers/css-vars.js';
 
 type AnyColor = RGB | KnownThemeParamsKey | string;
 

@@ -1,11 +1,11 @@
-import * as E from 'fp-ts/Either';
-import * as TE from 'fp-ts/TaskEither';
-import { pipe } from 'fp-ts/function';
 import {
   BetterPromise,
   type BetterPromiseOptions,
   type BetterPromiseRejectReason,
 } from 'better-promises';
+import * as E from 'fp-ts/Either';
+import * as TE from 'fp-ts/TaskEither';
+import { pipe } from 'fp-ts/function';
 
 import {
   AuthDateInvalidError,

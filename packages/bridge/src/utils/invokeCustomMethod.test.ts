@@ -1,17 +1,15 @@
-import { afterEach, describe, expect, it, vi } from 'vitest';
 import * as TE from 'fp-ts/TaskEither';
 import { pipe } from 'fp-ts/function';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { requestFp as _requestFp } from '@/utils/request.js';
 import { InvokeCustomMethodFailedError } from '@/errors.js';
+import { request2Fp as _requestFp } from '@/utils/request2.js';
 
 import { invokeCustomMethodFp } from './invokeCustomMethod.js';
 
 const requestFp = vi.mocked(_requestFp);
 
-vi.mock('@/utils/request.js', () => ({
-  requestFp: vi.fn(),
-}));
+vi.mock('@/utils/request2.js', () => ({ request2Fp: vi.fn() }));
 
 afterEach(() => {
   vi.restoreAllMocks();

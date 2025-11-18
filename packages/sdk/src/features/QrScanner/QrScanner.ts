@@ -1,23 +1,23 @@
+import type { PostEventError } from '@tma.js/bridge';
 import { computed, type Computed, signal } from '@tma.js/signals';
 import { createCbCollector, BetterTaskEither, type BetterTaskEitherError } from '@tma.js/toolkit';
 import { BetterPromise } from 'better-promises';
-import type { PostEventError } from '@tma.js/bridge';
-import { pipe } from 'fp-ts/function';
 import * as E from 'fp-ts/Either';
 import * as TE from 'fp-ts/TaskEither';
+import { pipe } from 'fp-ts/function';
 
+import { ConcurrentCallError } from '@/errors.js';
+import type { SharedFeatureOptions } from '@/fn-options/sharedFeatureOptions.js';
+import type { WithPostEvent } from '@/fn-options/withPostEvent.js';
+import type { WithVersion } from '@/fn-options/withVersion.js';
+import { createIsSupportedSignal } from '@/helpers/createIsSupportedSignal.js';
+import type { AsyncOptions } from '@/types.js';
+import { throwifyWithChecksFp } from '@/with-checks/throwifyWithChecksFp.js';
 import {
   createWithChecksFp,
   type WithChecks,
   type WithChecksFp,
 } from '@/with-checks/withChecksFp.js';
-import { throwifyWithChecksFp } from '@/with-checks/throwifyWithChecksFp.js';
-import { createIsSupportedSignal } from '@/helpers/createIsSupportedSignal.js';
-import type { AsyncOptions } from '@/types.js';
-import type { SharedFeatureOptions } from '@/fn-options/sharedFeatureOptions.js';
-import { ConcurrentCallError } from '@/errors.js';
-import type { WithVersion } from '@/fn-options/withVersion.js';
-import type { WithPostEvent } from '@/fn-options/withPostEvent.js';
 
 export interface QrScannerOptions extends WithVersion, WithPostEvent, SharedFeatureOptions {
   /**

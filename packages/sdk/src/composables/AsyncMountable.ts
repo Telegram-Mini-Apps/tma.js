@@ -2,8 +2,8 @@ import { batch, computed, signal } from '@tma.js/signals';
 import * as TE from 'fp-ts/TaskEither';
 import { pipe } from 'fp-ts/function';
 
-import type { AsyncOptions, MaybeAccessor } from '@/types.js';
 import { access } from '@/helpers/access.js';
+import type { AsyncOptions, MaybeAccessor } from '@/types.js';
 
 export interface AsyncMountableOptions<S, E> {
   /**

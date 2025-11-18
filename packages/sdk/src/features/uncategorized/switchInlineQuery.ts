@@ -1,6 +1,6 @@
 import type { PostEventError, SwitchInlineQueryChatType } from '@tma.js/bridge';
-import { pipe } from 'fp-ts/function';
 import * as E from 'fp-ts/Either';
+import { pipe } from 'fp-ts/function';
 
 import {
   sharedFeatureOptions,
@@ -8,11 +8,11 @@ import {
 } from '@/fn-options/sharedFeatureOptions.js';
 import { withPostEvent, type WithPostEvent } from '@/fn-options/withPostEvent.js';
 import { withVersion, type WithVersion } from '@/fn-options/withVersion.js';
-import type { MaybeAccessor } from '@/types.js';
-import { withChecksFp } from '@/with-checks/withChecksFp.js';
+import { isInlineMode } from '@/globals/isInlineMode.js';
 import { access } from '@/helpers/access.js';
+import type { MaybeAccessor } from '@/types.js';
 import { throwifyWithChecksFp } from '@/with-checks/throwifyWithChecksFp.js';
-import { isInlineMode } from '@/globals/inline-mode.js';
+import { withChecksFp } from '@/with-checks/withChecksFp.js';
 
 interface CreateOptions extends SharedFeatureOptions, WithPostEvent, WithVersion {
   isInlineMode: MaybeAccessor<boolean>;

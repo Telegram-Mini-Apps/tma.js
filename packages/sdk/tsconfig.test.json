@@ -7,7 +7,7 @@
       "@/*": [
         "./src/*"
       ],
-      "@test-utils/*": [
+      "~/test-utils/*": [
         "./test-utils/*"
       ]
     }

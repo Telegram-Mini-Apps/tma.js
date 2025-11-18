@@ -3,6 +3,13 @@ import * as E from 'fp-ts/Either';
 import * as TE from 'fp-ts/TaskEither';
 import { pipe } from 'fp-ts/lib/function.js';
 
+import {
+  AuthDateInvalidError,
+  ExpiredError,
+  SignatureInvalidError,
+  SignatureMissingError,
+  HexStringLengthInvalidError,
+} from '../errors.js';
 import { hashToken as _hashToken } from '../hashToken.js';
 import { signDataFp as _signDataFp, SignDataError, type SignDataOptions } from '../signDataFp.js';
 import {
@@ -17,13 +24,6 @@ import {
   type ValidateAsyncError,
   type ValidateAsyncOptions,
 } from '../validation.js';
-import {
-  AuthDateInvalidError,
-  ExpiredError,
-  SignatureInvalidError,
-  SignatureMissingError,
-  HexStringLengthInvalidError,
-} from '../errors.js';
 
 const createHmac: CreateHmacFn<true> = async (data, key) => {
   const encoder = new TextEncoder();

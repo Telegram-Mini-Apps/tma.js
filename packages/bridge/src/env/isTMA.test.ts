@@ -1,22 +1,22 @@
 import { TimeoutError } from 'better-promises';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import * as TE from 'fp-ts/TaskEither';
+import { pipe } from 'fp-ts/function';
 import {
   createWindow,
   mockSessionStorageGetItem,
   mockSessionStorageSetItem,
   mockWindow,
 } from 'test-utils';
-import * as TE from 'fp-ts/TaskEither';
-import { pipe } from 'fp-ts/function';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { requestFp as _requestFp } from '@/utils/request.js';
+import { UnknownEnvError } from '@/errors.js';
+import { request2Fp as _requestFp } from '@/utils/request2.js';
 
 import { isTMA, isTMAFp } from './isTMA.js';
-import { UnknownEnvError } from '@/errors.js';
 
 const requestFp = vi.mocked(_requestFp);
 
-vi.mock('@/utils/request.js', () => ({ requestFp: vi.fn() }));
+vi.mock('@/utils/request2.js', () => ({ request2Fp: vi.fn() }));
 
 beforeEach(() => {
   vi.restoreAllMocks();

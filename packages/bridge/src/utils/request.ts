@@ -1,8 +1,4 @@
-import {
-  BetterPromise,
-  type BetterPromiseOptions,
-  type TimeoutError,
-} from 'better-promises';
+import { signal } from '@tma.js/signals';
 import {
   createCbCollector,
   throwifyAnyEither,
@@ -10,11 +6,17 @@ import {
   type IsNever,
   BetterTaskEither,
 } from '@tma.js/toolkit';
-import { signal } from '@tma.js/signals';
+import {
+  BetterPromise,
+  type BetterPromiseOptions,
+  type TimeoutError,
+} from 'better-promises';
 import * as E from 'fp-ts/Either';
 import * as TE from 'fp-ts/TaskEither';
 import { pipe } from 'fp-ts/function';
 
+import { on } from '@/events/emitter.js';
+import type { EventName, EventPayload } from '@/events/types/index.js';
 import {
   postEventFp,
   type PostEventError,
@@ -28,8 +30,6 @@ import type {
   MethodNameWithRequiredParams,
   MethodParams,
 } from '@/methods/types/index.js';
-import type { EventName, EventPayload } from '@/events/types/index.js';
-import { on } from '@/events/emitter.js';
 
 type AnyEventName = EventName | EventName[];
 
@@ -110,6 +110,8 @@ export type RequestFpFn = typeof requestFp;
  * @param method - method name.
  * @param eventOrEvents - tracked event or events.
  * @param options - additional options.
+ * @deprecated To be removed in the next major update. Use `request2fp` instead, it provides
+ * a proper way of handling multiple events.
  */
 export function requestFp<
   M extends MethodNameWithRequiredParams,
@@ -126,6 +128,8 @@ export function requestFp<
  * @param method - method name.
  * @param eventOrEvents - tracked event or events.
  * @param options - additional options.
+ * @deprecated To be removed in the next major update. Use `request2fp` instead, it provides
+ * a proper way of handling multiple events.
  */
 export function requestFp<
   M extends MethodNameWithOptionalParams,
@@ -142,6 +146,8 @@ export function requestFp<
  * @param method - method name.
  * @param eventOrEvents - tracked event or events.
  * @param options - additional options.
+ * @deprecated To be removed in the next major update. Use `request2fp` instead, it provides
+ * a proper way of handling multiple events.
  */
 export function requestFp<
   M extends MethodNameWithoutParams,
@@ -223,6 +229,8 @@ export function requestFp<
 
 /**
  * @see requestFp
+ * @deprecated To be removed in the next major update. Use `request2` instead, it provides
+ * a proper way of handling multiple events.
  */
 export function request<M extends MethodNameWithRequiredParams, E extends AnyEventName>(
   method: M,
@@ -232,6 +240,8 @@ export function request<M extends MethodNameWithRequiredParams, E extends AnyEve
 
 /**
  * @see requestFp
+ * @deprecated To be removed in the next major update. Use `request2` instead, it provides
+ * a proper way of handling multiple events.
  */
 export function request<M extends MethodNameWithOptionalParams, E extends AnyEventName>(
   method: M,
@@ -241,6 +251,8 @@ export function request<M extends MethodNameWithOptionalParams, E extends AnyEve
 
 /**
  * @see requestFp
+ * @deprecated To be removed in the next major update. Use `request2` instead, it provides
+ * a proper way of handling multiple events.
  */
 export function request<M extends MethodNameWithoutParams, E extends AnyEventName>(
   method: M,

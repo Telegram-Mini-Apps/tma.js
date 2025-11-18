@@ -1,17 +1,17 @@
+import { RequestError } from '@tma.js/bridge';
 import * as TE from 'fp-ts/TaskEither';
 import { pipe } from 'fp-ts/function';
-import { RequestError } from '@tma.js/bridge';
 
-import type { AsyncOptions } from '@/types.js';
 import { SetEmojiStatusError } from '@/errors.js';
-import { withChecksFp } from '@/with-checks/withChecksFp.js';
 import {
   type SharedFeatureOptions,
   sharedFeatureOptions,
 } from '@/fn-options/sharedFeatureOptions.js';
 import { withRequest, type WithRequest } from '@/fn-options/withRequest.js';
 import { withVersion, type WithVersion } from '@/fn-options/withVersion.js';
+import type { AsyncOptions } from '@/types.js';
 import { throwifyWithChecksFp } from '@/with-checks/throwifyWithChecksFp.js';
+import { withChecksFp } from '@/with-checks/withChecksFp.js';
 
 export interface SetEmojiStatusOptions extends AsyncOptions {
   duration?: number;

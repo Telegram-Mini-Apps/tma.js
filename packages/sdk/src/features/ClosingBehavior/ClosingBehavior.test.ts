@@ -1,11 +1,12 @@
-import { describe, expect, it, vi } from 'vitest';
-import * as E from 'fp-ts/Either';
 import type { PostEventFpFn } from '@tma.js/bridge';
+import * as E from 'fp-ts/Either';
+import { describe, expect, it, vi } from 'vitest';
+
+import { testSafetyPure } from '~/test-utils/predefined/testSafetyPure.js';
+import { createNoopComponentStorage } from '~/test-utils/utils.js';
 
 import { ClosingBehavior } from '@/features/ClosingBehavior/ClosingBehavior.js';
 import { type ComponentStorage, createComponentSessionStorage } from '@/helpers/component-storage.js';
-import { createNoopComponentStorage } from '@test-utils/utils.js';
-import { testSafetyPure } from '@test-utils/predefined/testSafetyPure.js';
 
 function instantiate({
   storage = false,

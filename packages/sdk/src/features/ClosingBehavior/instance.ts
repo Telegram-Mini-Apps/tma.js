@@ -5,8 +5,8 @@ import {
   type ClosingBehaviorState,
 } from '@/features/ClosingBehavior/ClosingBehavior.js';
 import { sharedFeatureOptions } from '@/fn-options/sharedFeatureOptions.js';
-import { withStateRestore } from '@/fn-options/withStateRestore.js';
 import { withPostEvent } from '@/fn-options/withPostEvent.js';
+import { withStateRestore } from '@/fn-options/withStateRestore.js';
 
 export const closingBehavior = new ClosingBehavior(pipe(
   sharedFeatureOptions(),

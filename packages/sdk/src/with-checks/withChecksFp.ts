@@ -16,13 +16,13 @@ import type {
   AnyFn,
 } from '@tma.js/toolkit';
 import type { Version } from '@tma.js/types';
-import * as O from 'fp-ts/Option';
 import * as E from 'fp-ts/Either';
+import * as O from 'fp-ts/Option';
 import * as TE from 'fp-ts/TaskEither';
 
 import { FunctionUnavailableError } from '@/errors.js';
-import type { MaybeAccessor } from '@/types.js';
 import { access } from '@/helpers/access.js';
+import type { MaybeAccessor } from '@/types.js';
 
 type IfReturnsTask<Fn extends AnyFnAnyEither, A, B> =
   ReturnType<Fn> extends TE.TaskEither<any, any> ? A : B;

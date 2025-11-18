@@ -1,6 +1,6 @@
-import { afterEach, describe, expect, it, vi } from 'vitest';
 import * as E from 'fp-ts/Either';
 import * as O from 'fp-ts/Option';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import {
   retrieveLaunchParams,

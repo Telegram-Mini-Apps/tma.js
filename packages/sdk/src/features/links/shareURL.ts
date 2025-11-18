@@ -1,13 +1,13 @@
-import type * as E from 'fp-ts/Either';
 import type { PostEventError } from '@tma.js/bridge';
+import type * as E from 'fp-ts/Either';
 
-import { withChecksFp } from '@/with-checks/withChecksFp.js';
+import { openTelegramLinkFp } from '@/features/links/openTelegramLink.js';
 import {
   sharedFeatureOptions,
   type SharedFeatureOptions,
 } from '@/fn-options/sharedFeatureOptions.js';
-import { openTelegramLinkFp } from '@/features/links/openTelegramLink.js';
 import { throwifyWithChecksFp } from '@/with-checks/throwifyWithChecksFp.js';
+import { withChecksFp } from '@/with-checks/withChecksFp.js';
 
 interface CreateOptions extends SharedFeatureOptions {
   openTelegramLink: (url: string) => E.Either<PostEventError, void>;

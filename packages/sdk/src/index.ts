@@ -2,6 +2,7 @@ export * from './features/BackButton/exports.js';
 export * from './features/Biometry/exports.js';
 export * from './features/ClosingBehavior/exports.js';
 export * from './features/CloudStorage/exports.js';
+export * from './features/DeviceStorage/exports.js';
 export * from './features/emoji-status/exports.js';
 export * from './features/HapticFeedback/exports.js';
 export * from './features/home-screen/exports.js';
@@ -15,6 +16,7 @@ export * from './features/Popup/exports.js';
 export * from './features/privacy/exports.js';
 export * from './features/QrScanner/exports.js';
 export * from './features/SecondaryButton/exports.js';
+export * from './features/SecureStorage/exports.js';
 export * from './features/SettingsButton/exports.js';
 export * from './features/SwipeBehavior/exports.js';
 export * from './features/ThemeParams/exports.js';
@@ -23,7 +25,7 @@ export * from './features/Viewport/exports.js';
 
 export { createRequestId } from './globals/createRequestId.js';
 export { invokeCustomMethod } from './globals/invokeCustomMethod.js';
-export { postEvent, postEventFp } from './globals/post-event.js';
+export { postEvent, postEventFp } from './globals/postEvent.js';
 export { request, requestFp } from './globals/request.js';
 
 export { isColorDark, isColorDarkFp } from './helpers/isColorDark.js';
@@ -187,10 +189,10 @@ export type {
   RGB,
   User,
   Chat,
-  InitData,
+  InitData as InitDataType,
   ChatType,
   Platform,
-  ThemeParams,
+  ThemeParams as ThemeParamsType,
   LaunchParams,
   KnownThemeParamsKey,
   Version,

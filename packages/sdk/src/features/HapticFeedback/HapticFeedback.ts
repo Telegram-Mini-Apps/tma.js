@@ -1,17 +1,17 @@
-import type { Computed } from '@tma.js/signals';
 import type {
   ImpactHapticFeedbackStyle,
   NotificationHapticFeedbackType,
+  PostEventError,
 } from '@tma.js/bridge';
+import type { Computed } from '@tma.js/signals';
 import * as E from 'fp-ts/Either';
-import type { PostEventError } from '@tma.js/bridge';
 
-import { createIsSupportedSignal } from '@/helpers/createIsSupportedSignal.js';
 import type { SharedFeatureOptions } from '@/fn-options/sharedFeatureOptions.js';
-import { createWithChecksFp, type WithChecksFp, type WithChecks } from '@/with-checks/withChecksFp.js';
-import { throwifyWithChecksFp } from '@/with-checks/throwifyWithChecksFp.js';
-import type { WithVersion } from '@/fn-options/withVersion.js';
 import type { WithPostEvent } from '@/fn-options/withPostEvent.js';
+import type { WithVersion } from '@/fn-options/withVersion.js';
+import { createIsSupportedSignal } from '@/helpers/createIsSupportedSignal.js';
+import { throwifyWithChecksFp } from '@/with-checks/throwifyWithChecksFp.js';
+import { createWithChecksFp, type WithChecksFp, type WithChecks } from '@/with-checks/withChecksFp.js';
 
 type HapticFeedbackEither = E.Either<PostEventError, void>;
 

@@ -1,7 +1,7 @@
 import { throwifyFpFn, throwifyAnyEither } from '@tma.js/toolkit';
 import * as E from 'fp-ts/Either';
-import { pipe } from 'fp-ts/function';
 import * as J from 'fp-ts/Json';
+import { pipe } from 'fp-ts/function';
 
 import { encodeBase64Url, type DecodeBase64UrlError, decodeBase64UrlFp } from '@/base64-url.js';
 

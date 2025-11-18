@@ -1,10 +1,11 @@
-import { describe, expect, it, vi } from 'vitest';
-import * as E from 'fp-ts/Either';
 import { type PostEventFpFn } from '@tma.js/bridge';
+import * as E from 'fp-ts/Either';
+import { describe, expect, it, vi } from 'vitest';
+
+import { testIsSupportedPure } from '~/test-utils/predefined/testIsSupportedPure.js';
+import { testSafetyPure } from '~/test-utils/predefined/testSafetyPure.js';
 
 import { HapticFeedback } from '@/features/HapticFeedback/HapticFeedback.js';
-import { testIsSupportedPure } from '@test-utils/predefined/testIsSupportedPure.js';
-import { testSafetyPure } from '@test-utils/predefined/testSafetyPure.js';
 
 const MIN_VERSION = '6.1';
 

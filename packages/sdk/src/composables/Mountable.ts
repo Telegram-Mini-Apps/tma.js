@@ -2,8 +2,8 @@ import { batch, computed, signal } from '@tma.js/signals';
 import * as E from 'fp-ts/Either';
 import { pipe } from 'fp-ts/function';
 
-import type { MaybeAccessor } from '@/types.js';
 import { access } from '@/helpers/access.js';
+import type { MaybeAccessor } from '@/types.js';
 
 export interface MountableOptions<S, Err> {
   /**

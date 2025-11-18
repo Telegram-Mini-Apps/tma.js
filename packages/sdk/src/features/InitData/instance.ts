@@ -1,7 +1,7 @@
 import { retrieveRawInitDataFp, retrieveLaunchParamsFp } from '@tma.js/bridge';
-import { pipe } from 'fp-ts/function';
 import * as E from 'fp-ts/Either';
 import * as O from 'fp-ts/Option';
+import { pipe } from 'fp-ts/function';
 
 import { InitData } from '@/features/InitData/InitData.js';
 

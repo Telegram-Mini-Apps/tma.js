@@ -1,22 +1,22 @@
-import type { Computed } from '@tma.js/signals';
 import type { EventPayload, RequestError, PostEventError } from '@tma.js/bridge';
+import type { Computed } from '@tma.js/signals';
 import type { Maybe } from '@tma.js/toolkit';
 import { BetterPromise } from 'better-promises';
 import * as E from 'fp-ts/Either';
 import * as TE from 'fp-ts/TaskEither';
 import { pipe } from 'fp-ts/function';
 
-import { createWithChecksFp, type WithChecks, type WithChecksFp } from '@/with-checks/withChecksFp.js';
-import { createIsSupportedSignal } from '@/helpers/createIsSupportedSignal.js';
-import type { AsyncOptions } from '@/types.js';
+import { AsyncMountable } from '@/composables/AsyncMountable.js';
+import { Stateful } from '@/composables/Stateful.js';
 import type {
   LocationManagerOptions,
   LocationManagerRequestLocationResponse,
   LocationManagerState,
 } from '@/features/LocationManager/types.js';
-import { Stateful } from '@/composables/Stateful.js';
-import { AsyncMountable } from '@/composables/AsyncMountable.js';
+import { createIsSupportedSignal } from '@/helpers/createIsSupportedSignal.js';
+import type { AsyncOptions } from '@/types.js';
 import { throwifyWithChecksFp } from '@/with-checks/throwifyWithChecksFp.js';
+import { createWithChecksFp, type WithChecks, type WithChecksFp } from '@/with-checks/withChecksFp.js';
 
 function eventToState(event: EventPayload<'location_checked'>): LocationManagerState {
   let available = false;

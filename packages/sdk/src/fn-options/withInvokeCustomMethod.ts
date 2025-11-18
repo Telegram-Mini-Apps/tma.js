@@ -1,4 +1,3 @@
-import type * as TE from 'fp-ts/TaskEither';
 import type {
   CustomMethodParams,
   CustomMethodName,
@@ -6,9 +5,10 @@ import type {
   InvokeCustomMethodFpOptions,
   RequestError,
 } from '@tma.js/bridge';
+import type * as TE from 'fp-ts/TaskEither';
 
-import { invokeCustomMethod } from '@/globals/invokeCustomMethod.js';
 import { createFnOption } from '@/fn-options/createFnOption.js';
+import { invokeCustomMethod } from '@/globals/invokeCustomMethod.js';
 
 export type { InvokeCustomMethodError };
 

@@ -11,7 +11,7 @@ import { vi } from 'vitest';
 import type { ComponentStorage } from '@/helpers/component-storage.js';
 import { version } from '@/globals/version.js';
 import { resetGlobals } from '@/globals/resetGlobals.js';
-import { postEventFpSignal } from '@/globals/post-event.js';
+import { postEventFpSignal } from '@/globals/postEvent.js';
 
 export function createNoopComponentStorage<T>(): ComponentStorage<T> {
   const noop = () => undefined;

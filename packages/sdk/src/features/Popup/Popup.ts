@@ -1,18 +1,18 @@
-import * as TE from 'fp-ts/TaskEither';
 import type { RequestError } from '@tma.js/bridge';
 import { type Computed, signal, computed } from '@tma.js/signals';
 import type { BetterPromise } from 'better-promises';
+import * as TE from 'fp-ts/TaskEither';
 import { pipe } from 'fp-ts/function';
 
-import type { SharedFeatureOptions } from '@/fn-options/sharedFeatureOptions.js';
-import { createWithChecksFp, type WithChecksFp, type WithChecks } from '@/with-checks/withChecksFp.js';
-import { throwifyWithChecksFp } from '@/with-checks/throwifyWithChecksFp.js';
-import type { ShowOptions } from '@/features/Popup/types.js';
 import { ConcurrentCallError, type InvalidArgumentsError } from '@/errors.js';
-import { createIsSupportedSignal } from '@/helpers/createIsSupportedSignal.js';
-import type { WithVersion } from '@/fn-options/withVersion.js';
-import type { WithRequest } from '@/fn-options/withRequest.js';
 import { prepareParams } from '@/features/Popup/prepareParams.js';
+import type { ShowOptions } from '@/features/Popup/types.js';
+import type { SharedFeatureOptions } from '@/fn-options/sharedFeatureOptions.js';
+import type { WithRequest } from '@/fn-options/withRequest.js';
+import type { WithVersion } from '@/fn-options/withVersion.js';
+import { createIsSupportedSignal } from '@/helpers/createIsSupportedSignal.js';
+import { throwifyWithChecksFp } from '@/with-checks/throwifyWithChecksFp.js';
+import { createWithChecksFp, type WithChecksFp, type WithChecks } from '@/with-checks/withChecksFp.js';
 
 export interface PopupOptions extends SharedFeatureOptions, WithVersion, WithRequest {
 }

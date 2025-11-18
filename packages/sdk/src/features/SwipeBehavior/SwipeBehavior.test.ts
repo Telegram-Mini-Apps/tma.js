@@ -1,12 +1,13 @@
-import { describe, expect, it, vi } from 'vitest';
-import * as E from 'fp-ts/Either';
 import type { PostEventFpFn } from '@tma.js/bridge';
 import type { Version } from '@tma.js/types';
+import * as E from 'fp-ts/Either';
+import { describe, expect, it, vi } from 'vitest';
+
+import { testSafetyPure } from '~/test-utils/predefined/testSafetyPure.js';
+import { createNoopComponentStorage } from '~/test-utils/utils.js';
 
 import { SwipeBehavior } from '@/features/SwipeBehavior/SwipeBehavior.js';
 import { type ComponentStorage, createComponentSessionStorage } from '@/helpers/component-storage.js';
-import { createNoopComponentStorage } from '@test-utils/utils.js';
-import { testSafetyPure } from '@test-utils/predefined/testSafetyPure.js';
 
 function instantiate({
   version = '100',

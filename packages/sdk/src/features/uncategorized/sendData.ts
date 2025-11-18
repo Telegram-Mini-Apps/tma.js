@@ -1,15 +1,15 @@
 import type { PostEventError } from '@tma.js/bridge';
-import { pipe } from 'fp-ts/function';
 import * as E from 'fp-ts/Either';
+import { pipe } from 'fp-ts/function';
 
+import { InvalidArgumentsError } from '@/errors.js';
 import {
   sharedFeatureOptions,
   type SharedFeatureOptions,
 } from '@/fn-options/sharedFeatureOptions.js';
 import { withPostEvent, type WithPostEvent } from '@/fn-options/withPostEvent.js';
-import { withChecksFp } from '@/with-checks/withChecksFp.js';
-import { InvalidArgumentsError } from '@/errors.js';
 import { throwifyWithChecksFp } from '@/with-checks/throwifyWithChecksFp.js';
+import { withChecksFp } from '@/with-checks/withChecksFp.js';
 
 interface CreateOptions extends SharedFeatureOptions, WithPostEvent {
 }

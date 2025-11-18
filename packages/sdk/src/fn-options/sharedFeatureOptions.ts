@@ -1,5 +1,5 @@
-import { computed } from '@tma.js/signals';
 import { isTMAFp } from '@tma.js/bridge';
+import { computed } from '@tma.js/signals';
 
 import type { MaybeAccessor } from '@/types.js';
 

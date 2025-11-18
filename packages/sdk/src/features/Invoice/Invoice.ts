@@ -1,17 +1,17 @@
-import { computed, type Computed, signal } from '@tma.js/signals';
 import type { InvoiceStatus, RequestError } from '@tma.js/bridge';
+import { computed, type Computed, signal } from '@tma.js/signals';
 import { BetterPromise } from 'better-promises';
 import * as TE from 'fp-ts/TaskEither';
 import { pipe } from 'fp-ts/function';
 
-import { createWithChecksFp, type WithChecks, type WithChecksFp } from '@/with-checks/withChecksFp.js';
+import { ConcurrentCallError, InvalidArgumentsError } from '@/errors.js';
+import type { SharedFeatureOptions } from '@/fn-options/sharedFeatureOptions.js';
+import type { WithRequest } from '@/fn-options/withRequest.js';
+import type { WithVersion } from '@/fn-options/withVersion.js';
 import { createIsSupportedSignal } from '@/helpers/createIsSupportedSignal.js';
 import type { AsyncOptions } from '@/types.js';
-import { ConcurrentCallError, InvalidArgumentsError } from '@/errors.js';
-import type { WithVersion } from '@/fn-options/withVersion.js';
-import type { WithRequest } from '@/fn-options/withRequest.js';
-import type { SharedFeatureOptions } from '@/fn-options/sharedFeatureOptions.js';
 import { throwifyWithChecksFp } from '@/with-checks/throwifyWithChecksFp.js';
+import { createWithChecksFp, type WithChecks, type WithChecksFp } from '@/with-checks/withChecksFp.js';
 
 type InvoiceTask<E, T> = TE.TaskEither<RequestError | ConcurrentCallError | E, T>;
 

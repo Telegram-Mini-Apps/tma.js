@@ -1,8 +1,9 @@
-import { expect, it, describe } from 'vitest';
 import * as E from 'fp-ts/Either';
+import { expect, it, describe } from 'vitest';
+
+import { InvalidArgumentsError } from '@/errors.js';
 
 import { prepareParams } from './prepareParams.js';
-import { InvalidArgumentsError } from '@/errors.js';
 
 /**
  * Creates test text.

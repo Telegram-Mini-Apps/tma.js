@@ -9,11 +9,11 @@ import * as TE from 'fp-ts/TaskEither';
 import { pipe } from 'fp-ts/function';
 
 import { hasWebviewProxy } from '@/env/hasWebviewProxy.js';
-import { retrieveRawLaunchParamsFp } from '@/launch-params.js';
-import { type RequestError, requestFp } from '@/utils/request.js';
 import { UnknownEnvError } from '@/errors.js';
+import { retrieveRawLaunchParamsFp } from '@/launch-params.js';
+import { type Request2Error, request2Fp } from '@/utils/request2.js';
 
-export type isTMAError = Exclude<RequestError, TimeoutError>;
+export type isTMAError = Exclude<Request2Error, TimeoutError>;
 
 /**
  * @see isTMAFp
@@ -73,7 +73,7 @@ export function isTMAFp(
   const { timeout = 100 } = options || {};
 
   return pipe(
-    requestFp('web_app_request_theme', 'theme_changed', { ...options, timeout }),
+    request2Fp('web_app_request_theme', 'theme_changed', { ...options, timeout }),
     TE.match(
       error => (
         TimeoutError.is(error) || UnknownEnvError.is(error)

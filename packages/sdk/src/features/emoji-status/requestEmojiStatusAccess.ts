@@ -1,16 +1,16 @@
-import { pipe } from 'fp-ts/function';
-import * as TE from 'fp-ts/TaskEither';
 import type { EmojiStatusAccessRequestedStatus, RequestError } from '@tma.js/bridge';
+import * as TE from 'fp-ts/TaskEither';
+import { pipe } from 'fp-ts/function';
 
-import type { AsyncOptions } from '@/types.js';
-import { withVersion, type WithVersion } from '@/fn-options/withVersion.js';
-import { withRequest, type WithRequest } from '@/fn-options/withRequest.js';
-import { withChecksFp } from '@/with-checks/withChecksFp.js';
 import {
   sharedFeatureOptions,
   type SharedFeatureOptions,
 } from '@/fn-options/sharedFeatureOptions.js';
+import { withRequest, type WithRequest } from '@/fn-options/withRequest.js';
+import { withVersion, type WithVersion } from '@/fn-options/withVersion.js';
+import type { AsyncOptions } from '@/types.js';
 import { throwifyWithChecksFp } from '@/with-checks/throwifyWithChecksFp.js';
+import { withChecksFp } from '@/with-checks/withChecksFp.js';
 
 interface CreateOptions extends SharedFeatureOptions, WithVersion, WithRequest {
 }

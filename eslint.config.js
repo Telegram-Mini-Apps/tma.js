@@ -4,6 +4,7 @@ import eslint from '@eslint/js';
 import stylistic from '@stylistic/eslint-plugin';
 import pluginVitest from '@vitest/eslint-plugin';
 import tseslint from 'typescript-eslint';
+import importPlugin from 'eslint-plugin-import';
 
 export default tseslint.config(
   {
@@ -16,7 +17,6 @@ export default tseslint.config(
     languageOptions: {
       parserOptions: {
         project: [
-          './playgrounds/*/tsconfig.json',
           './packages/*/tsconfig.eslint.json',
         ],
         tsconfigRootDir: import.meta.dirname,
@@ -28,9 +28,22 @@ export default tseslint.config(
     extends: [
       eslint.configs.recommended,
       ...tseslint.configs.recommendedTypeChecked,
+      importPlugin.flatConfigs.recommended,
+      importPlugin.flatConfigs.typescript,
     ],
+    settings: {
+      'import/resolver': {
+        'typescript': {
+          project: [
+            './packages/*/tsconfig.eslint.json'
+          ],
+        },
+        'node': true,
+      },
+    },
     plugins: { '@stylistic': stylistic },
     rules: {
+      //#region typescript-eslint
       '@typescript-eslint/no-empty-object-type': 0,
       '@typescript-eslint/no-explicit-any': 0,
       '@typescript-eslint/no-unsafe-argument': 0,
@@ -44,6 +57,34 @@ export default tseslint.config(
       '@typescript-eslint/no-namespace': 0,
       '@typescript-eslint/require-await': 0,
       'no-empty': 0,
+      //#endregion
+
+      //#region import
+      'import/order': ['error', {
+        pathGroups: [
+          { pattern: '@/**', group: 'internal', position: 'after' },
+          { pattern: '~/**', group: 'external', position: 'after' },
+        ],
+        groups: [
+          ['builtin', 'external'],
+          'internal',
+          'unknown',
+          ['parent', 'sibling', 'index'],
+          ['object']
+        ],
+        'newlines-between': 'always-and-inside-groups',
+        alphabetize: {
+          order: 'asc',
+          caseInsensitive: false,
+        },
+      }],
+      'import/no-empty-named-blocks': ['error'],
+      'import/enforce-node-protocol-usage': ['error', 'always'],
+      'import/no-relative-packages': ['error'],
+      'import/no-useless-path-segments': ['error'],
+      //#endregion
+
+      //#region stylistic
       '@stylistic/array-bracket-newline': ['error', 'consistent'],
       '@stylistic/array-bracket-spacing': ['error', 'never'],
       '@stylistic/array-element-newline': ['error', 'consistent'],
@@ -161,6 +202,7 @@ export default tseslint.config(
       '@stylistic/type-named-tuple-spacing': ['error'],
       '@stylistic/wrap-iife': ['error', 'inside'],
       '@stylistic/yield-star-spacing': ['error', { before: false, after: true }],
+      //#endregion
     },
   },
 );

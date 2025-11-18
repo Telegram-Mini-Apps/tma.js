@@ -1,12 +1,12 @@
 import type { BiometryType, EventListener } from '@tma.js/bridge';
 import type { Maybe } from '@tma.js/toolkit';
 
-import type { AsyncOptions } from '@/types.js';
-import type { WithVersion } from '@/fn-options/withVersion.js';
-import type { WithStateRestore } from '@/fn-options/withStateRestore.js';
-import type { WithRequest } from '@/fn-options/withRequest.js';
-import type { WithPostEvent } from '@/fn-options/withPostEvent.js';
 import type { SharedFeatureOptions } from '@/fn-options/sharedFeatureOptions.js';
+import type { WithPostEvent } from '@/fn-options/withPostEvent.js';
+import type { WithRequest } from '@/fn-options/withRequest.js';
+import type { WithStateRestore } from '@/fn-options/withStateRestore.js';
+import type { WithVersion } from '@/fn-options/withVersion.js';
+import type { AsyncOptions } from '@/types.js';
 
 export interface BiometryState {
   /**

@@ -1,6 +1,6 @@
-import { pipe } from 'fp-ts/function';
-import type * as E from 'fp-ts/Either';
 import type { PostEventError } from '@tma.js/bridge';
+import type * as E from 'fp-ts/Either';
+import { pipe } from 'fp-ts/function';
 
 import {
   sharedFeatureOptions,
@@ -8,8 +8,8 @@ import {
 } from '@/fn-options/sharedFeatureOptions.js';
 import { withPostEvent, type WithPostEvent } from '@/fn-options/withPostEvent.js';
 import { withVersion, type WithVersion } from '@/fn-options/withVersion.js';
-import { withChecksFp } from '@/with-checks/withChecksFp.js';
 import { throwifyWithChecksFp } from '@/with-checks/throwifyWithChecksFp.js';
+import { withChecksFp } from '@/with-checks/withChecksFp.js';
 
 interface CreateOptions extends SharedFeatureOptions, WithPostEvent, WithVersion {
 }
