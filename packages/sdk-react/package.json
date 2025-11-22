@@ -1,6 +1,6 @@
 {
   "name": "@tma.js/sdk-react",
-  "version": "3.0.9",
+  "version": "3.0.10",
   "description": "React bindings for Mini Apps client SDK. Contains hooks, components and other useful tools which allow usage of React along with Mini Apps client SDK.",
   "author": "Vladislav Kibenko <wolfram.deus@gmail.com>",
   "homepage": "https://github.com/Telegram-Mini-Apps/tma.js#readme",

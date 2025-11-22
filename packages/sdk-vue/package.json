@@ -1,6 +1,6 @@
 {
   "name": "@tma.js/sdk-vue",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "description": "Vue.js bindings for Mini Apps client SDK.",
   "author": "Dmitry Nischeta <nish.dima@gmail.com>",
   "homepage": "https://github.com/Telegram-Mini-Apps/tma.js#readme",

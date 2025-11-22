@@ -1,5 +1,11 @@
 # @tma.js/sdk
 
+## 3.1.1
+
+### Patch Changes
+
+- 2ff218a: Save raw colors instead of computed ones when calling MiniApp's color setters.
+
 ## 3.1.0
 
 ### Minor Changes

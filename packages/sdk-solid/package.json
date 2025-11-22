@@ -1,6 +1,6 @@
 {
   "name": "@tma.js/sdk-solid",
-  "version": "3.0.9",
+  "version": "3.0.10",
   "description": "Solid JS bindings for Mini Apps client SDK.",
   "author": "Vladislav Kibenko <wolfram.deus@gmail.com>",
   "homepage": "https://github.com/Telegram-Mini-Apps/tma.js#readme",
