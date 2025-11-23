@@ -1,5 +1,12 @@
 # @tma.js/sdk-vue
 
+## 1.0.11
+
+### Patch Changes
+
+- Updated dependencies [8199706]
+  - @tma.js/sdk@3.1.2
+
 ## 1.0.10
 
 ### Patch Changes

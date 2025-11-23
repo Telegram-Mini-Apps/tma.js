@@ -1,5 +1,11 @@
 # @tma.js/sdk
 
+## 3.1.2
+
+### Patch Changes
+
+- 8199706: When opening QrScanner, update the isOpened flag. Listen to its changes to resolve the promise. After the promise was resolved, update the flag again.
+
 ## 3.1.1
 
 ### Patch Changes
