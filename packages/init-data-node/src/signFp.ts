@@ -5,7 +5,9 @@ import { pipe } from 'fp-ts/lib/function.js';
 
 import type { Text } from './types.js';
 
-export type SignableData = Omit<InitDataLike, 'auth_date' | 'hash' | 'signature'>;
+export type SignableData =
+  & Omit<InitDataLike, 'auth_date' | 'hash' | 'signature'>
+  & { signature?: string };
 
 export interface SignOptions {
   /**
@@ -61,7 +63,11 @@ export function signFp<Left>(
   signData: SignDataFpArg<boolean, Left>,
   options?: SignOptions,
 ): E.Either<Left, string> | TE.TaskEither<Left, string> {
-  const query = new URLSearchParams(serializeInitDataQuery({ ...data, auth_date: authDate }));
+  const query = new URLSearchParams(serializeInitDataQuery({
+    ...data,
+    auth_date: authDate,
+    signature: data.signature || '',
+  }));
 
   // Convert search params to pairs and sort the final array.
   const pairs = [...query.entries()]
