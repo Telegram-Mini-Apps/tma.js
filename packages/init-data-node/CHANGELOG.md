@@ -1,5 +1,11 @@
 # @tma.js/init-data-node
 
+## 2.0.4
+
+### Patch Changes
+
+- 8316bda: Optionally allow specifying `signature` field when signing. As a default, set an empty value.
+
 ## 2.0.3
 
 ### Patch Changes
