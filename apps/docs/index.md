@@ -15,7 +15,7 @@ hero:
       link: /platform/about
     - theme: alt
       text: Packages
-      link: /packages/telegram-apps-create-mini-app
+      link: /packages/tma-js-sdk
 
 features:
   - icon: 💻
@@ -28,4 +28,3 @@ features:
     title: Better user experience
     details: Simplifies user communication with a project connected with Telegram
 ---
-

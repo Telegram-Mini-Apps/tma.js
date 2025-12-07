@@ -94,8 +94,8 @@ export default defineConfig({
         lang,
       },
       sitemap: {
-        hostname,
-      },
+        hostname = '',
+      } = {},
     } = siteConfig;
     const isHome = frontmatter.layout === 'home';
     const siteBase = `${hostname}${base}`;
