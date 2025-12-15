@@ -49,7 +49,7 @@
     "vitest": "^3.2.4"
   },
   "type": "module",
-  "packageManager": "pnpm@10.9.0",
+  "packageManager": "pnpm@10.25.0",
   "name": "monorepo",
   "config": {
     "commitizen": {
