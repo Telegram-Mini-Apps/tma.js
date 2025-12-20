@@ -26,7 +26,7 @@ versions of Telegram.
 
 - Open side menu.
 - Expand the menu item, where current username is specified.
-- Hold `Shift` + `Alt` and press **right** mouse button on `Add Account` button.
+- Hold `Shift` + `Alt` (`option` for macOS) and press **right** mouse button on `Add Account` button.
 - Select `Test Server`.
 - Link the account created in the test environment.
 
