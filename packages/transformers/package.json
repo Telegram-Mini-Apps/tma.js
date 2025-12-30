@@ -1,6 +1,6 @@
 {
   "name": "@tma.js/transformers",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Transformation utilities we use in the @tma.js packages.",
   "author": "Vladislav Kibenko <wolfram.deus@gmail.com>",
   "homepage": "https://github.com/Telegram-Mini-Apps/tma.js#readme",

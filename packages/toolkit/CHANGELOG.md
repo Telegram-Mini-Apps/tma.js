@@ -1,5 +1,11 @@
 # @tma.js/toolkit
 
+## 1.0.3
+
+### Patch Changes
+
+- 22eed1e: Add side-effect free markers for functions and errors.
+
 ## 1.0.2
 
 ### Patch Changes

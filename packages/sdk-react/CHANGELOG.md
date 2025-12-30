@@ -1,5 +1,12 @@
 # @tma.js/sdk-react
 
+## 3.0.12
+
+### Patch Changes
+
+- Updated dependencies [22eed1e]
+  - @tma.js/sdk@3.1.3
+
 ## 3.0.11
 
 ### Patch Changes

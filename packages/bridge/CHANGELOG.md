@@ -1,5 +1,14 @@
 # @tma.js/bridge
 
+## 2.2.1
+
+### Patch Changes
+
+- 22eed1e: Add side-effect free markers for functions and errors.
+- Updated dependencies [22eed1e]
+  - @tma.js/toolkit@1.0.3
+  - @tma.js/transformers@1.1.2
+
 ## 2.2.0
 
 ### Minor Changes

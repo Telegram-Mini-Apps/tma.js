@@ -1,6 +1,6 @@
 {
   "name": "@tma.js/toolkit",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Internal toolkit used in the @tma.js packages.",
   "author": "Vladislav Kibenko <wolfram.deus@gmail.com>",
   "homepage": "https://github.com/Telegram-Mini-Apps/tma.js#readme",

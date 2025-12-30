@@ -1,5 +1,12 @@
 # @tma.js/transformers
 
+## 1.1.2
+
+### Patch Changes
+
+- Updated dependencies [22eed1e]
+  - @tma.js/toolkit@1.0.3
+
 ## 1.1.1
 
 ### Patch Changes

@@ -1,6 +1,6 @@
 {
   "name": "@tma.js/bridge",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "description": "TypeScript package to provide communication layer between Mini App and Telegram application.",
   "author": "Vladislav Kibenko <wolfram.deus@gmail.com>",
   "homepage": "https://github.com/Telegram-Mini-Apps/tma.js#readme",

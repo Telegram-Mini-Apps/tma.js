@@ -1,6 +1,6 @@
 {
   "name": "@tma.js/init-data-node",
-  "version": "2.0.4",
+  "version": "2.0.5",
   "description": "TypeScript Node library to operate with Telegram init data.",
   "author": "Vladislav Kibenko <wolfram.deus@gmail.com>",
   "homepage": "https://github.com/Telegram-Mini-Apps/tma.js#readme",

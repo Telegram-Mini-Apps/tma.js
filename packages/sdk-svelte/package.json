@@ -1,6 +1,6 @@
 {
   "name": "@tma.js/sdk-svelte",
-  "version": "1.0.11",
+  "version": "1.0.12",
   "description": "Svelte.js bindings for Mini Apps client SDK.",
   "author": "Nazar Ugrinovsky <nazar9505@gmail.com>",
   "homepage": "https://github.com/Telegram-Mini-Apps/tma.js#readme",
