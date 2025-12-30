@@ -8,8 +8,12 @@ import { sharedFeatureOptions } from '@/fn-options/sharedFeatureOptions.js';
 import { withPostEvent } from '@/fn-options/withPostEvent.js';
 import { withStateRestore } from '@/fn-options/withStateRestore.js';
 
-export const closingBehavior = new ClosingBehavior(pipe(
-  sharedFeatureOptions(),
-  withStateRestore<ClosingBehaviorState>('closingBehavior'),
-  withPostEvent,
-));
+function instantiate() {
+  return new ClosingBehavior(pipe(
+    sharedFeatureOptions(),
+    withStateRestore<ClosingBehaviorState>('closingBehavior'),
+    withPostEvent,
+  ));
+}
+
+export const closingBehavior = /* @__PURE__*/ instantiate();

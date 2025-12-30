@@ -7,9 +7,13 @@ import { withVersion } from '@/fn-options/withVersion.js';
 
 import { SecureStorage } from './SecureStorage.js';
 
-export const secureStorage = new SecureStorage(pipe(
-  sharedFeatureOptions(),
-  withVersion,
-  withRequest,
-  withCreateRequestId,
-));
+function instantiate() {
+  return new SecureStorage(pipe(
+    sharedFeatureOptions(),
+    withVersion,
+    withRequest,
+    withCreateRequestId,
+  ));
+}
+
+export const secureStorage = /* @__PURE__*/ instantiate();

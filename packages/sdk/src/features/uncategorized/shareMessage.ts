@@ -41,15 +41,20 @@ function create({ request, ...rest }: CreateOptions) {
   }, { ...rest, requires: 'web_app_send_prepared_message', returns: 'task' });
 }
 
+// #__NO_SIDE_EFFECTS__
+function instantiate() {
+  return create(pipe(
+    sharedFeatureOptions(),
+    withRequest,
+    withVersion,
+  ));
+}
+
 /**
  * Opens a dialog allowing the user to share a message provided by the bot.
  * @since Mini Apps v8.0
  */
-export const shareMessageFp = create(pipe(
-  sharedFeatureOptions(),
-  withRequest,
-  withVersion,
-));
+export const shareMessageFp = instantiate();
 
 /**
  * @see shareMessageFp

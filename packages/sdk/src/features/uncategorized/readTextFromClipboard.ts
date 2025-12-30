@@ -35,6 +35,18 @@ function create({ request, createRequestId, ...rest }: CreateOptions) {
   }, { ...rest, requires: 'web_app_read_text_from_clipboard', returns: 'task' });
 }
 
+// #__NO_SIDE_EFFECTS__
+function instantiate() {
+  return create({
+    ...pipe(
+      sharedFeatureOptions(),
+      withVersion,
+      withRequest,
+    ),
+    createRequestId,
+  });
+}
+
 /**
  * Reads a text from the clipboard and returns a `string` or `null`. `null` is returned
  * in one of the following cases:
@@ -42,13 +54,6 @@ function create({ request, createRequestId, ...rest }: CreateOptions) {
  * - Access to the clipboard is not granted.
  * @since Mini Apps v6.4
  */
-export const readTextFromClipboardFp = create({
-  ...pipe(
-    sharedFeatureOptions(),
-    withVersion,
-    withRequest,
-  ),
-  createRequestId,
-});
+export const readTextFromClipboardFp = instantiate();
 
 export const readTextFromClipboard = throwifyWithChecksFp(readTextFromClipboardFp);

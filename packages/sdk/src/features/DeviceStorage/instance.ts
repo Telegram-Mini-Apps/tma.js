@@ -7,9 +7,13 @@ import { withVersion } from '@/fn-options/withVersion.js';
 
 import { DeviceStorage } from './DeviceStorage.js';
 
-export const deviceStorage = new DeviceStorage(pipe(
-  sharedFeatureOptions(),
-  withVersion,
-  withRequest,
-  withCreateRequestId,
-));
+function instantiate() {
+  return new DeviceStorage(pipe(
+    sharedFeatureOptions(),
+    withVersion,
+    withRequest,
+    withCreateRequestId,
+  ));
+}
+
+export const deviceStorage = /* @__PURE__*/ instantiate();

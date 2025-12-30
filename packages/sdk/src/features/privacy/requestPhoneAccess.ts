@@ -28,6 +28,15 @@ function create({ request, ...rest }: CreateOptions) {
   }, { ...rest, requires: 'web_app_request_phone', returns: 'task' });
 }
 
+// #__NO_SIDE_EFFECTS__
+function instantiate() {
+  return create(pipe(
+    sharedFeatureOptions(),
+    withVersion,
+    withRequest,
+  ));
+}
+
 /**
  * Requests current user phone access. Method returns promise, which resolves
  * status of the request. In case, user accepted the request, Mini App bot will receive
@@ -38,11 +47,7 @@ function create({ request, ...rest }: CreateOptions) {
  * @since Mini Apps v6.9
  * @see requestContact
  */
-export const requestPhoneAccessFp = create(pipe(
-  sharedFeatureOptions(),
-  withVersion,
-  withRequest,
-));
+export const requestPhoneAccessFp = instantiate();
 
 /**
  * @see requestPhoneAccessFp

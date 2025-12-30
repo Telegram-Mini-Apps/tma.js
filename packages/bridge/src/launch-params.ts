@@ -6,7 +6,7 @@ import {
 } from '@tma.js/transformers';
 import * as E from 'fp-ts/Either';
 import * as O from 'fp-ts/Option';
-import { flow, pipe } from 'fp-ts/function';
+import { pipe } from 'fp-ts/function';
 
 import { LaunchParamsRetrieveError } from '@/errors.js';
 
@@ -35,10 +35,15 @@ function retrieveLpFromUrl(urlString: string): string {
 /**
  * @returns Launch parameters from any known source.
  */
-export const retrieveLaunchParamsFp: () => E.Either<
+export function retrieveLaunchParamsFp(): E.Either<
   RetrieveLaunchParamsError,
   RetrieveLaunchParamsResult
-> = flow(retrieveRawLaunchParamsFp, E.chainW(parseLaunchParamsQueryFp));
+> {
+  return pipe(
+    retrieveRawLaunchParamsFp(),
+    E.chainW(parseLaunchParamsQueryFp),
+  );
+}
 
 /**
  * @see retrieveLaunchParamsFp
@@ -49,22 +54,28 @@ export const retrieveLaunchParams: () => RetrieveLaunchParamsResult =
 /**
  * @returns Raw init data from any known source.
  */
-export const retrieveRawInitDataFp: () => E.Either<RetrieveRawInitDataError, O.Option<string>> =
-  flow(retrieveRawLaunchParamsFp, E.map(raw => {
-    const v = new URLSearchParams(raw).get('tgWebAppData');
-    return v ? O.some(v) : O.none;
-  }));
+export function retrieveRawInitDataFp(): E.Either<RetrieveRawInitDataError, O.Option<string>> {
+  return pipe(
+    retrieveRawLaunchParamsFp(),
+    E.map(raw => {
+      const v = new URLSearchParams(raw).get('tgWebAppData');
+      return v ? O.some(v) : O.none;
+    }),
+  );
+}
 
 /**
  * @see retrieveRawInitDataFp
  */
-export const retrieveRawInitData: () => string | undefined = flow(
-  retrieveRawInitDataFp,
-  E.fold(err => {
-    throw err;
-  }, v => v),
-  O.match(() => undefined, v => v),
-);
+export function retrieveRawInitData(): string | undefined {
+  return pipe(
+    retrieveRawInitDataFp(),
+    E.fold(err => {
+      throw err;
+    }, v => v),
+    O.match(() => undefined, v => v),
+  );
+}
 
 /**
  * @returns Launch parameters in a raw format from any known source.

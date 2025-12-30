@@ -5,4 +5,8 @@ import { sharedFeatureOptions } from '@/fn-options/sharedFeatureOptions.js';
 import { withRequest } from '@/fn-options/withRequest.js';
 import { withVersion } from '@/fn-options/withVersion.js';
 
-export const invoice = new Invoice(pipe(sharedFeatureOptions(), withRequest, withVersion));
+function instantiate() {
+  return new Invoice(pipe(sharedFeatureOptions(), withRequest, withVersion));
+}
+
+export const invoice = /* @__PURE__*/ instantiate();

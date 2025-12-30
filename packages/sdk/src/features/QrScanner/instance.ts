@@ -7,14 +7,18 @@ import { sharedFeatureOptions } from '@/fn-options/sharedFeatureOptions.js';
 import { withPostEvent } from '@/fn-options/withPostEvent.js';
 import { withVersion } from '@/fn-options/withVersion.js';
 
-export const qrScanner = new QrScanner({
-  ...pipe(sharedFeatureOptions(), withPostEvent, withVersion),
-  onClosed(listener) {
-    return on('scan_qr_popup_closed', listener);
-  },
-  onTextReceived(listener) {
-    return on('qr_text_received', event => {
-      listener(event.data);
-    });
-  },
-});
+function instantiate() {
+  return new QrScanner({
+    ...pipe(sharedFeatureOptions(), withPostEvent, withVersion),
+    onClosed(listener) {
+      return on('scan_qr_popup_closed', listener);
+    },
+    onTextReceived(listener) {
+      return on('qr_text_received', event => {
+        listener(event.data);
+      });
+    },
+  });
+}
+
+export const qrScanner = /* @__PURE__*/ instantiate();

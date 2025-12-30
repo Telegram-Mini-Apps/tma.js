@@ -202,11 +202,32 @@ function createComplete({
   }, { ...rest, returns: 'task', requires: 'web_app_request_phone' });
 }
 
+// #__NO_SIDE_EFFECTS__
+function instantiateComplete() {
+  return createComplete({
+    ...pipe(sharedFeatureOptions(), withInvokeCustomMethod, withVersion),
+    requestPhoneAccess: requestPhoneAccessFp,
+  });
+}
+
 function createParsed({ requestContact, ...rest }: CreateParsedOptions) {
   return withChecksFp(
     requestContact,
     { ...rest, returns: 'task', requires: 'web_app_request_phone' },
   );
+}
+
+// #__NO_SIDE_EFFECTS__
+function instantiateParsed() {
+  return createParsed({
+    ...pipe(sharedFeatureOptions(), withVersion),
+    requestContact(options) {
+      return pipe(
+        requestContactCompleteFp(options),
+        TE.map(contact => contact.parsed),
+      );
+    },
+  });
 }
 
 /**
@@ -217,10 +238,7 @@ function createParsed({ requestContact, ...rest }: CreateParsedOptions) {
  * @param options - additional options.
  * @since Mini Apps v6.9
  */
-export const requestContactCompleteFp = createComplete({
-  ...pipe(sharedFeatureOptions(), withInvokeCustomMethod, withVersion),
-  requestPhoneAccess: requestPhoneAccessFp,
-});
+export const requestContactCompleteFp = instantiateComplete();
 
 /**
  * @see requestContactCompleteFp
@@ -234,15 +252,7 @@ export const requestContactComplete = throwifyWithChecksFp(requestContactComplet
  * @param options - additional options.
  * @since Mini Apps v6.9
  */
-export const requestContactFp = createParsed({
-  ...pipe(sharedFeatureOptions(), withVersion),
-  requestContact(options) {
-    return pipe(
-      requestContactCompleteFp(options),
-      TE.map(contact => contact.parsed),
-    );
-  },
-});
+export const requestContactFp = instantiateParsed();
 
 /**
  * @see requestContactFp

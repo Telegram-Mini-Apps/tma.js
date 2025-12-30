@@ -30,6 +30,11 @@ function create({ postEvent, ...rest }: CreateOptions) {
   }, { ...rest, returns: 'either' });
 }
 
+// #__NO_SIDE_EFFECTS__
+function instantiate() {
+  return create(pipe(sharedFeatureOptions(), withPostEvent));
+}
+
 /**
  * Sends data to the bot.
  *
@@ -41,7 +46,7 @@ function create({ postEvent, ...rest }: CreateOptions) {
  * This method is only available for Mini Apps launched via a Keyboard button.
  * @param data - data to send to bot.
  */
-export const sendDataFp = create(pipe(sharedFeatureOptions(), withPostEvent));
+export const sendDataFp = instantiate();
 
 /**
  * @see sendDataFp

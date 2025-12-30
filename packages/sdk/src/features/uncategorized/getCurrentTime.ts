@@ -39,16 +39,21 @@ function create({ invokeCustomMethod, ...rest }: CreateOptions) {
   }, { ...rest, requires: 'web_app_invoke_custom_method', returns: 'task' });
 }
 
+// #__NO_SIDE_EFFECTS__
+function instantiate() {
+  return create(pipe(
+    sharedFeatureOptions(),
+    withInvokeCustomMethod,
+    withVersion,
+  ));
+}
+
 /**
  * @returns The current time according to the Telegram server time.
  * @param options - additional options.
  * @since Mini Apps v6.9
  */
-export const getCurrentTimeFp = create(pipe(
-  sharedFeatureOptions(),
-  withInvokeCustomMethod,
-  withVersion,
-));
+export const getCurrentTimeFp = instantiate();
 
 /**
  * @see getCurrentTimeFp

@@ -8,18 +8,22 @@ import { withPostEvent } from '@/fn-options/withPostEvent.js';
 import { withStateRestore } from '@/fn-options/withStateRestore.js';
 import { withVersion } from '@/fn-options/withVersion.js';
 
-export const miniApp = new MiniApp({
-  ...pipe(
-    sharedFeatureOptions(),
-    withPostEvent,
-    withVersion,
-    withStateRestore<MiniAppState>('miniApp'),
-  ),
-  offVisibilityChanged(listener) {
-    off('visibility_changed', listener);
-  },
-  onVisibilityChanged(listener) {
-    on('visibility_changed', listener);
-  },
-  theme: themeParams.state,
-});
+function instantiate() {
+  return new MiniApp({
+    ...pipe(
+      sharedFeatureOptions(),
+      withPostEvent,
+      withVersion,
+      withStateRestore<MiniAppState>('miniApp'),
+    ),
+    offVisibilityChanged(listener) {
+      off('visibility_changed', listener);
+    },
+    onVisibilityChanged(listener) {
+      on('visibility_changed', listener);
+    },
+    theme: themeParams.state,
+  });
+}
+
+export const miniApp = /* @__PURE__*/ instantiate();

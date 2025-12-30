@@ -53,6 +53,15 @@ function create({ postEvent, ...rest }: CreateOptions) {
   }, { ...rest, requires: 'web_app_share_to_story', returns: 'either' });
 }
 
+// #__NO_SIDE_EFFECTS__
+function instantiate() {
+  return create(pipe(
+    sharedFeatureOptions(),
+    withPostEvent,
+    withVersion,
+  ));
+}
+
 /**
  * Opens the native story editor.
  * @since Mini Apps v7.8
@@ -72,11 +81,7 @@ function create({ postEvent, ...rest }: CreateOptions) {
  *   }),
  * );
  */
-export const shareStoryFp = create(pipe(
-  sharedFeatureOptions(),
-  withPostEvent,
-  withVersion,
-));
+export const shareStoryFp = instantiate();
 
 /**
  * @see shareStoryFp

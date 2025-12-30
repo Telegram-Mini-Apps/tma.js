@@ -12,6 +12,7 @@
   "dependencies": {
     "fp-ts": "^2.16.11",
     "tsconfig": "workspace:*",
+    "@tma.js/bridge": "workspace:*",
     "@tma.js/sdk": "workspace:*"
   },
   "devDependencies": {

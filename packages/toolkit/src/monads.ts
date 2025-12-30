@@ -53,6 +53,7 @@ export function throwifyAnyEither<E extends AnyEither>(either: E): MaybeMonadToC
   ) as MaybeMonadToCommon<E>;
 }
 
+// #__NO_SIDE_EFFECTS__
 export function throwifyFpFn<Fn extends AnyFnAnyEither>(
   fn: Fn,
 ): (
@@ -69,7 +70,7 @@ export function throwifyFpFn<Fn extends AnyFnAnyEither>(
 
 export type BetterTaskEitherError = TimeoutError;
 
-export const BetterTaskEither = Object.assign(
+export const BetterTaskEither = /* #__PURE__ */ Object.assign(
   <E, T>(
     executor: (
       resolve: (data: T) => void,

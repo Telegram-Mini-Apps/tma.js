@@ -42,6 +42,18 @@ function create({ isInlineMode, postEvent, ...rest }: CreateOptions) {
   });
 }
 
+// #__NO_SIDE_EFFECTS__
+function instantiate() {
+  return create({
+    ...pipe(
+      sharedFeatureOptions(),
+      withPostEvent,
+      withVersion,
+    ),
+    isInlineMode,
+  });
+}
+
 /**
  * Inserts the bot's username and the specified inline query in the current chat's input field.
  * Query may be empty, in which case only the bot's username will be inserted. The client prompts
@@ -62,14 +74,7 @@ function create({ isInlineMode, postEvent, ...rest }: CreateOptions) {
  *   }),
  * );
  */
-export const switchInlineQueryFp = create({
-  ...pipe(
-    sharedFeatureOptions(),
-    withPostEvent,
-    withVersion,
-  ),
-  isInlineMode,
-});
+export const switchInlineQueryFp = instantiate();
 
 /**
  * @see switchInlineQueryFp

@@ -52,4 +52,4 @@ function create() {
   });
 }
 
-export const viewport = create();
+export const viewport = /* @__PURE__*/ create();

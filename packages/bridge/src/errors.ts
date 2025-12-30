@@ -1,21 +1,21 @@
 import type { Version } from '@tma.js/types';
 import { errorClass, errorClassWithData } from 'error-kid';
 
-export class MethodUnsupportedError extends errorClass<
+export class MethodUnsupportedError extends /* @__PURE__ */ errorClass<
   [method: string, version: Version]
 >('MethodUnsupportedError', (method, version) => [
   `Method "${method}" is unsupported in Mini Apps version ${version}`,
 ]) {
 }
 
-export class MethodParameterUnsupportedError extends errorClass<
+export class MethodParameterUnsupportedError extends /* @__PURE__ */ errorClass<
   [method: string, param: string, version: Version]
 >('MethodParameterUnsupportedError', (method, param, version) => [
   `Parameter "${param}" of "${method}" method is unsupported in Mini Apps version ${version}`,
 ]) {
 }
 
-export class LaunchParamsRetrieveError extends errorClassWithData<
+export class LaunchParamsRetrieveError extends /* @__PURE__ */ errorClassWithData<
   { errors: { source: string; error: unknown }[] },
   [{ source: string; error: unknown }[]]
 >(
@@ -36,7 +36,7 @@ export class LaunchParamsRetrieveError extends errorClassWithData<
 ) {
 }
 
-export class InvalidLaunchParamsError extends errorClass<
+export class InvalidLaunchParamsError extends /* @__PURE__ */ errorClass<
   [launchParams: string, cause: unknown]
 >('InvalidLaunchParamsError', (launchParams, cause) => [
   `Invalid value for launch params: ${launchParams}`,
@@ -44,10 +44,10 @@ export class InvalidLaunchParamsError extends errorClass<
 ]) {
 }
 
-export class UnknownEnvError extends errorClass('UnknownEnvError') {
+export class UnknownEnvError extends /* @__PURE__ */ errorClass('UnknownEnvError') {
 }
 
-export class InvokeCustomMethodFailedError extends errorClass<[error: string]>(
+export class InvokeCustomMethodFailedError extends /* @__PURE__ */ errorClass<[error: string]>(
   'InvokeCustomMethodError',
   error => [`Server returned error: ${error}`],
 ) {

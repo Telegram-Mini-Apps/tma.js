@@ -47,6 +47,11 @@ function create({ postEvent, ...rest }: CreateOptions) {
   }, { ...rest, returns: 'either' });
 }
 
+// #__NO_SIDE_EFFECTS__
+function instantiate() {
+  return create(pipe(sharedFeatureOptions(), withPostEvent));
+}
+
 /**
  * Opens a link.
  *
@@ -62,9 +67,6 @@ function create({ postEvent, ...rest }: CreateOptions) {
  *   tryBrowser: 'chrome',
  * });
  */
-export const openLinkFp = create(pipe(
-  sharedFeatureOptions(),
-  withPostEvent,
-));
+export const openLinkFp = instantiate();
 
 export const openLink = throwifyWithChecksFp(openLinkFp);

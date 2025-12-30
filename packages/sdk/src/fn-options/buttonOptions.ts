@@ -6,6 +6,7 @@ import { withPostEvent } from '@/fn-options/withPostEvent.js';
 import { withStateRestore } from '@/fn-options/withStateRestore.js';
 import { withVersion } from '@/fn-options/withVersion.js';
 
+// @__NO_SIDE_EFFECTS__
 export function buttonOptions<S>(storageName: string, trackedClickEvent: EventName) {
   return {
     ...pipe(

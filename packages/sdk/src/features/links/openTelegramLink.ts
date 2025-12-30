@@ -37,6 +37,15 @@ function create({ postEvent, version, ...rest }: CreateOptions) {
   }, { ...rest, returns: 'either' });
 }
 
+// #__NO_SIDE_EFFECTS__
+function instantiate() {
+  return create(pipe(
+    sharedFeatureOptions(),
+    withPostEvent,
+    withVersion,
+  ));
+}
+
 /**
  * Opens a Telegram link inside the Telegram app. The function expects passing a link in a full
  * format using the hostname "t.me".
@@ -46,11 +55,7 @@ function create({ postEvent, version, ...rest }: CreateOptions) {
  * @example
  * openTelegramLink('https://t.me/heyqbnk');
  */
-export const openTelegramLinkFp = create(pipe(
-  sharedFeatureOptions(),
-  withPostEvent,
-  withVersion,
-));
+export const openTelegramLinkFp = instantiate();
 
 /**
  * @see openTelegramLinkFp

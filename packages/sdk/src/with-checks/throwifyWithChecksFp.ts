@@ -4,6 +4,7 @@ import { pipe } from 'fp-ts/function';
 
 import type { WithChecksFp, WithChecks } from '@/with-checks/withChecksFp.js';
 
+// #__NO_SIDE_EFFECTS__
 export function throwifyWithChecksFp<
   Fn extends AnyFn,
   HasSupportCheck extends boolean,

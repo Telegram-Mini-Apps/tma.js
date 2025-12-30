@@ -22,16 +22,21 @@ function create({ postEvent, ...rest }: CreateOptions) {
   }, { ...rest, returns: 'either', requires: 'web_app_hide_keyboard' });
 }
 
+// #__NO_SIDE_EFFECTS__
+function instantiate() {
+  return create(pipe(
+    sharedFeatureOptions(),
+    withPostEvent,
+    withVersion,
+  ));
+}
+
 /**
  * Hides the on-screen keyboard, if it is currently visible. Does nothing if the keyboard is
  * not active.
  * @since Mini Apps v9.1
  */
-export const hideKeyboardFp = create(pipe(
-  sharedFeatureOptions(),
-  withPostEvent,
-  withVersion,
-));
+export const hideKeyboardFp = instantiate();
 
 /**
  * @see hideKeyboardFp

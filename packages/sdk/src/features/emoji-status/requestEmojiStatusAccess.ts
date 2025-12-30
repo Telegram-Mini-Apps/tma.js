@@ -26,6 +26,15 @@ function create({ request, ...rest }: CreateOptions) {
   }, { ...rest, requires: 'web_app_request_emoji_status_access', returns: 'task' });
 }
 
+// #__NO_SIDE_EFFECTS__
+function instantiate() {
+  return create(pipe(
+    sharedFeatureOptions(),
+    withVersion,
+    withRequest,
+  ));
+}
+
 /**
  * Shows a native popup requesting permission for the bot to manage user's emoji status.
  * @param options - additional options.
@@ -34,11 +43,7 @@ function create({ request, ...rest }: CreateOptions) {
  * @example
  * const status = await requestEmojiStatusAccess();
  */
-export const requestEmojiStatusAccessFp = create(pipe(
-  sharedFeatureOptions(),
-  withVersion,
-  withRequest,
-));
+export const requestEmojiStatusAccessFp = instantiate();
 
 /**
  * @see requestEmojiStatusAccessFp

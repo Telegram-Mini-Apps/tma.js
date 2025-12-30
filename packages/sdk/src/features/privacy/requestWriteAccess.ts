@@ -28,16 +28,21 @@ function create({ request, ...rest }: CreateOptions) {
   }, { ...rest, requires: 'web_app_request_write_access', returns: 'task' });
 }
 
+// #__NO_SIDE_EFFECTS__
+function instantiate() {
+  return create(pipe(
+    sharedFeatureOptions(),
+    withVersion,
+    withRequest,
+  ));
+}
+
 /**
  * Requests write message access to the current user.
  * @param options - additional options.
  * @since Mini Apps v6.9
  */
-export const requestWriteAccessFp = create(pipe(
-  sharedFeatureOptions(),
-  withVersion,
-  withRequest,
-));
+export const requestWriteAccessFp = instantiate();
 
 /**
  * @see requestWriteAccessFp

@@ -46,6 +46,15 @@ function create({ request, ...rest }: CreateOptions) {
   });
 }
 
+// #__NO_SIDE_EFFECTS__
+function instantiate() {
+  return create(pipe(
+    sharedFeatureOptions(),
+    withRequest,
+    withVersion,
+  ));
+}
+
 /**
  * Opens a dialog allowing the user to set the specified custom emoji as their status.
  * @returns Nothing if status set was successful.
@@ -62,11 +71,7 @@ function create({ request, ...rest }: CreateOptions) {
  * );
  * const statusSet = await setEmojiStatus('5361800828313167608');
  */
-export const setEmojiStatusFp = create(pipe(
-  sharedFeatureOptions(),
-  withRequest,
-  withVersion,
-));
+export const setEmojiStatusFp = instantiate();
 
 /**
  * @see setEmojiStatusFp

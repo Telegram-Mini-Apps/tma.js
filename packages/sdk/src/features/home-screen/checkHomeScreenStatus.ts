@@ -24,17 +24,22 @@ function create({ request, ...rest }: CreateOptions) {
   }, { ...rest, requires: 'web_app_check_home_screen', returns: 'task' });
 }
 
+// #__NO_SIDE_EFFECTS__
+function instantiate() {
+  return create(pipe(
+    sharedFeatureOptions(),
+    withVersion,
+    withRequest,
+  ));
+}
+
 /**
  * Sends a request to the native Telegram application to check if the current mini
  * application is added to the device's home screen.
  * @param options - additional options.
  * @since Mini Apps v8.0
  */
-export const checkHomeScreenStatusFp = create(pipe(
-  sharedFeatureOptions(),
-  withVersion,
-  withRequest,
-));
+export const checkHomeScreenStatusFp = instantiate();
 
 /**
  * @see checkHomeScreenStatusFp

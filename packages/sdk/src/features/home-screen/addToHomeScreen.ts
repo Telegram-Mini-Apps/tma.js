@@ -20,15 +20,20 @@ function create({ postEvent, ...rest }: CreateOptions) {
   }, { ...rest, requires: 'web_app_add_to_home_screen', returns: 'either' });
 }
 
+// #__NO_SIDE_EFFECTS__
+function instantiate() {
+  return create(pipe(
+    sharedFeatureOptions(),
+    withVersion,
+    withPostEvent,
+  ));
+}
+
 /**
  * Prompts the user to add the Mini App to the home screen.
  * @since Mini Apps v8.0
  */
-export const addToHomeScreenFp = create(pipe(
-  sharedFeatureOptions(),
-  withVersion,
-  withPostEvent,
-));
+export const addToHomeScreenFp = instantiate();
 
 /**
  * @see addToHomeScreenFp

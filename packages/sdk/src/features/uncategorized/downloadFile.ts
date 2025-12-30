@@ -39,6 +39,15 @@ function create({ request, ...rest }: CreateOptions) {
   }, { ...rest, requires: 'web_app_request_file_download', returns: 'task' });
 }
 
+// #__NO_SIDE_EFFECTS__
+function instantiate() {
+  return create(pipe(
+    sharedFeatureOptions(),
+    withRequest,
+    withVersion,
+  ));
+}
+
 /**
  * Displays a native popup prompting the user to download a file.
  * @param url - the HTTPS URL of the file to be downloaded.
@@ -53,10 +62,6 @@ function create({ request, ...rest }: CreateOptions) {
  *   })
  * )
  */
-export const downloadFileFp = create(pipe(
-  sharedFeatureOptions(),
-  withRequest,
-  withVersion,
-));
+export const downloadFileFp = instantiate();
 
 export const downloadFile = throwifyWithChecksFp(downloadFileFp);

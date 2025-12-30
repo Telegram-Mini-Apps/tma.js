@@ -39,7 +39,9 @@ interface AuthenticateResult {
   token?: string;
 }
 
-const notAvailableError = new NotAvailableError('Biometry is not available');
+function createNotAvailableError() {
+  return new NotAvailableError('Biometry is not available');
+}
 
 function eventToState(event: EventPayload<'biometry_info_received'>): BiometryState {
   let available = false;
@@ -130,7 +132,7 @@ export class Biometry {
 
     this.authenticateFp = wrapMountedTask(options => {
       return !this.isAvailable()
-        ? TE.left(notAvailableError)
+        ? TE.left(createNotAvailableError())
         : pipe(
           request('web_app_biometry_request_auth', 'biometry_auth_requested', {
             ...options,
@@ -154,7 +156,7 @@ export class Biometry {
         TE.chain(response => {
           const state = eventToState(response);
           if (!state.available) {
-            return TE.left(notAvailableError);
+            return TE.left(createNotAvailableError());
           }
           stateful.setState(state);
           return TE.right(state.accessRequested);

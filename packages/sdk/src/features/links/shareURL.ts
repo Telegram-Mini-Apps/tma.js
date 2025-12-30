@@ -28,6 +28,14 @@ function create({ openTelegramLink, ...rest }: CreateOptions) {
   }, { ...rest, returns: 'either' });
 }
 
+// #__NO_SIDE_EFFECTS__
+function instantiate() {
+  return create({
+    ...sharedFeatureOptions(),
+    openTelegramLink: openTelegramLinkFp,
+  });
+}
+
 /**
  * Shares the specified URL with the passed to the chats, selected by user.
  * After being called, it closes the mini application.
@@ -38,10 +46,7 @@ function create({ openTelegramLink, ...rest }: CreateOptions) {
  * @see https://core.telegram.org/api/links#share-links
  * @see https://core.telegram.org/widgets/share#custom-buttons
  */
-export const shareURLFp = create({
-  ...sharedFeatureOptions(),
-  openTelegramLink: openTelegramLinkFp,
-});
+export const shareURLFp = instantiate();
 
 /**
  * @see shareURLFp

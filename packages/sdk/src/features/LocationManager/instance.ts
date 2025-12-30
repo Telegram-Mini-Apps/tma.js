@@ -8,10 +8,14 @@ import { withRequest } from '@/fn-options/withRequest.js';
 import { withStateRestore } from '@/fn-options/withStateRestore.js';
 import { withVersion } from '@/fn-options/withVersion.js';
 
-export const locationManager = new LocationManager(pipe(
-  sharedFeatureOptions(),
-  withPostEvent,
-  withVersion,
-  withRequest,
-  withStateRestore<LocationManagerState>('locationManager'),
-));
+function instantiate() {
+  return new LocationManager(pipe(
+    sharedFeatureOptions(),
+    withPostEvent,
+    withVersion,
+    withRequest,
+    withStateRestore<LocationManagerState>('locationManager'),
+  ));
+}
+
+export const locationManager = /* @__PURE__*/ instantiate();
