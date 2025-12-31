@@ -26,7 +26,7 @@ export * from './features/Viewport/exports.js';
 export { createRequestId } from './globals/createRequestId.js';
 export { invokeCustomMethod } from './globals/invokeCustomMethod.js';
 export { postEvent, postEventFp } from './globals/postEvent.js';
-export { request, requestFp } from './globals/request.js';
+export { request, requestFp, request2, request2Fp } from './globals/request.js';
 
 export { isColorDark, isColorDarkFp } from './helpers/isColorDark.js';
 export * from './errors.js';
