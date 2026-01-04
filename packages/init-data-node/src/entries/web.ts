@@ -1,7 +1,5 @@
 import { BetterPromise, type BetterPromiseRejectReason } from 'better-promises';
-import * as E from 'fp-ts/Either';
-import * as TE from 'fp-ts/TaskEither';
-import { pipe } from 'fp-ts/lib/function.js';
+import { function as fn, either as E, taskEither as TE } from 'fp-ts';
 
 import {
   AuthDateInvalidError,
@@ -60,7 +58,7 @@ export function isValidFp(
   token: Text,
   options?: ValidateAsyncOptions,
 ): TE.TaskEither<BetterPromiseRejectReason, boolean> {
-  return pipe(
+  return fn.pipe(
     validateFp(value, token, options),
     TE.match(
       error => {
@@ -88,7 +86,7 @@ export function isValid(
   options?: ValidateAsyncOptions,
 ): BetterPromise<boolean> {
   return BetterPromise.fn(() => {
-    return pipe(
+    return fn.pipe(
       isValidFp(value, token, options),
       TE.match(error => {
         throw error;
@@ -124,7 +122,7 @@ export function sign(
   options?: SignOptions,
 ): BetterPromise<string> {
   return BetterPromise.fn(() => {
-    return pipe(
+    return fn.pipe(
       signFp(data, key, authDate, options),
       TE.match(e => {
         throw e;
@@ -153,7 +151,7 @@ export function signDataFp(
  */
 export function signData(data: Text, key: Text, options?: SignDataOptions): BetterPromise<string> {
   return BetterPromise.fn(() => {
-    return pipe(
+    return fn.pipe(
       signDataFp(data, key, options),
       TE.match(e => {
         throw e;
@@ -185,7 +183,7 @@ export function validate(
   options?: ValidateAsyncOptions,
 ): BetterPromise<void> {
   return BetterPromise.fn(async () => {
-    await pipe(
+    await fn.pipe(
       validateFp(value, token, options),
       TE.mapLeft(error => {
         throw error;

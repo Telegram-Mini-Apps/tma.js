@@ -1,4 +1,4 @@
-import * as E from 'fp-ts/Either';
+import { either as E } from 'fp-ts';
 
 import { HexStringLengthInvalidError } from './errors.js';
 

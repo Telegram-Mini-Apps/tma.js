@@ -11,9 +11,7 @@ import {
   type BetterPromiseOptions,
   type TimeoutError,
 } from 'better-promises';
-import * as E from 'fp-ts/Either';
-import * as TE from 'fp-ts/TaskEither';
-import { pipe } from 'fp-ts/function';
+import { either as E, taskEither as TE, function as fn } from 'fp-ts';
 
 import { on } from '@/events/emitter.js';
 import type { EventName, EventPayload } from '@/events/types/index.js';
@@ -199,7 +197,7 @@ export function requestFp<
     return value;
   };
 
-  return pipe(
+  return fn.pipe(
     async () => postEvent(method as any, (options as any).params),
     TE.chainW(() => {
       return BetterTaskEither<AbortError, RequestResult<E>>((resolve, _, context) => {

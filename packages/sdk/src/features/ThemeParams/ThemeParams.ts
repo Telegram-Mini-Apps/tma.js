@@ -2,7 +2,7 @@ import type { EventListener } from '@tma.js/bridge';
 import { computed, type Computed, signal } from '@tma.js/signals';
 import { snakeToKebab } from '@tma.js/toolkit';
 import type { ThemeParams as ThemeParamsType, RGB } from '@tma.js/types';
-import * as E from 'fp-ts/Either';
+import { either as E } from 'fp-ts';
 
 import { Mountable } from '@/composables/Mountable.js';
 import { Stateful } from '@/composables/Stateful.js';

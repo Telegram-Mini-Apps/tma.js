@@ -1,8 +1,7 @@
 import type { InvokeCustomMethodFpOptions, RequestError } from '@tma.js/bridge';
 import type { Computed } from '@tma.js/signals';
 import { BetterPromise } from 'better-promises';
-import * as TE from 'fp-ts/TaskEither';
-import { pipe } from 'fp-ts/function';
+import { taskEither as TE, function as fn } from 'fp-ts';
 import { array, parse, record, string } from 'valibot';
 
 import type { SharedFeatureOptions } from '@/fn-options/sharedFeatureOptions.js';
@@ -34,7 +33,7 @@ export class CloudStorage {
     this.isSupported = createIsSupportedSignal('web_app_invoke_custom_method', version);
     this.deleteItemFp = wrapSupportedTask((keyOrKeys, options) => {
       const keys = Array.isArray(keyOrKeys) ? keyOrKeys : [keyOrKeys];
-      return pipe(
+      return fn.pipe(
         keys.length
           ? invokeCustomMethod('deleteStorageValues', { keys }, options)
           : TE.right(undefined),
@@ -42,13 +41,13 @@ export class CloudStorage {
       );
     });
     this.getItemFp = wrapSupportedTask((key, options) => {
-      return pipe(
+      return fn.pipe(
         this.getItemsFp([key], options),
         TE.map(values => values[key] || ''),
       );
     });
     this.getItemsFp = wrapSupportedTask((keys, options) => {
-      return pipe(
+      return fn.pipe(
         keys.length ? invokeCustomMethod('getStorageValues', { keys }, options) : TE.right({}),
         TE.map(data => {
           return {
@@ -63,19 +62,19 @@ export class CloudStorage {
       );
     });
     this.getKeysFp = wrapSupportedTask(options => {
-      return pipe(
+      return fn.pipe(
         invokeCustomMethod('getStorageKeys', {}, options),
         TE.map(data => parse(array(string()), data)),
       );
     });
     this.setItemFp = wrapSupportedTask((key, value, options) => {
-      return pipe(
+      return fn.pipe(
         invokeCustomMethod('saveStorageValue', { key, value }, options),
         TE.map(() => undefined),
       );
     });
     this.clearFp = wrapSupportedTask(options => {
-      return pipe(this.getKeysFp(options), TE.chain(this.deleteItemFp));
+      return fn.pipe(this.getKeysFp(options), TE.chain(this.deleteItemFp));
     });
 
     this.deleteItem = throwifyWithChecksFp(this.deleteItemFp);

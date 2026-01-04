@@ -1,7 +1,6 @@
 import type { PostEventError } from '@tma.js/bridge';
 import type { Computed } from '@tma.js/signals';
-import * as E from 'fp-ts/Either';
-import { pipe } from 'fp-ts/function';
+import { either as E, function as fn } from 'fp-ts';
 
 import { Mountable } from '@/composables/Mountable.js';
 import { Stateful } from '@/composables/Stateful.js';
@@ -59,7 +58,7 @@ export class SwipeBehavior {
       if (!stateful.hasDiff(update)) {
         return E.right(undefined);
       }
-      return pipe(
+      return fn.pipe(
         postEvent('web_app_setup_swipe_behavior', { allow_vertical_swipe: isVerticalEnabled }),
         E.map(() => {
           stateful.setState(update);
@@ -78,7 +77,7 @@ export class SwipeBehavior {
     });
     this.mountFp = wrapSupportedPlain(() => {
       const nothing = () => undefined;
-      return pipe(mountable.mount(), E.match(nothing, nothing));
+      return fn.pipe(mountable.mount(), E.match(nothing, nothing));
     });
     this.unmount = mountable.unmount;
 

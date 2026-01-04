@@ -3,9 +3,7 @@ import {
   type BetterPromiseOptions,
   type BetterPromiseRejectReason,
 } from 'better-promises';
-import * as E from 'fp-ts/Either';
-import * as TE from 'fp-ts/TaskEither';
-import { pipe } from 'fp-ts/function';
+import { either as E, taskEither as TE, function as fn } from 'fp-ts';
 
 import {
   AuthDateInvalidError,
@@ -131,7 +129,7 @@ export function validate3rdFp(
     }
   }
 
-  return pipe(
+  return fn.pipe(
     TE.tryCatch(
       () => {
         return BetterPromise.fn(async () => {
@@ -158,7 +156,9 @@ export function validate3rdFp(
       (e: unknown) => e,
     ),
     TE.chainW(isVerified => {
-      return isVerified ? TE.right(undefined) : TE.left(new SignatureInvalidError());
+      return isVerified
+        ? TE.right(undefined)
+        : TE.left(new SignatureInvalidError());
     }),
   );
 }
@@ -172,7 +172,7 @@ export function validate3rd(
   options?: Validate3rdOptions,
 ): BetterPromise<void> {
   return BetterPromise.fn(async () => {
-    await pipe(
+    await fn.pipe(
       validate3rdFp(value, botId, options),
       TE.mapLeft(error => {
         throw error;
@@ -192,7 +192,7 @@ export function isValid3rdFp(
   botId: number,
   options?: Validate3rdOptions,
 ): TE.TaskEither<void, boolean> {
-  return pipe(validate3rdFp(value, botId, options), TE.match(
+  return fn.pipe(validate3rdFp(value, botId, options), TE.match(
     () => E.right(false),
     () => E.right(true),
   ));
@@ -206,7 +206,7 @@ export function isValid3rd(
   botId: number,
   options?: Validate3rdOptions,
 ): BetterPromise<boolean> {
-  return BetterPromise.fn(() => pipe(
+  return BetterPromise.fn(() => fn.pipe(
     isValid3rdFp(value, botId, options),
     TE.match(() => false, v => v),
   )());
@@ -296,6 +296,6 @@ export function validateFp<Left>(
   );
 
   return typeof eitherSignature === 'function'
-    ? pipe(eitherSignature, TE.matchW(onLeft, onRight))
-    : pipe(eitherSignature, E.matchW(onLeft, onRight));
+    ? fn.pipe(eitherSignature, TE.matchW(onLeft, onRight))
+    : fn.pipe(eitherSignature, E.matchW(onLeft, onRight));
 }

@@ -1,6 +1,5 @@
 import { RequestError } from '@tma.js/bridge';
-import * as TE from 'fp-ts/TaskEither';
-import { pipe } from 'fp-ts/function';
+import { taskEither as TE, function as fn } from 'fp-ts';
 
 import { SetEmojiStatusError } from '@/errors.js';
 import {
@@ -25,7 +24,7 @@ function create({ request, ...rest }: CreateOptions) {
     customEmojiId: string,
     options?: SetEmojiStatusOptions,
   ): TE.TaskEither<RequestError | SetEmojiStatusError, void> => {
-    return pipe(
+    return fn.pipe(
       request('web_app_set_emoji_status', ['emoji_status_set', 'emoji_status_failed'], {
         params: {
           custom_emoji_id: customEmojiId,
@@ -48,7 +47,7 @@ function create({ request, ...rest }: CreateOptions) {
 
 // #__NO_SIDE_EFFECTS__
 function instantiate() {
-  return create(pipe(
+  return create(fn.pipe(
     sharedFeatureOptions(),
     withRequest,
     withVersion,
@@ -61,7 +60,7 @@ function instantiate() {
  * @param options - additional options.
  * @since Mini Apps v8.0
  * @example
- * pipe(
+ * fn.pipe(
  *   setEmojiStatusFp('5361800828313167608'),
  *   TE.match(error => {
  *     console.error('Error occurred', error);

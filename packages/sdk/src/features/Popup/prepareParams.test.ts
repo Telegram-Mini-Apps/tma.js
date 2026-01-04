@@ -1,4 +1,4 @@
-import * as E from 'fp-ts/Either';
+import { either as E } from 'fp-ts';
 import { expect, it, describe } from 'vitest';
 
 import { InvalidArgumentsError } from '@/errors.js';

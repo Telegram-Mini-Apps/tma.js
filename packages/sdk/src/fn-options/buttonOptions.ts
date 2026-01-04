@@ -1,5 +1,5 @@
 import { on, off, type EventName } from '@tma.js/bridge';
-import { pipe } from 'fp-ts/function';
+import { function as fn } from 'fp-ts';
 
 import { sharedFeatureOptions } from '@/fn-options/sharedFeatureOptions.js';
 import { withPostEvent } from '@/fn-options/withPostEvent.js';
@@ -9,7 +9,7 @@ import { withVersion } from '@/fn-options/withVersion.js';
 // @__NO_SIDE_EFFECTS__
 export function buttonOptions<S>(storageName: string, trackedClickEvent: EventName) {
   return {
-    ...pipe(
+    ...fn.pipe(
       sharedFeatureOptions(),
       withPostEvent,
       withVersion,

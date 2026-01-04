@@ -1,6 +1,6 @@
 import type { PostEventFpFn } from '@tma.js/bridge';
 import type { Version } from '@tma.js/types';
-import * as E from 'fp-ts/Either';
+import { either as E } from 'fp-ts';
 import { describe, expect, it, vi } from 'vitest';
 
 import { testSafetyPure } from '~/test-utils/predefined/testSafetyPure.js';

@@ -1,6 +1,5 @@
 import { RequestError } from '@tma.js/bridge';
-import * as TE from 'fp-ts/TaskEither';
-import { pipe } from 'fp-ts/function';
+import { taskEither as TE, function as fn } from 'fp-ts';
 
 import { AccessDeniedError } from '@/errors.js';
 import {
@@ -24,7 +23,7 @@ function create({ request, ...rest }: CreateOptions) {
     fileName: string,
     options?: AsyncOptions,
   ): TE.TaskEither<DownloadFileError, void> => {
-    return pipe(
+    return fn.pipe(
       request(
         'web_app_request_file_download',
         'file_download_requested',
@@ -41,7 +40,7 @@ function create({ request, ...rest }: CreateOptions) {
 
 // #__NO_SIDE_EFFECTS__
 function instantiate() {
-  return create(pipe(
+  return create(fn.pipe(
     sharedFeatureOptions(),
     withRequest,
     withVersion,
@@ -55,7 +54,7 @@ function instantiate() {
  * @param options - additional request execution options.
  * @since Mini Apps v8.0
  * @example
- * pipe(
+ * fn.pipe(
  *   downloadFileFp('https://telegram.org/js/telegram-web-app.js', 'telegram-sdk.js'),
  *   TE.map(() => {
  *     console.log('Downloading');

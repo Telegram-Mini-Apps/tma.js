@@ -1,6 +1,5 @@
 import { batch, computed, signal } from '@tma.js/signals';
-import * as E from 'fp-ts/Either';
-import { pipe } from 'fp-ts/function';
+import { either as E, function as fn } from 'fp-ts';
 
 import { access } from '@/helpers/access.js';
 import type { MaybeAccessor } from '@/types.js';
@@ -48,7 +47,7 @@ export class Mountable<S extends object, Err = never> {
         ? E.right(restored)
         : (typeof initialState === 'function' ? initialState() : E.right(initialState));
 
-      return pipe(state, E.map(s => {
+      return fn.pipe(state, E.map(s => {
         batch(() => {
           this._isMounted.set(true);
           onMounted?.(s);

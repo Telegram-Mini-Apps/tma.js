@@ -16,9 +16,7 @@ import type {
   AnyFn,
 } from '@tma.js/toolkit';
 import type { Version } from '@tma.js/types';
-import * as E from 'fp-ts/Either';
-import * as O from 'fp-ts/Option';
-import * as TE from 'fp-ts/TaskEither';
+import { either as E, option as O, taskEither as TE } from 'fp-ts';
 
 import { FunctionUnavailableError } from '@/errors.js';
 import { access } from '@/helpers/access.js';

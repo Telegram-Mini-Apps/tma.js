@@ -1,6 +1,6 @@
 import type { PostEventError } from '@tma.js/bridge';
 import type { Computed } from '@tma.js/signals';
-import * as E from 'fp-ts/Either';
+import { either as E } from 'fp-ts';
 
 import { Button, type ButtonOptions } from '@/composables/Button.js';
 import type { WithChecksFp, WithChecks } from '@/with-checks/withChecksFp.js';

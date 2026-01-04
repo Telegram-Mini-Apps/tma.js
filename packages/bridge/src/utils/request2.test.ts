@@ -1,7 +1,5 @@
 import { TimeoutError } from 'better-promises';
-import * as E from 'fp-ts/Either';
-import * as TE from 'fp-ts/TaskEither';
-import { pipe } from 'fp-ts/function';
+import { either as E, taskEither as TE, function as fn } from 'fp-ts';
 import { createWindow } from 'test-utils';
 import {
   afterEach,
@@ -271,7 +269,7 @@ describe('requestFp', () => {
 
         advanceTimersByTimeMacro(100);
 
-        await pipe(
+        await fn.pipe(
           result,
           TE.match(
             e => expect(e).toBeInstanceOf(TimeoutError),
@@ -293,7 +291,7 @@ describe('requestFp', () => {
           vi.advanceTimersByTime(1000);
         });
 
-        await pipe(
+        await fn.pipe(
           result,
           TE.match(
             () => expect.unreachable(),
@@ -330,7 +328,7 @@ describe('requestFp', () => {
           postEvent: () => E.left(new Error('Nope!')),
         });
 
-        await pipe(
+        await fn.pipe(
           result,
           TE.match(
             error => expect(error).toStrictEqual(new Error('Nope!')),
@@ -355,7 +353,7 @@ describe('requestFp', () => {
           vi.advanceTimersByTime(1000);
         });
 
-        await pipe(
+        await fn.pipe(
           result,
           TE.match(
             () => expect.unreachable(),
@@ -377,7 +375,7 @@ describe('requestFp', () => {
           vi.advanceTimersByTime(1000);
         });
 
-        await pipe(
+        await fn.pipe(
           result,
           TE.match(
             error => expect(error).toBeInstanceOf(TimeoutError),
@@ -397,7 +395,7 @@ describe('requestFp', () => {
 
         controller.abort(new Error('ABORTED'));
 
-        await pipe(
+        await fn.pipe(
           result,
           TE.match(
             error => expect(error).toStrictEqual(new Error('ABORTED')),
@@ -423,7 +421,7 @@ describe('requestFp', () => {
         vi.advanceTimersByTime(1500);
       });
 
-      await pipe(
+      await fn.pipe(
         result,
         TE.match(
           error => expect(error).toBeInstanceOf(TimeoutError),
@@ -453,7 +451,7 @@ describe('requestFp', () => {
         vi.advanceTimersByTime(1500);
       });
 
-      await pipe(
+      await fn.pipe(
         result,
         TE.match(
           () => expect.unreachable(),
@@ -482,7 +480,7 @@ describe('requestFp', () => {
           vi.advanceTimersByTime(1500);
         });
 
-        await pipe(
+        await fn.pipe(
           result,
           TE.match(
             () => expect.unreachable(),
@@ -513,7 +511,7 @@ describe('requestFp', () => {
           vi.advanceTimersByTime(1500);
         });
 
-        await pipe(
+        await fn.pipe(
           result,
           TE.match(
             () => expect.unreachable(),

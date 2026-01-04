@@ -1,5 +1,4 @@
-import * as E from 'fp-ts/Either';
-import * as O from 'fp-ts/Option';
+import { either as E, option as O } from 'fp-ts';
 import { describe, expect, it } from 'vitest';
 
 import { InitData, InitDataOptions } from '@/features/InitData/InitData.js';

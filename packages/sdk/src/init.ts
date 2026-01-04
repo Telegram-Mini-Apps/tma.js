@@ -8,8 +8,7 @@ import {
 } from '@tma.js/bridge';
 import { createCbCollector, throwifyFpFn } from '@tma.js/toolkit';
 import type { Version, ThemeParams } from '@tma.js/types';
-import * as E from 'fp-ts/Either';
-import { pipe } from 'fp-ts/function';
+import { either as E, function as fn } from 'fp-ts';
 
 import { isInlineMode } from '@/globals/isInlineMode.js';
 import { postEventFpSignal, postEventFp, postEvent } from '@/globals/postEvent.js';
@@ -65,7 +64,7 @@ export function initFp(
     isInlineMode.set(optionsInlineMode);
     themeParams.set(optionsThemeParams);
   } else {
-    const error = pipe(retrieveLaunchParamsFp(), E.matchW(
+    const error = fn.pipe(retrieveLaunchParamsFp(), E.matchW(
       err => err,
       lp => {
         version.set(optionsVersion || lp.tgWebAppVersion);
@@ -117,7 +116,7 @@ export function initFp(
   // application.
   //
   // It really has no effect outside non-Telegram web environment.
-  return pipe(
+  return fn.pipe(
     postEventFp('iframe_ready', { reload_supported: true }),
     E.map(() => {
       logger().log('The package was initialized');

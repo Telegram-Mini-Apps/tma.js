@@ -1,7 +1,6 @@
 import type { PostEventError } from '@tma.js/bridge';
 import type { Computed } from '@tma.js/signals';
-import * as E from 'fp-ts/Either';
-import { pipe } from 'fp-ts/function';
+import { either as E, function as fn } from 'fp-ts';
 
 import { Mountable } from '@/composables/Mountable.js';
 import { Stateful } from '@/composables/Stateful.js';
@@ -72,7 +71,7 @@ export class ClosingBehavior {
     });
     this.mountFp = wrapSupportedPlain(() => {
       const nothing = () => undefined;
-      return pipe(mountable.mount(), E.match(nothing, nothing));
+      return fn.pipe(mountable.mount(), E.match(nothing, nothing));
     });
     this.unmount = mountable.unmount;
 

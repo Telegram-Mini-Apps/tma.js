@@ -2,9 +2,7 @@ import type { EventPayload, RequestError, PostEventError } from '@tma.js/bridge'
 import type { Computed } from '@tma.js/signals';
 import type { Maybe } from '@tma.js/toolkit';
 import { BetterPromise } from 'better-promises';
-import * as E from 'fp-ts/Either';
-import * as TE from 'fp-ts/TaskEither';
-import { pipe } from 'fp-ts/function';
+import { either as E, taskEither as TE, function as fn } from 'fp-ts';
 
 import { AsyncMountable } from '@/composables/AsyncMountable.js';
 import { Stateful } from '@/composables/Stateful.js';
@@ -59,7 +57,7 @@ export class LocationManager {
       restoreState: storage.get,
       onMounted: stateful.setState,
       initialState(options) {
-        return pipe(
+        return fn.pipe(
           request('web_app_check_location', 'location_checked', options),
           TE.map(eventToState),
         );
@@ -94,7 +92,7 @@ export class LocationManager {
       return postEvent('web_app_open_location_settings');
     });
     this.requestLocationFp = wrapMountedTask(options => {
-      return pipe(
+      return fn.pipe(
         request('web_app_request_location', 'location_requested', options),
         TE.map(response => {
           if (!response.available) {

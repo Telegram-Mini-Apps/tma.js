@@ -1,5 +1,4 @@
-import * as E from 'fp-ts/Either';
-import { pipe } from 'fp-ts/lib/function.js';
+import { either as E, function as fn } from 'fp-ts';
 import { createHmac as nodeCreateHmac } from 'node:crypto';
 
 import { bufferToArrayBuffer } from '../buf-converters.js';
@@ -19,7 +18,7 @@ import {
 } from '../validation.js';
 
 /**
- * Converts Text to Node.js Buffer.
+ * Converts Text to NodE.js Buffer.
  * @param text - text to convert
  */
 function textToBuffer(text: Text): Buffer {
@@ -49,7 +48,7 @@ export function hashToken(token: Text): Buffer {
  * @returns True is specified init data is valid.
  */
 export function isValid(value: ValidateValue, token: Text, options?: ValidateOptions): boolean {
-  return pipe(
+  return fn.pipe(
     validateFp(value, token, options),
     E.match(() => false, () => true),
   );
@@ -76,7 +75,7 @@ export function signFp(
  * @see signFp
  */
 export function sign(data: SignableData, key: Text, authDate: Date, options?: SignOptions): string {
-  return pipe(
+  return fn.pipe(
     signFp(data, key, authDate, options),
     E.match(e => {
       throw e;
@@ -103,7 +102,7 @@ export function signDataFp(
  * @see signDataFp
  */
 export function signData(data: Text, key: Text, options?: SignDataOptions): string {
-  return pipe(
+  return fn.pipe(
     signDataFp(data, key, options),
     E.match(e => {
       throw e;
@@ -129,7 +128,7 @@ export function validateFp(
  * @see validateFp
  */
 export function validate(value: ValidateValue, token: Text, options?: ValidateOptions): void {
-  pipe(
+  fn.pipe(
     validateFp(value, token, options),
     E.mapLeft(error => {
       throw error;

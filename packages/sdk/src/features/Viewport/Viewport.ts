@@ -8,9 +8,7 @@ import {
 import { Computed, computed, signal } from '@tma.js/signals';
 import { camelToKebab } from '@tma.js/toolkit';
 import { BetterPromise } from 'better-promises';
-import * as E from 'fp-ts/Either';
-import * as TE from 'fp-ts/TaskEither';
-import { pipe } from 'fp-ts/function';
+import { either as E, taskEither as TE, function as fn } from 'fp-ts';
 
 import { AsyncMountable } from '@/composables/AsyncMountable.js';
 import { Stateful } from '@/composables/Stateful.js';
@@ -148,7 +146,7 @@ export class Viewport<EViewportStable, EFullscreen> {
           );
         };
 
-        return pipe(
+        return fn.pipe(
           TE.Do,
           TE.bindW('safeAreaInsets', genRequestInsets('safe-area')),
           TE.bindW('contentSafeAreaInsets', genRequestInsets('content-safe-area')),
@@ -164,7 +162,7 @@ export class Viewport<EViewportStable, EFullscreen> {
                 width: window.innerWidth,
               });
             }
-            return pipe(
+            return fn.pipe(
               request('web_app_request_viewport', 'viewport_changed', options),
               TE.map(viewport => ({
                 ...shared,
@@ -230,7 +228,7 @@ export class Viewport<EViewportStable, EFullscreen> {
     });
     const genFullscreenFn = (enable: boolean) => {
       return wrapFullscreenTask((options?: AsyncOptions) => {
-        return pipe(
+        return fn.pipe(
           request(
             enable ? 'web_app_request_fullscreen' : 'web_app_exit_fullscreen',
             ['fullscreen_changed', 'fullscreen_failed'],

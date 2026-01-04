@@ -1,5 +1,5 @@
 import { throwifyFpFn } from '@tma.js/toolkit';
-import * as E from 'fp-ts/Either';
+import { either as E } from 'fp-ts';
 
 export type DecodeBase64UrlError = DOMException;
 

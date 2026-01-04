@@ -1,5 +1,5 @@
 import type { PopupParams, PopupButton } from '@tma.js/bridge';
-import * as E from 'fp-ts/Either';
+import { either as E } from 'fp-ts';
 
 import { InvalidArgumentsError } from '@/errors.js';
 import type { ShowOptions } from '@/features/Popup/types.js';

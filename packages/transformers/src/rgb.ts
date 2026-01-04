@@ -1,7 +1,6 @@
 import { throwifyFpFn } from '@tma.js/toolkit';
 import type { RGB } from '@tma.js/types';
-import * as E from 'fp-ts/Either';
-import { pipe } from 'fp-ts/function';
+import { either as E, function as fn } from 'fp-ts';
 
 function guardBasedOn(re: RegExp) {
   return (value: string): value is RGB => re.test(value);
@@ -114,7 +113,7 @@ export function toRGBFullFp(value: string): E.Either<Error, RGB> {
  * @deprecated This function cuts the RGB's alpha channel. Use the `toRGBFullFp` function instead.
  */
 export function toRGBFp(value: string): E.Either<Error, RGB> {
-  return pipe(
+  return fn.pipe(
     toRGBFullFp(value),
     E.map(rgb => rgb.slice(0, 7) as RGB),
   );

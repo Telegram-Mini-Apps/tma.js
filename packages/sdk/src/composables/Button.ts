@@ -1,7 +1,6 @@
 import type { PostEventError, MethodName, MethodParams } from '@tma.js/bridge';
 import { computed, type Computed } from '@tma.js/signals';
-import * as E from 'fp-ts/Either';
-import { pipe } from 'fp-ts/function';
+import { either as E, function as fn } from 'fp-ts';
 
 import { Mountable } from '@/composables/Mountable.js';
 import { Stateful } from '@/composables/Stateful.js';
@@ -103,7 +102,7 @@ export class Button<S extends object, M extends MethodName> {
       if (!stateful.hasDiff(nextState)) {
         return E.right(undefined);
       }
-      return pipe(
+      return fn.pipe(
         postEvent(method as any, payload(nextState)),
         E.map(() => {
           stateful.setState(nextState);
@@ -117,7 +116,7 @@ export class Button<S extends object, M extends MethodName> {
     this.offClick = throwifyWithChecksFp(this.offClickFp);
     this.mountFp = wrapSupportedPlain(() => {
       const nothing = () => undefined;
-      return pipe(mountable.mount(), E.match(nothing, nothing));
+      return fn.pipe(mountable.mount(), E.match(nothing, nothing));
     });
     this.mount = throwifyWithChecksFp(this.mountFp);
     this.unmount = mountable.unmount;

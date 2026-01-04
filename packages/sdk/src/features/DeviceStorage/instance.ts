@@ -1,4 +1,4 @@
-import { pipe } from 'fp-ts/function';
+import { function as fn } from 'fp-ts';
 
 import { sharedFeatureOptions } from '@/fn-options/sharedFeatureOptions.js';
 import { withCreateRequestId } from '@/fn-options/withCreateRequestId.js';
@@ -8,7 +8,7 @@ import { withVersion } from '@/fn-options/withVersion.js';
 import { DeviceStorage } from './DeviceStorage.js';
 
 function instantiate() {
-  return new DeviceStorage(pipe(
+  return new DeviceStorage(fn.pipe(
     sharedFeatureOptions(),
     withVersion,
     withRequest,

@@ -1,6 +1,5 @@
 import type { OpenLinkBrowser, PostEventError } from '@tma.js/bridge';
-import * as E from 'fp-ts/Either';
-import { pipe } from 'fp-ts/function';
+import { either as E, function as fn } from 'fp-ts';
 
 import { InvalidArgumentsError } from '@/errors.js';
 import {
@@ -49,7 +48,7 @@ function create({ postEvent, ...rest }: CreateOptions) {
 
 // #__NO_SIDE_EFFECTS__
 function instantiate() {
-  return create(pipe(sharedFeatureOptions(), withPostEvent));
+  return create(fn.pipe(sharedFeatureOptions(), withPostEvent));
 }
 
 /**

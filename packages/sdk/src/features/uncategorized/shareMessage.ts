@@ -1,6 +1,5 @@
 import { RequestError } from '@tma.js/bridge';
-import * as TE from 'fp-ts/TaskEither';
-import { pipe } from 'fp-ts/function';
+import { taskEither as TE, function as fn } from 'fp-ts';
 
 import { ShareMessageError } from '@/errors.js';
 import {
@@ -23,7 +22,7 @@ function create({ request, ...rest }: CreateOptions) {
     messageId: string,
     options?: AsyncOptions,
   ): TE.TaskEither<ShareMessageFnError, void> => {
-    return pipe(
+    return fn.pipe(
       request(
         'web_app_send_prepared_message',
         ['prepared_message_failed', 'prepared_message_sent'],
@@ -43,7 +42,7 @@ function create({ request, ...rest }: CreateOptions) {
 
 // #__NO_SIDE_EFFECTS__
 function instantiate() {
-  return create(pipe(
+  return create(fn.pipe(
     sharedFeatureOptions(),
     withRequest,
     withVersion,

@@ -1,7 +1,5 @@
 import { type InitDataLike, serializeInitDataQuery } from '@tma.js/transformers';
-import * as E from 'fp-ts/Either';
-import * as TE from 'fp-ts/TaskEither';
-import { pipe } from 'fp-ts/lib/function.js';
+import { either as E, taskEither as TE, function as fn } from 'fp-ts';
 
 import type { Text } from './types.js';
 
@@ -82,6 +80,6 @@ export function signFp<Left>(
 
   const eitherHash = signData(pairs.join('\n'), key, options);
   return typeof eitherHash === 'function'
-    ? pipe(eitherHash, TE.chain(hash => TE.right(queryWithHash(hash))))
-    : pipe(eitherHash, E.chain(hash => E.right(queryWithHash(hash))));
+    ? fn.pipe(eitherHash, TE.chain(hash => TE.right(queryWithHash(hash))))
+    : fn.pipe(eitherHash, E.chain(hash => E.right(queryWithHash(hash))));
 }

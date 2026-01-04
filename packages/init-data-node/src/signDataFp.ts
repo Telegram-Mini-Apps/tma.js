@@ -1,6 +1,4 @@
-import * as E from 'fp-ts/Either';
-import * as TE from 'fp-ts/TaskEither';
-import { pipe } from 'fp-ts/lib/function.js';
+import { either as E, taskEither as TE, function as fn } from 'fp-ts';
 
 import { arrayBufferToHex, hexToArrayBuffer } from './buf-converters.js';
 import { hashToken } from './hashToken.js';
@@ -50,25 +48,25 @@ export function signDataFp(
       ? hexToArrayBuffer(key)
       : E.right(key)
     // Otherwise we are hashing the token, but we want it to be a monad.
-    : pipe(
+    : fn.pipe(
       E.right(hashToken(key, createHmac)),
       E.match(() => null as never, v => {
         return v instanceof Promise
-          ? TE.tryCatch(() => v, err => err as SignDataError)
+          ? TE.tryCatch(() => v, err => err as never)
           : E.right(v);
       }),
     );
 
   if (async || typeof keyHmac === 'function') {
-    return pipe(
+    return fn.pipe(
       typeof keyHmac === 'function' ? keyHmac : TE.fromEither(keyHmac),
-      TE.chain(v => TE.tryCatch(
+      TE.chainW(v => TE.tryCatch(
         () => Promise.resolve(createHmac(data, v)).then(arrayBufferToHex),
-        err => err as SignDataError,
+        err => err as never,
       )),
     );
   }
-  return pipe(
+  return fn.pipe(
     keyHmac,
     // In this branch createHmac can't be asynchronous. If it is, keyHmac would be Promise and the
     // result would be returned in the previous "if" statement.

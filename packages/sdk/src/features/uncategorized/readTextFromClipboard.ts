@@ -1,6 +1,5 @@
 import { captureSameReq, type RequestError } from '@tma.js/bridge';
-import * as TE from 'fp-ts/TaskEither';
-import { pipe } from 'fp-ts/function';
+import { taskEither as TE, function as fn } from 'fp-ts';
 
 import {
   sharedFeatureOptions,
@@ -24,7 +23,7 @@ function create({ request, createRequestId, ...rest }: CreateOptions) {
     options?: AsyncOptions,
   ): TE.TaskEither<ReadTextFromClipboardError, string | null> => {
     const reqId = createRequestId();
-    return pipe(
+    return fn.pipe(
       request('web_app_read_text_from_clipboard', 'clipboard_text_received', {
         ...options,
         params: { req_id: reqId },
@@ -38,7 +37,7 @@ function create({ request, createRequestId, ...rest }: CreateOptions) {
 // #__NO_SIDE_EFFECTS__
 function instantiate() {
   return create({
-    ...pipe(
+    ...fn.pipe(
       sharedFeatureOptions(),
       withVersion,
       withRequest,

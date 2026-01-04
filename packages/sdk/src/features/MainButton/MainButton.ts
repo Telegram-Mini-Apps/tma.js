@@ -1,7 +1,7 @@
 import type { PostEventError } from '@tma.js/bridge';
 import { computed, type Computed } from '@tma.js/signals';
 import type { RGB } from '@tma.js/types';
-import * as E from 'fp-ts/Either';
+import { either as E } from 'fp-ts';
 
 import { Button, type ButtonOptions } from '@/composables/Button.js';
 import { access } from '@/helpers/access.js';

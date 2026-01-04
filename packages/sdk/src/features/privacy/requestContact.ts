@@ -1,9 +1,7 @@
 import { PhoneRequestedStatus } from '@tma.js/bridge';
 import { BetterTaskEither, type BetterTaskEitherError } from '@tma.js/toolkit';
 import { pipeJsonToSchema, pipeQueryToSchema } from '@tma.js/transformers';
-import * as E from 'fp-ts/Either';
-import * as TE from 'fp-ts/TaskEither';
-import { pipe } from 'fp-ts/function';
+import { either as E, taskEither as TE, function as fn } from 'fp-ts';
 import {
   safeParse,
   pipe as valiPipe,
@@ -92,7 +90,7 @@ function createComplete({
   const getContact = (
     options?: AsyncOptions,
   ): TE.TaskEither<GetRequestedContactError, RequestedContactCompleteData | undefined> => {
-    return pipe(
+    return fn.pipe(
       invokeCustomMethod('getRequestedContact', {}, {
         ...options,
         timeout: (options || {}).timeout || 5000,
@@ -137,7 +135,7 @@ function createComplete({
   const getContactWithErrorsIgnore = (
     options?: AsyncOptions,
   ): TE.TaskEither<ValidationError, RequestedContactCompleteData | undefined> => {
-    return pipe(
+    return fn.pipe(
       getContact(options),
       TE.match(
         // All other errors except validation ones should be ignored. Receiving validation error
@@ -181,14 +179,14 @@ function createComplete({
     options?: AsyncOptions,
   ): TE.TaskEither<RequestContactError, RequestedContactCompleteData> => {
     return BetterTaskEither.fn(context => {
-      return pipe(
+      return fn.pipe(
         // Try to get the requested contact. Probably, we already requested it before.
         getContactWithErrorsIgnore(context),
         TE.chain(contact => {
           if (contact) {
             return TE.right(contact);
           }
-          return pipe(
+          return fn.pipe(
             requestPhoneAccess(context),
             TE.chainW(status => {
               return status === 'sent'
@@ -205,7 +203,7 @@ function createComplete({
 // #__NO_SIDE_EFFECTS__
 function instantiateComplete() {
   return createComplete({
-    ...pipe(sharedFeatureOptions(), withInvokeCustomMethod, withVersion),
+    ...fn.pipe(sharedFeatureOptions(), withInvokeCustomMethod, withVersion),
     requestPhoneAccess: requestPhoneAccessFp,
   });
 }
@@ -220,9 +218,9 @@ function createParsed({ requestContact, ...rest }: CreateParsedOptions) {
 // #__NO_SIDE_EFFECTS__
 function instantiateParsed() {
   return createParsed({
-    ...pipe(sharedFeatureOptions(), withVersion),
+    ...fn.pipe(sharedFeatureOptions(), withVersion),
     requestContact(options) {
-      return pipe(
+      return fn.pipe(
         requestContactCompleteFp(options),
         TE.map(contact => contact.parsed),
       );

@@ -1,6 +1,5 @@
 import { throwifyFpFn, throwifyAnyEither, type AnyFn } from '@tma.js/toolkit';
-import * as O from 'fp-ts/Option';
-import { pipe } from 'fp-ts/function';
+import { function as fn, option as O } from 'fp-ts';
 
 import type { WithChecksFp, WithChecks } from '@/with-checks/withChecksFp.js';
 
@@ -10,12 +9,12 @@ export function throwifyWithChecksFp<
   HasSupportCheck extends boolean,
   SupportsMapKeySchema extends string,
 >(
-  fn: WithChecksFp<Fn, HasSupportCheck, SupportsMapKeySchema>,
+  fn_: WithChecksFp<Fn, HasSupportCheck, SupportsMapKeySchema>,
 ): WithChecks<Fn, HasSupportCheck, SupportsMapKeySchema> {
-  return Object.assign(throwifyFpFn(fn), {
+  return Object.assign(throwifyFpFn(fn_), {
     ifAvailable(...args: Parameters<Fn>) {
-      return pipe(
-        fn.ifAvailable(...args),
+      return fn.pipe(
+        fn_.ifAvailable(...args),
         O.match(
           () => ({ ok: false }),
           data => ({

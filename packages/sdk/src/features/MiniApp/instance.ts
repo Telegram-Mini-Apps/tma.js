@@ -1,5 +1,5 @@
 import { on, off } from '@tma.js/bridge';
-import { pipe } from 'fp-ts/function';
+import { function as fn } from 'fp-ts';
 
 import { MiniApp, type MiniAppState } from '@/features/MiniApp/MiniApp.js';
 import { themeParams } from '@/features/ThemeParams/instance.js';
@@ -10,7 +10,7 @@ import { withVersion } from '@/fn-options/withVersion.js';
 
 function instantiate() {
   return new MiniApp({
-    ...pipe(
+    ...fn.pipe(
       sharedFeatureOptions(),
       withPostEvent,
       withVersion,
