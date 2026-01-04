@@ -2,9 +2,7 @@ import type { PostEventError } from '@tma.js/bridge';
 import { computed, type Computed, signal } from '@tma.js/signals';
 import { createCbCollector, BetterTaskEither, type BetterTaskEitherError } from '@tma.js/toolkit';
 import { BetterPromise } from 'better-promises';
-import * as E from 'fp-ts/Either';
-import * as TE from 'fp-ts/TaskEither';
-import { pipe } from 'fp-ts/function';
+import { either as E, taskEither as TE, function as fn } from 'fp-ts';
 
 import { ConcurrentCallError } from '@/errors.js';
 import type { SharedFeatureOptions } from '@/fn-options/sharedFeatureOptions.js';
@@ -83,7 +81,7 @@ export class QrScanner {
 
     this.captureFp = wrapSupportedTask(options => {
       let captured: string | undefined;
-      return pipe(
+      return fn.pipe(
         this.openFp({
           ...options,
           onCaptured: qr => {
@@ -97,10 +95,10 @@ export class QrScanner {
       );
     });
     this.closeFp = wrapSupportedEither(() => {
-      return pipe(postEvent('web_app_close_scan_qr_popup'), E.map(setClosed));
+      return fn.pipe(postEvent('web_app_close_scan_qr_popup'), E.map(setClosed));
     });
     this.openFp = wrapSupportedTask(options => {
-      return pipe(
+      return fn.pipe(
         isOpened()
           ? TE.left(new ConcurrentCallError('The QR Scanner is already opened'))
           : async () => postEvent('web_app_open_scan_qr_popup', { text: options.text }),
@@ -113,7 +111,7 @@ export class QrScanner {
             return value;
           };
 
-          return pipe(
+          return fn.pipe(
             BetterTaskEither<never, void>(resolve => {
               addToCleanup(
                 // The scanner was closed externally.
@@ -157,7 +155,7 @@ export class QrScanner {
    * @returns A promise with QR content presented as string or undefined if the scanner was closed.
    * @since Mini Apps v6.4
    * @example
-   * pipe(
+   * fn.pipe(
    *   qrScanner.captureFp({
    *     capture(scannedQr) {
    *       return scannedQr === 'any expected by me qr';
@@ -208,7 +206,7 @@ export class QrScanner {
    *   const qr = await qrScanner.open({ text: 'Scan any QR' });
    * }
    * @example
-   * pipe(
+   * fn.pipe(
    *   qrScanner.openFp({
    *     onCaptured(scannedQr) {
    *       if (scannedQr === 'any expected by me qr') {

@@ -1,7 +1,6 @@
 import { throwifyFpFn } from '@tma.js/toolkit';
 import { toRGBFullFp } from '@tma.js/transformers';
-import * as E from 'fp-ts/Either';
-import { pipe } from 'fp-ts/function';
+import { either as E, function as fn } from 'fp-ts';
 
 /**
  * @param color - color in any format acceptable by the `toRGB` function.
@@ -9,7 +8,7 @@ import { pipe } from 'fp-ts/function';
  * @see toRGB
  */
 export function isColorDarkFp(color: string): E.Either<Error, boolean> {
-  return pipe(
+  return fn.pipe(
     toRGBFullFp(color),
     E.map(rgb => {
       // Actual formula: hsp = Math.sqrt(0.299 * r * r + 0.587 * g * g + 0.114 * b * b)

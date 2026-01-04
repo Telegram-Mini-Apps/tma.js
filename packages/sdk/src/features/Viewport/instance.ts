@@ -1,6 +1,5 @@
 import { retrieveLaunchParamsFp, on, off, type EventName, EventListener } from '@tma.js/bridge';
-import * as E from 'fp-ts/Either';
-import { pipe } from 'fp-ts/function';
+import { either as E, function as fn } from 'fp-ts';
 
 import { Viewport, type ViewportState } from '@/features/Viewport/Viewport.js';
 import { sharedFeatureOptions } from '@/fn-options/sharedFeatureOptions.js';
@@ -26,7 +25,7 @@ function create() {
   const contentSafeAreaListeners = createListeners('content_safe_area_changed');
 
   return new Viewport({
-    ...pipe(
+    ...fn.pipe(
       sharedFeatureOptions(),
       withStateRestore<ViewportState>('viewport'),
       withVersion,
@@ -34,10 +33,10 @@ function create() {
       withRequest,
     ),
     isFullscreen() {
-      return pipe(retrieveLaunchParamsFp(), E.map(lp => !!lp.tgWebAppFullscreen));
+      return fn.pipe(retrieveLaunchParamsFp(), E.map(lp => !!lp.tgWebAppFullscreen));
     },
     isViewportStable() {
-      return pipe(retrieveLaunchParamsFp(), E.map(lp => {
+      return fn.pipe(retrieveLaunchParamsFp(), E.map(lp => {
         return ['macos', 'tdesktop', 'unigram', 'webk', 'weba', 'web'].includes(lp.tgWebAppPlatform);
       }));
     },

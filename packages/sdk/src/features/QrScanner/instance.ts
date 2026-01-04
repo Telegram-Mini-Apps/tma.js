@@ -1,6 +1,5 @@
 import { on } from '@tma.js/bridge';
-
-import { pipe } from 'fp-ts/function';
+import { function as fn } from 'fp-ts';
 
 import { QrScanner } from '@/features/QrScanner/QrScanner.js';
 import { sharedFeatureOptions } from '@/fn-options/sharedFeatureOptions.js';
@@ -9,7 +8,7 @@ import { withVersion } from '@/fn-options/withVersion.js';
 
 function instantiate() {
   return new QrScanner({
-    ...pipe(sharedFeatureOptions(), withPostEvent, withVersion),
+    ...fn.pipe(sharedFeatureOptions(), withPostEvent, withVersion),
     onClosed(listener) {
       return on('scan_qr_popup_closed', listener);
     },

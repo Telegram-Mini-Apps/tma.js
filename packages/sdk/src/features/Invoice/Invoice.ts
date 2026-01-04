@@ -1,8 +1,7 @@
 import type { InvoiceStatus, RequestError } from '@tma.js/bridge';
 import { computed, type Computed, signal } from '@tma.js/signals';
 import { BetterPromise } from 'better-promises';
-import * as TE from 'fp-ts/TaskEither';
-import { pipe } from 'fp-ts/function';
+import { taskEither as TE, function as fn } from 'fp-ts';
 
 import { ConcurrentCallError, InvalidArgumentsError } from '@/errors.js';
 import type { SharedFeatureOptions } from '@/fn-options/sharedFeatureOptions.js';
@@ -38,7 +37,7 @@ export class Invoice {
     this.isSupported = createIsSupportedSignal('web_app_open_invoice', version);
     this.isOpened = computed(isOpened);
     this.openSlugFp = wrapSupportedTask((slug, options) => {
-      return pipe(
+      return fn.pipe(
         this.isOpened()
           ? TE.left(new ConcurrentCallError('Invoice is already opened'))
           : TE.right(undefined as never),

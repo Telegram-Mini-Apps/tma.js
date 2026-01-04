@@ -1,5 +1,5 @@
 import { on, off } from '@tma.js/bridge';
-import { pipe } from 'fp-ts/function';
+import { function as fn } from 'fp-ts';
 
 import { Biometry } from '@/features/Biometry/Biometry.js';
 import type { BiometryState } from '@/features/Biometry/types.js';
@@ -11,7 +11,7 @@ import { withVersion } from '@/fn-options/withVersion.js';
 
 function instantiate() {
   return new Biometry({
-    ...pipe(
+    ...fn.pipe(
       sharedFeatureOptions(),
       withPostEvent,
       withVersion,

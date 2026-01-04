@@ -1,6 +1,5 @@
 import { BetterPromise } from 'better-promises';
-import * as TE from 'fp-ts/TaskEither';
-import { pipe } from 'fp-ts/function';
+import { taskEither as TE, function as fn } from 'fp-ts';
 
 import { InvokeCustomMethodFailedError } from '@/errors.js';
 import { captureSameReq } from '@/methods/captureSameReq.js';
@@ -55,7 +54,7 @@ export function invokeCustomMethodFp(
   requestId: string,
   options?: InvokeCustomMethodFpOptions,
 ): TE.TaskEither<InvokeCustomMethodError, unknown> {
-  return pipe(
+  return fn.pipe(
     request2Fp('web_app_invoke_custom_method', 'custom_method_invoked', {
       ...options || {},
       params: { method, params, req_id: requestId },
@@ -96,7 +95,7 @@ export function invokeCustomMethod(
   options?: InvokeCustomMethodOptions,
 ): BetterPromise<unknown> {
   return BetterPromise.fn(() => {
-    return pipe(
+    return fn.pipe(
       // @ts-expect-error TypeScript is unable to determine required override.
       invokeCustomMethodFp(method, params, requestId, options),
       TE.match(

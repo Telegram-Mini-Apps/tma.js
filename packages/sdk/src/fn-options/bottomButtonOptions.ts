@@ -1,5 +1,5 @@
 import type { EventName } from '@tma.js/bridge';
-import { pipe } from 'fp-ts/function';
+import { function as fn } from 'fp-ts';
 
 import { buttonOptions } from '@/fn-options/buttonOptions.js';
 
@@ -9,7 +9,7 @@ export function bottomButtonOptions<S, D>(
   trackedClickEvent: EventName,
   defaults: D,
 ) {
-  return pipe(
+  return fn.pipe(
     buttonOptions<S>(storageName, trackedClickEvent),
     obj => ({ ...obj, defaults }),
   );

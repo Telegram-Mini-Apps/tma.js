@@ -4,9 +4,7 @@ import {
   type BetterPromiseOptions,
   TimeoutError,
 } from 'better-promises';
-import * as E from 'fp-ts/Either';
-import * as TE from 'fp-ts/TaskEither';
-import { pipe } from 'fp-ts/function';
+import { either as E, taskEither as TE, function as fn } from 'fp-ts';
 
 import { hasWebviewProxy } from '@/env/hasWebviewProxy.js';
 import { UnknownEnvError } from '@/errors.js';
@@ -31,9 +29,9 @@ export function isTMA(
     // @ts-expect-error TS doesn't get what override we are going to use.
     type,
     options,
-  ) as boolean | TE.TaskEither<isTMAError, boolean>;
+  );
   return typeof monad === 'function'
-    ? BetterPromise.fn(() => throwifyAnyEither(monad))
+    ? BetterPromise.fn(() => throwifyAnyEither(monad as TE.TaskEither<any, boolean>))
     : monad;
 }
 
@@ -65,14 +63,14 @@ export function isTMAFp(
 ): boolean | TE.TaskEither<isTMAError, boolean> {
   const hasProxy = hasWebviewProxy(window);
   if (!type) {
-    return hasProxy || pipe(retrieveRawLaunchParamsFp(), E.match(() => false, () => true));
+    return hasProxy || fn.pipe(retrieveRawLaunchParamsFp(), E.match(() => false, () => true));
   }
   if (hasProxy) {
     return TE.right(true);
   }
   const { timeout = 100 } = options || {};
 
-  return pipe(
+  return fn.pipe(
     request2Fp('web_app_request_theme', 'theme_changed', { ...options, timeout }),
     TE.match(
       error => (

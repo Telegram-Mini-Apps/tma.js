@@ -1,6 +1,6 @@
 import type { PostEventError } from '@tma.js/bridge';
+import { function as fn } from 'fp-ts';
 import type * as E from 'fp-ts/Either';
-import { pipe } from 'fp-ts/function';
 
 import {
   sharedFeatureOptions,
@@ -22,7 +22,7 @@ function create({ postEvent, ...rest }: CreateOptions) {
 
 // #__NO_SIDE_EFFECTS__
 function instantiate() {
-  return create(pipe(
+  return create(fn.pipe(
     sharedFeatureOptions(),
     withVersion,
     withPostEvent,

@@ -1,5 +1,4 @@
-import * as E from 'fp-ts/Either';
-import { pipe } from 'fp-ts/function';
+import { either as E, function as fpFn } from 'fp-ts';
 import { function as fn, is, looseObject } from 'valibot';
 
 import { hasWebviewProxy } from '@/env/hasWebviewProxy.js';
@@ -43,7 +42,7 @@ export function postEvent(
   eventType: MethodName,
   eventData?: MethodParams<MethodName>,
 ): void {
-  pipe(
+  fpFn.pipe(
     postEventFp(
       // @ts-expect-error It's ok, TS can't determine a specific override.
       eventType,

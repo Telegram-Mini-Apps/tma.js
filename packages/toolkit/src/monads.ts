@@ -4,9 +4,7 @@ import {
   type BetterPromiseOptions,
   type TimeoutError,
 } from 'better-promises';
-import * as E from 'fp-ts/Either';
-import * as TE from 'fp-ts/TaskEither';
-import { pipe } from 'fp-ts/function';
+import { either as E, taskEither as TE, function as fn } from 'fp-ts';
 
 import type { AnyFn } from '@/types/misc.js';
 
@@ -48,8 +46,8 @@ export function throwifyAnyEither<E extends AnyEither>(either: E): MaybeMonadToC
   };
   return (
     typeof either === 'function'
-      ? BetterPromise.resolve(pipe(either, TE.match(onError, data => data))())
-      : pipe(either, E.match(onError, data => data))
+      ? BetterPromise.resolve(fn.pipe(either, TE.match(onError, data => data))())
+      : fn.pipe(either, E.match(onError, data => data))
   ) as MaybeMonadToCommon<E>;
 }
 
@@ -79,7 +77,7 @@ export const BetterTaskEither = /* #__PURE__ */ Object.assign(
     ) => (void | Promise<void>),
     options?: BetterPromiseOptions,
   ): TE.TaskEither<E | BetterTaskEitherError, T> => {
-    return pipe(
+    return fn.pipe(
       TE.tryCatch(
         () => {
           return new BetterPromise<E.Either<E, T>>((res, _rej, context) => {
@@ -97,14 +95,14 @@ export const BetterTaskEither = /* #__PURE__ */ Object.assign(
   },
   {
     fn: <E, T>(
-      fn: (context: BetterPromiseExecutorContext<E.Either<E | BetterTaskEitherError, T>>) => (
+      fn_: (context: BetterPromiseExecutorContext<E.Either<E | BetterTaskEitherError, T>>) => (
         E.Either<E, T> | TE.TaskEither<E, T>
       ),
       options?: BetterPromiseOptions,
     ): TE.TaskEither<E | BetterTaskEitherError, T> => {
       return BetterTaskEither<E, T>((resolve, reject, context) => {
-        const result = fn(context);
-        void pipe(
+        const result = fn_(context);
+        void fn.pipe(
           typeof result === 'function' ? result : TE.fromEither(result),
           TE.matchW(reject, resolve),
         )();

@@ -1,6 +1,5 @@
 import { EventPayload, type MethodParams, type Request2CaptureFn, RequestError } from '@tma.js/bridge';
-import * as TE from 'fp-ts/TaskEither';
-import { pipe } from 'fp-ts/function';
+import { taskEither as TE, function as fn } from 'fp-ts';
 
 import { DeviceStorageMethodError } from '@/errors.js';
 import type { SharedFeatureOptions } from '@/fn-options/sharedFeatureOptions.js';
@@ -52,7 +51,7 @@ export class DeviceStorage {
       params: Omit<MethodParams<M>, 'req_id'>,
     ): TE.TaskEither<DeviceStorageError, EventPayload<E>> => {
       const requestId = createRequestId();
-      return pipe(
+      return fn.pipe(
         request<M, ('device_storage_failed' | E)[]>(method, ['device_storage_failed', event], {
           params: { ...params, req_id: requestId },
           capture: (event => {
@@ -68,13 +67,13 @@ export class DeviceStorage {
     };
 
     this.getItemFp = wrapSupportedTask(key => {
-      return pipe(
+      return fn.pipe(
         invokeMethod('web_app_device_storage_get_key', 'device_storage_key_received', { key }),
         TE.map(payload => payload.value),
       );
     });
     this.setItemFp = wrapSupportedTask((key, value) => {
-      return pipe(
+      return fn.pipe(
         invokeMethod('web_app_device_storage_save_key', 'device_storage_key_saved', { key, value }),
         TE.map(() => undefined),
       );
@@ -83,7 +82,7 @@ export class DeviceStorage {
       return this.setItemFp(key, null);
     });
     this.clearFp = wrapSupportedTask(() => {
-      return pipe(
+      return fn.pipe(
         invokeMethod('web_app_device_storage_clear', 'device_storage_cleared', {}),
         TE.map(() => undefined),
       );

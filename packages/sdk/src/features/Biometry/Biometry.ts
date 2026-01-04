@@ -8,9 +8,7 @@ import type {
 } from '@tma.js/bridge';
 import type { Computed } from '@tma.js/signals';
 import { BetterPromise } from 'better-promises';
-import * as E from 'fp-ts/Either';
-import * as TE from 'fp-ts/TaskEither';
-import { pipe } from 'fp-ts/function';
+import { either as E, taskEither as TE, function as fn } from 'fp-ts';
 
 import { AsyncMountable } from '@/composables/AsyncMountable.js';
 import { Stateful } from '@/composables/Stateful.js';
@@ -92,7 +90,7 @@ export class Biometry {
     });
     const mountable = new AsyncMountable({
       initialState(options) {
-        return pipe(
+        return fn.pipe(
           request('web_app_biometry_get_info', 'biometry_info_received', options),
           TE.map(eventToState),
         );
@@ -133,7 +131,7 @@ export class Biometry {
     this.authenticateFp = wrapMountedTask(options => {
       return !this.isAvailable()
         ? TE.left(createNotAvailableError())
-        : pipe(
+        : fn.pipe(
           request('web_app_biometry_request_auth', 'biometry_auth_requested', {
             ...options,
             params: { reason: ((options || {}).reason || '').trim() },
@@ -148,7 +146,7 @@ export class Biometry {
     this.openSettingsFp = wrapSupportedEither(() => postEvent('web_app_biometry_open_settings'));
 
     this.requestAccessFp = wrapMountedTask(options => {
-      return pipe(
+      return fn.pipe(
         request('web_app_biometry_request_access', 'biometry_info_received', {
           ...options,
           params: { reason: ((options || {}).reason || '').trim() },
@@ -165,7 +163,7 @@ export class Biometry {
     });
 
     this.updateTokenFp = wrapMountedTask((options = {}) => {
-      return pipe(
+      return fn.pipe(
         request('web_app_biometry_update_token', 'biometry_token_updated', {
           ...options,
           params: { token: options.token || '', reason: options.reason?.trim() },

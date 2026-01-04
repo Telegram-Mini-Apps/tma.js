@@ -5,7 +5,7 @@ import {
   type InvokeCustomMethodOptions,
   invokeCustomMethodFp,
 } from '@tma.js/bridge';
-import * as TE from 'fp-ts/TaskEither';
+import { taskEither as TE } from 'fp-ts';
 
 import { createRequestId } from '@/globals/createRequestId.js';
 import { postEventFp } from '@/globals/postEvent.js';

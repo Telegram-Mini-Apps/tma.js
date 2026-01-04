@@ -9,8 +9,7 @@ import { signal } from '@tma.js/signals';
 import { createCbCollector, camelToKebab } from '@tma.js/toolkit';
 import { isRGB } from '@tma.js/transformers';
 import type { KnownThemeParamsKey, RGB, ThemeParams } from '@tma.js/types';
-import * as E from 'fp-ts/Either';
-import { pipe } from 'fp-ts/function';
+import { either as E, function as fn } from 'fp-ts';
 
 import { Mountable } from '@/composables/Mountable.js';
 import { Stateful } from '@/composables/Stateful.js';
@@ -140,7 +139,7 @@ export class MiniApp {
     this.isMounted = mountable.isMounted;
     this.mountFp = withChecksFp(() => {
       const nothing = () => undefined;
-      return pipe(mountable.mount(), E.match(nothing, nothing));
+      return fn.pipe(mountable.mount(), E.match(nothing, nothing));
     }, { isTma, returns: 'plain' });
     this.mount = throwifyWithChecksFp(this.mountFp);
     this.unmount = mountable.unmount;
@@ -243,7 +242,7 @@ export class MiniApp {
             method === 'web_app_set_header_color'
             && (color === 'bg_color' || color === 'secondary_bg_color')
           ) {
-            return pipe(
+            return fn.pipe(
               postEvent('web_app_set_header_color', { color_key: color }),
               E.map(() => {
                 stateful.setState({ [stateKey]: color });
@@ -251,7 +250,7 @@ export class MiniApp {
             );
           }
           const rgb = rgbBasedOn(color);
-          return pipe(
+          return fn.pipe(
             rgb
               ? postEvent(method, { color: rgb })
               : E.left(new UnknownThemeParamsKeyError(color)),

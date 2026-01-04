@@ -1,7 +1,5 @@
 import { throwifyFpFn, throwifyAnyEither } from '@tma.js/toolkit';
-import * as E from 'fp-ts/Either';
-import * as J from 'fp-ts/Json';
-import { pipe } from 'fp-ts/function';
+import { either as E, function as fn, json as J } from 'fp-ts';
 
 import { encodeBase64Url, type DecodeBase64UrlError, decodeBase64UrlFp } from '@/base64-url.js';
 
@@ -80,7 +78,7 @@ export function decodeStartParamFp<L, R>(
   value: string,
   arg2?: 'json' | ((value: string) => E.Either<L, R>),
 ): E.Either<DecodeBase64UrlError | SyntaxError | L, R | string | J.Json> {
-  return pipe(
+  return fn.pipe(
     decodeBase64UrlFp(value),
     E.chain<DecodeBase64UrlError | SyntaxError | L, string, R | string | J.Json>(decoded => {
       if (!arg2) {

@@ -1,6 +1,5 @@
 import { EventPayload, type MethodParams, type Request2CaptureFn, RequestError } from '@tma.js/bridge';
-import * as TE from 'fp-ts/TaskEither';
-import { pipe } from 'fp-ts/function';
+import { taskEither as TE, function as fn } from 'fp-ts';
 
 import { SecureStorageMethodError } from '@/errors.js';
 import type { SharedFeatureOptions } from '@/fn-options/sharedFeatureOptions.js';
@@ -54,7 +53,7 @@ export class SecureStorage {
       params: Omit<MethodParams<M>, 'req_id'>,
     ): TE.TaskEither<SecureStorageError, EventPayload<E>> => {
       const requestId = createRequestId();
-      return pipe(
+      return fn.pipe(
         request<M, ('secure_storage_failed' | E)[]>(method, ['secure_storage_failed', event], {
           params: { ...params, req_id: requestId },
           capture: (event => {
@@ -70,7 +69,7 @@ export class SecureStorage {
     };
 
     this.getItemFp = wrapSupportedTask(key => {
-      return pipe(
+      return fn.pipe(
         invokeMethod('web_app_secure_storage_get_key', 'secure_storage_key_received', { key }),
         TE.map(payload => ({
           value: payload.value,
@@ -79,7 +78,7 @@ export class SecureStorage {
       );
     });
     this.setItemFp = wrapSupportedTask((key, value) => {
-      return pipe(
+      return fn.pipe(
         invokeMethod('web_app_secure_storage_save_key', 'secure_storage_key_saved', { key, value }),
         TE.map(() => undefined),
       );
@@ -88,13 +87,13 @@ export class SecureStorage {
       return this.setItemFp(key, null);
     });
     this.clearFp = wrapSupportedTask(() => {
-      return pipe(
+      return fn.pipe(
         invokeMethod('web_app_secure_storage_clear', 'secure_storage_cleared', {}),
         TE.map(() => undefined),
       );
     });
     this.restoreItemFp = wrapSupportedTask(key => {
-      return pipe(
+      return fn.pipe(
         invokeMethod('web_app_secure_storage_restore_key', 'secure_storage_key_restored', { key }),
         TE.map(payload => payload.value),
       );

@@ -1,5 +1,5 @@
 import { type PostEventFpFn } from '@tma.js/bridge';
-import * as E from 'fp-ts/Either';
+import { either as E } from 'fp-ts';
 import { describe, expect, it, vi } from 'vitest';
 
 import { testIsSupportedPure } from '~/test-utils/predefined/testIsSupportedPure.js';

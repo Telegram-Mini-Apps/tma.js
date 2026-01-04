@@ -1,6 +1,5 @@
 import { batch, computed, signal } from '@tma.js/signals';
-import * as TE from 'fp-ts/TaskEither';
-import { pipe } from 'fp-ts/function';
+import { taskEither as TE, function as fn } from 'fp-ts';
 
 import { access } from '@/helpers/access.js';
 import type { AsyncOptions, MaybeAccessor } from '@/types.js';
@@ -44,7 +43,7 @@ export class AsyncMountable<S extends object, E> {
         return TE.right(undefined);
       }
       const restored = access(isPageReload) ? restoreState() : undefined;
-      return pipe(
+      return fn.pipe(
         restored ? TE.right(restored) : initialState(options),
         TE.map(state => {
           // The user could call mount several times in a row while the

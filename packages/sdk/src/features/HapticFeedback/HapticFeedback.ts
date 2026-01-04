@@ -4,7 +4,7 @@ import type {
   PostEventError,
 } from '@tma.js/bridge';
 import type { Computed } from '@tma.js/signals';
-import * as E from 'fp-ts/Either';
+import { either as E } from 'fp-ts';
 
 import type { SharedFeatureOptions } from '@/fn-options/sharedFeatureOptions.js';
 import type { WithPostEvent } from '@/fn-options/withPostEvent.js';

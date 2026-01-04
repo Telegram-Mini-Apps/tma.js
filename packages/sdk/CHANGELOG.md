@@ -70,7 +70,7 @@
 
 ### Patch Changes
 
-- c6d9303: Make `ifAvailable` always return `O.Option<AnyEither>` instead of `O.Option<Plain>`
+- c6d9303: Make `ifAvailable` always return `option.Option<AnyEither>` instead of `option.Option<Plain>`
 
 ## 3.0.3
 

@@ -1,8 +1,7 @@
 import type { RequestError } from '@tma.js/bridge';
 import { type Computed, signal, computed } from '@tma.js/signals';
 import type { BetterPromise } from 'better-promises';
-import * as TE from 'fp-ts/TaskEither';
-import { pipe } from 'fp-ts/function';
+import { taskEither as TE, function as fn } from 'fp-ts';
 
 import { ConcurrentCallError, type InvalidArgumentsError } from '@/errors.js';
 import { prepareParams } from '@/features/Popup/prepareParams.js';
@@ -37,7 +36,7 @@ export class Popup {
     this.isSupported = createIsSupportedSignal('web_app_open_popup', version);
     this.isOpened = computed(isOpened);
     this.showFp = wrapSupportedTask(options => {
-      return pipe(
+      return fn.pipe(
         this.isOpened()
           ? TE.left(new ConcurrentCallError('A popup is already opened'))
           : TE.right(undefined as never),
@@ -85,7 +84,7 @@ export class Popup {
    * @param options - popup parameters.
    * @since Mini Apps v6.2
    * @example
-   * pipe(
+   * fn.pipe(
    *   popup.showFp({
    *     title: 'Confirm action',
    *     message: 'Do you really want to buy this burger?',

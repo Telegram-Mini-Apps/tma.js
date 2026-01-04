@@ -1,6 +1,5 @@
 import type { PhoneRequestedStatus, RequestError } from '@tma.js/bridge';
-import * as TE from 'fp-ts/TaskEither';
-import { pipe } from 'fp-ts/function';
+import { taskEither as TE, function as fn } from 'fp-ts';
 
 import {
   sharedFeatureOptions,
@@ -21,7 +20,7 @@ function create({ request, ...rest }: CreateOptions) {
   return withChecksFp((
     options?: AsyncOptions,
   ): TE.TaskEither<RequestPhoneAccessError, PhoneRequestedStatus> => {
-    return pipe(
+    return fn.pipe(
       request('web_app_request_phone', 'phone_requested', options),
       TE.map(response => response.status),
     );
@@ -30,7 +29,7 @@ function create({ request, ...rest }: CreateOptions) {
 
 // #__NO_SIDE_EFFECTS__
 function instantiate() {
-  return create(pipe(
+  return create(fn.pipe(
     sharedFeatureOptions(),
     withVersion,
     withRequest,

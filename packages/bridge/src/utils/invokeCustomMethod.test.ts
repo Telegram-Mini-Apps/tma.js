@@ -1,5 +1,4 @@
-import * as TE from 'fp-ts/TaskEither';
-import { pipe } from 'fp-ts/function';
+import { taskEither as TE, function as fn } from 'fp-ts';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { InvokeCustomMethodFailedError } from '@/errors.js';
@@ -18,7 +17,7 @@ afterEach(() => {
 describe('invokeCustomMethodFp', () => {
   it('should return error if requestFp returned it', async () => {
     requestFp.mockImplementationOnce(() => TE.left(new Error('test')));
-    await pipe(
+    await fn.pipe(
       invokeCustomMethodFp('getCurrentTime', {}, ''),
       TE.match(
         error => expect(error).toStrictEqual(new Error('test')),
@@ -30,7 +29,7 @@ describe('invokeCustomMethodFp', () => {
 
   it('should return error if response contained "error" prop', async () => {
     requestFp.mockImplementationOnce(() => TE.right({ error: 'UNAVAILABLE' }));
-    await pipe(
+    await fn.pipe(
       invokeCustomMethodFp('getCurrentTime', {}, ''),
       TE.match(
         error => expect(error).toStrictEqual(new InvokeCustomMethodFailedError('UNAVAILABLE')),
@@ -42,7 +41,7 @@ describe('invokeCustomMethodFp', () => {
 
   it('should return result using reponse\'s result property', async () => {
     requestFp.mockImplementationOnce(() => TE.right({ result: 123, req_id: '' }));
-    await pipe(
+    await fn.pipe(
       invokeCustomMethodFp('getCurrentTime', {}, ''),
       TE.match(
         () => expect.unreachable(),

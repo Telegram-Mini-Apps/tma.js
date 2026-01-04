@@ -5,7 +5,7 @@ import {
 import type { Version } from '@tma.js/types';
 import { createWindow } from 'test-utils';
 import type { PostEventFpFn } from '@tma.js/bridge';
-import * as E from 'fp-ts/Either';
+import { either as E } from 'fp-ts';
 import { vi } from 'vitest';
 
 import type { ComponentStorage } from '@/helpers/component-storage.js';

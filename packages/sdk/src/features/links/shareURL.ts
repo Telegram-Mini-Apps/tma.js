@@ -1,5 +1,5 @@
 import type { PostEventError } from '@tma.js/bridge';
-import type * as E from 'fp-ts/Either';
+import type { either as E } from 'fp-ts';
 
 import { openTelegramLinkFp } from '@/features/links/openTelegramLink.js';
 import {

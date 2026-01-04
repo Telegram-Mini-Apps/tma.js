@@ -1,5 +1,4 @@
-import * as TE from 'fp-ts/TaskEither';
-import { pipe } from 'fp-ts/function';
+import { taskEither as TE, function as fn } from 'fp-ts';
 import { date, integer, number, transform, pipe as valiPipe, safeParse } from 'valibot';
 
 import { ValidationError } from '@/errors.js';
@@ -24,7 +23,7 @@ export type GetCurrentTimeError = InvokeCustomMethodError | ValidationError;
 
 function create({ invokeCustomMethod, ...rest }: CreateOptions) {
   return withChecksFp((options?: AsyncOptions): TE.TaskEither<GetCurrentTimeError, Date> => {
-    return pipe(
+    return fn.pipe(
       invokeCustomMethod('getCurrentTime', {}, options),
       TE.chain(response => {
         const parsed = safeParse(
@@ -41,7 +40,7 @@ function create({ invokeCustomMethod, ...rest }: CreateOptions) {
 
 // #__NO_SIDE_EFFECTS__
 function instantiate() {
-  return create(pipe(
+  return create(fn.pipe(
     sharedFeatureOptions(),
     withInvokeCustomMethod,
     withVersion,

@@ -1,6 +1,5 @@
 import { TimeoutError } from 'better-promises';
-import * as TE from 'fp-ts/TaskEither';
-import { pipe } from 'fp-ts/function';
+import { taskEither as TE, function as fn } from 'fp-ts';
 import {
   createWindow,
   mockSessionStorageGetItem,
@@ -79,7 +78,7 @@ describe('isTMAFp', () => {
   describe('complete', () => {
     it('should return true if current window contains TelegramWebviewProxy property', async () => {
       createWindow({ TelegramWebviewProxy: { postEvent: () => undefined } } as any);
-      await pipe(
+      await fn.pipe(
         isTMAFp('complete'),
         TE.match(
           () => expect.unreachable(),
@@ -94,7 +93,7 @@ describe('isTMAFp', () => {
       async () => {
         createWindow();
         requestFp.mockImplementationOnce(() => TE.right({}));
-        await pipe(
+        await fn.pipe(
           isTMAFp('complete'),
           TE.match(
             () => expect.unreachable(),
@@ -110,7 +109,7 @@ describe('isTMAFp', () => {
       async () => {
         createWindow();
         requestFp.mockImplementationOnce(() => TE.left(new TimeoutError(100)));
-        await pipe(
+        await fn.pipe(
           isTMAFp('complete'),
           TE.match(
             () => expect.unreachable(),
@@ -120,7 +119,7 @@ describe('isTMAFp', () => {
         expect.assertions(1);
 
         requestFp.mockImplementationOnce(() => TE.left(new Error('something else')));
-        await pipe(
+        await fn.pipe(
           isTMAFp('complete'),
           TE.match(
             error => expect(error).toStrictEqual(new Error('something else')),
@@ -134,7 +133,7 @@ describe('isTMAFp', () => {
     it('should return false if the env is unknown', async () => {
       mockWindow({} as any);
       requestFp.mockImplementationOnce(() => TE.left(new UnknownEnvError()));
-      await pipe(
+      await fn.pipe(
         isTMAFp('complete'),
         TE.match(
           () => expect.unreachable(),

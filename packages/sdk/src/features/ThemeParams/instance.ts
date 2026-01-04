@@ -1,5 +1,5 @@
 import { on, off } from '@tma.js/bridge';
-import { pipe } from 'fp-ts/function';
+import { function as fn } from 'fp-ts';
 
 import { ThemeParams, type ThemeParamsState } from '@/features/ThemeParams/ThemeParams.js';
 import { sharedFeatureOptions } from '@/fn-options/sharedFeatureOptions.js';
@@ -8,7 +8,7 @@ import { themeParams as globalThemeParams } from '@/globals/themeParams.js';
 
 function instantiate() {
   return new ThemeParams({
-    ...pipe(
+    ...fn.pipe(
       sharedFeatureOptions(),
       withStateRestore<ThemeParamsState>('themeParams'),
     ),

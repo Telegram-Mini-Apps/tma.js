@@ -4,9 +4,7 @@ import {
   type LaunchParamsGenType,
   type ParseLaunchParamsQueryError,
 } from '@tma.js/transformers';
-import * as E from 'fp-ts/Either';
-import * as O from 'fp-ts/Option';
-import { pipe } from 'fp-ts/function';
+import { either as E, function as fn, option as O } from 'fp-ts';
 
 import { LaunchParamsRetrieveError } from '@/errors.js';
 
@@ -39,7 +37,7 @@ export function retrieveLaunchParamsFp(): E.Either<
   RetrieveLaunchParamsError,
   RetrieveLaunchParamsResult
 > {
-  return pipe(
+  return fn.pipe(
     retrieveRawLaunchParamsFp(),
     E.chainW(parseLaunchParamsQueryFp),
   );
@@ -55,7 +53,7 @@ export const retrieveLaunchParams: () => RetrieveLaunchParamsResult =
  * @returns Raw init data from any known source.
  */
 export function retrieveRawInitDataFp(): E.Either<RetrieveRawInitDataError, O.Option<string>> {
-  return pipe(
+  return fn.pipe(
     retrieveRawLaunchParamsFp(),
     E.map(raw => {
       const v = new URLSearchParams(raw).get('tgWebAppData');
@@ -68,7 +66,7 @@ export function retrieveRawInitDataFp(): E.Either<RetrieveRawInitDataError, O.Op
  * @see retrieveRawInitDataFp
  */
 export function retrieveRawInitData(): string | undefined {
-  return pipe(
+  return fn.pipe(
     retrieveRawInitDataFp(),
     E.fold(err => {
       throw err;
@@ -101,7 +99,7 @@ export function retrieveRawLaunchParamsFp(): E.Either<RetrieveRawLaunchParamsErr
       errors.push({ source, error: new Error('Source is empty') });
       continue;
     }
-    const maybeError = pipe(
+    const maybeError = fn.pipe(
       parseLaunchParamsQueryFp(v),
       E.foldW(err => err, () => true as const),
     );

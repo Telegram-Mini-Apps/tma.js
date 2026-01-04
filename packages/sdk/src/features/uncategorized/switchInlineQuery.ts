@@ -1,6 +1,5 @@
 import type { PostEventError, SwitchInlineQueryChatType } from '@tma.js/bridge';
-import * as E from 'fp-ts/Either';
-import { pipe } from 'fp-ts/function';
+import { either as E, function as fn } from 'fp-ts';
 
 import {
   sharedFeatureOptions,
@@ -45,7 +44,7 @@ function create({ isInlineMode, postEvent, ...rest }: CreateOptions) {
 // #__NO_SIDE_EFFECTS__
 function instantiate() {
   return create({
-    ...pipe(
+    ...fn.pipe(
       sharedFeatureOptions(),
       withPostEvent,
       withVersion,
@@ -65,7 +64,7 @@ function instantiate() {
  * empty list.
  * @since Mini Apps v6.7
  * @example
- * pipe(
+ * fn.pipe(
  *   switchInlineQuery('my query goes here', ['users']),
  *   E.match(error => {
  *     console.error('Something went wrong', error);

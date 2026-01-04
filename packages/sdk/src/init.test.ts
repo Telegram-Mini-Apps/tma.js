@@ -1,5 +1,5 @@
 import { emitEvent } from '@tma.js/bridge';
-import * as E from 'fp-ts/Either';
+import { either as E } from 'fp-ts';
 import { createWindow } from 'test-utils';
 import { vi, it, expect, beforeEach, describe } from 'vitest';
 
