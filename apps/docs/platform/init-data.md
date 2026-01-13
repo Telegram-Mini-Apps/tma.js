@@ -20,7 +20,7 @@ from [@tma.js/sdk](../packages/tma-js-sdk).
 ```typescript
 import { retrieveLaunchParams } from '@tma.js/sdk';
 
-const { initDataRaw, initData } = retrieveLaunchParams();
+const { tgWebAppData: initData } = retrieveLaunchParams();
 ```
 
 ## Authorization and Authentication
@@ -52,9 +52,9 @@ carried out on the server side.
 Here is how a developer could send init data to server:
 
 ```typescript
-import { retrieveLaunchParams } from '@tma.js/sdk';
+import { retrieveRawInitData } from '@tma.js/sdk';
 
-const { initDataRaw } = retrieveLaunchParams();
+const initDataRaw = retrieveRawInitData();
 
 fetch('https://example.com/api', {
   method: 'POST',
