@@ -12,9 +12,9 @@ import { popup } from '@tma.js/sdk';
 popup.isSupported(); // boolean
 ```
 
-## Opening
+## Showing
 
-To open a popup, it is required to call the `open` method specifying popup properties: title, message, and a list of up
+To show a popup, it is required to call the `show` method specifying popup properties: title, message, and a list of up
 to 3 buttons.
 
 The method returns a promise, which will be fulfilled with the clicked button identifier. In the case where the user
@@ -26,7 +26,7 @@ Calling the method updates the `isOpened` signal.
 import { popup } from '@tma.js/sdk';
 
 // popup.isOpened() -> false
-const promise = popup.open({
+const promise = popup.show({
   title: 'Hello!',
   message: 'Here is a test message.',
   buttons: [{ id: 'my-id', type: 'default', text: 'Default text' }],
