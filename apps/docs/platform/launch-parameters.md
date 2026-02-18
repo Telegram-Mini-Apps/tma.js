@@ -101,3 +101,4 @@ link. [Learn more](start-parameter.md).
 
 Parameter indicating if the application is currently launched in the fullscreen mode.
 
+
