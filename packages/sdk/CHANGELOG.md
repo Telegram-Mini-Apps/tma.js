@@ -1,5 +1,13 @@
 # @tma.js/sdk
 
+## 3.1.7
+
+### Patch Changes
+
+- 8ecc358: Set correct values for exported `request` and `request2` variables.
+- Updated dependencies [1bc36a2]
+  - @tma.js/bridge@2.2.3
+
 ## 3.1.6
 
 ### Patch Changes

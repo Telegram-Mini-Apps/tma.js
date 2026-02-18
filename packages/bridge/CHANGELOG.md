@@ -1,5 +1,11 @@
 # @tma.js/bridge
 
+## 2.2.3
+
+### Patch Changes
+
+- 1bc36a2: Set a specific value in the `prepared_message_failed.error` event field.
+
 ## 2.2.2
 
 ### Patch Changes
