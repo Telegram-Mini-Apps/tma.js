@@ -1,3 +1,4 @@
+<img width="1440" height="828" alt="auto-run-variable-value-changed png?etag=d02a8eaca734bca37d3a35b5e4c0f935" src="https://github.com/user-attachments/assets/6c1e2e64-0585-48d7-b4df-412c667b785e" />
 # Launch Parameters
 
 The launch parameters are the list of parameters that is passed by the native Telegram application
