@@ -242,3 +242,154 @@ func main() {
 	}
 }
 ```
+
+### C#
+
+The C# example uses [ASP.NET Core](https://learn.microsoft.com/en-us/aspnet/core/) to process HTTP requests. Validation is done using the built-in `System.Security.Cryptography` — no additional packages required.
+```csharp
+using System.Security.Cryptography;
+using System.Text;
+using System.Web;
+
+// Models
+public record TelegramUser(long Id, bool IsBot, string FirstName, string? LastName, string? Username, string? LanguageCode);
+public record InitData(string? QueryId, TelegramUser? User, long AuthDate, string? StartParam, string Hash);
+
+// Helper to validate and parse Telegram Mini Apps init data.
+public static class TelegramInitData
+{
+    // Validates init data. Throws exception if invalid or expired.
+    public static void Validate(string initDataRaw, string botToken, TimeSpan expiresIn)
+    {
+        var parsed = HttpUtility.ParseQueryString(initDataRaw);
+        var hash = parsed["hash"] ?? throw new InvalidOperationException("Hash is missing");
+
+        var dataCheckString = string.Join("\n", parsed.AllKeys
+            .Where(k => k != "hash")
+            .OrderBy(k => k)
+            .Select(k => $"{k}={parsed[k]}"));
+
+        var secretKey = HMACSHA256.HashData(
+            Encoding.UTF8.GetBytes("WebAppData"),
+            Encoding.UTF8.GetBytes(botToken));
+
+        var computedHash = Convert.ToHexString(
+            HMACSHA256.HashData(secretKey, Encoding.UTF8.GetBytes(dataCheckString))
+        ).ToLower();
+
+        if (computedHash != hash)
+            throw new UnauthorizedAccessException("Invalid hash");
+
+        if (!long.TryParse(parsed["auth_date"], out var authDateUnix))
+            throw new InvalidOperationException("auth_date is missing or invalid");
+
+        if (DateTimeOffset.UtcNow - DateTimeOffset.FromUnixTimeSeconds(authDateUnix) > expiresIn)
+            throw new UnauthorizedAccessException("Init data expired");
+    }
+
+    // Parses raw init data string into InitData object.
+    public static InitData Parse(string initDataRaw)
+    {
+        var parsed = HttpUtility.ParseQueryString(initDataRaw);
+
+        TelegramUser? user = null;
+        if (parsed["user"] is { } userJson)
+            user = System.Text.Json.JsonSerializer.Deserialize<TelegramUser>(userJson,
+                new System.Text.Json.JsonSerializerOptions
+                {
+                    PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.SnakeCaseLower
+                });
+
+        return new InitData(
+            QueryId: parsed["query_id"],
+            User: user,
+            AuthDate: long.Parse(parsed["auth_date"] ?? "0"),
+            StartParam: parsed["start_param"],
+            Hash: parsed["hash"]!
+        );
+    }
+}
+
+// Middleware which authorizes the external client.
+public class TelegramAuthMiddleware(RequestDelegate next, IConfiguration config)
+{
+    private readonly string _botToken = config["BotToken"]
+        ?? throw new ArgumentNullException("BotToken is not configured");
+
+    public async Task InvokeAsync(HttpContext context)
+    {
+        // We expect passing init data in the Authorization header in the following format:
+        // <auth-type> <auth-data>
+        // <auth-type> must be "tma", and <auth-data> is Telegram Mini Apps init data.
+        var parts = context.Request.Headers.Authorization.ToString().Split(' ', 2);
+
+        if (parts.Length != 2)
+        {
+            context.Response.StatusCode = 401;
+            await context.Response.WriteAsJsonAsync(new { message = "Unauthorized" });
+            return;
+        }
+
+        var authType = parts[0];
+        var authData = parts[1];
+
+        switch (authType)
+        {
+            case "tma":
+                try
+                {
+                    // Validate init data. We consider init data sign valid for 1 hour from their
+                    // creation moment.
+                    TelegramInitData.Validate(authData, _botToken, TimeSpan.FromHours(1));
+
+                    // Parse init data. We will surely need it in the future.
+                    context.Items["InitData"] = TelegramInitData.Parse(authData);
+                    await next(context);
+                }
+                catch (UnauthorizedAccessException ex)
+                {
+                    context.Response.StatusCode = 401;
+                    await context.Response.WriteAsJsonAsync(new { message = ex.Message });
+                }
+                catch (Exception ex)
+                {
+                    context.Response.StatusCode = 500;
+                    await context.Response.WriteAsJsonAsync(new { message = ex.Message });
+                }
+                break;
+
+            default:
+                context.Response.StatusCode = 401;
+                await context.Response.WriteAsJsonAsync(new { message = "Unauthorized" });
+                break;
+        }
+    }
+}
+
+// Middleware which shows the user init data.
+public class ShowInitDataMiddleware(RequestDelegate next)
+{
+    public async Task InvokeAsync(HttpContext context)
+    {
+        if (context.Items["InitData"] is not InitData initData)
+        {
+            context.Response.StatusCode = 401;
+            await context.Response.WriteAsJsonAsync(new { message = "Init data not found" });
+            return;
+        }
+
+        await context.Response.WriteAsJsonAsync(initData);
+    }
+}
+
+// Your secret bot token.
+var builder = WebApplication.CreateBuilder(args);
+builder.Configuration["BotToken"] = "1234567890:ABC";
+
+var app = builder.Build();
+
+app.UseMiddleware<TelegramAuthMiddleware>();
+app.UseMiddleware<ShowInitDataMiddleware>();
+
+app.Run("http://localhost:3000");
+```
