@@ -1,5 +1,11 @@
 # @tma.js/init-data-node
 
+## 2.0.7
+
+### Patch Changes
+
+- e9ea686: Bump `error-kid`.
+
 ## 2.0.6
 
 ### Patch Changes

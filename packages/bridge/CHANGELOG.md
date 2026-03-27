@@ -1,5 +1,11 @@
 # @tma.js/bridge
 
+## 2.2.4
+
+### Patch Changes
+
+- e9ea686: Bump `error-kid`.
+
 ## 2.2.3
 
 ### Patch Changes
