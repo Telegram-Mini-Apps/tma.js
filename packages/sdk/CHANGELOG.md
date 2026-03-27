@@ -1,5 +1,13 @@
 # @tma.js/sdk
 
+## 3.1.8
+
+### Patch Changes
+
+- e9ea686: Bump `error-kid`.
+- Updated dependencies [e9ea686]
+  - @tma.js/bridge@2.2.4
+
 ## 3.1.7
 
 ### Patch Changes
