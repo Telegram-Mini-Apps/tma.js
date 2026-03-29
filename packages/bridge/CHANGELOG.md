@@ -1,5 +1,11 @@
 # @tma.js/bridge
 
+## 2.2.5
+
+### Patch Changes
+
+- ca81d1b: Rework the `hasWebviewProxy` function considering that the passed value is more likely to be window object
+
 ## 2.2.4
 
 ### Patch Changes
