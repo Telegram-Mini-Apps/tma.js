@@ -20,6 +20,7 @@ export interface SecondaryButtonState {
   text: string;
   textColor?: RGB;
   position: SecondaryButtonPosition;
+  iconCustomEmojiId?: string;
 }
 
 export interface SecondaryButtonOptions extends Omit<
@@ -32,6 +33,7 @@ export interface SecondaryButtonOptions extends Omit<
   defaults: {
     bgColor: MaybeAccessor<RGB>;
     textColor: MaybeAccessor<RGB>;
+    iconCustomEmojiId: MaybeAccessor<string>;
   };
 }
 
@@ -49,6 +51,7 @@ export class SecondaryButton {
         isVisible: false,
         text: 'Cancel',
         position: 'left',
+        iconCustomEmojiId: '',
       },
       method: 'web_app_setup_secondary_button',
       payload: state => ({
@@ -60,10 +63,11 @@ export class SecondaryButton {
         color: state.bgColor,
         text_color: state.textColor,
         position: state.position,
+        icon_custom_emoji_id: state.iconCustomEmojiId,
       }),
     });
 
-    const withDefault = (
+    const withDefaultColor = (
       field: 'bgColor' | 'textColor',
       getDefault: MaybeAccessor<RGB>,
     ) => {
@@ -71,14 +75,23 @@ export class SecondaryButton {
       return computed(() => fromState() || access(getDefault));
     };
 
+    const withDefault = (
+      field: 'iconCustomEmojiId',
+      getDefault: MaybeAccessor<string>,
+    ) => {
+      const fromState = button.stateGetter(field);
+      return computed(() => fromState() || access(getDefault));
+    };
+
     this.isSupported = createIsSupportedSignal('web_app_setup_secondary_button', options.version);
-    this.bgColor = withDefault('bgColor', defaults.bgColor);
-    this.textColor = withDefault('textColor', defaults.textColor);
+    this.bgColor = withDefaultColor('bgColor', defaults.bgColor);
+    this.textColor = withDefaultColor('textColor', defaults.textColor);
     this.position = button.stateGetter('position');
     this.hasShineEffect = button.stateGetter('hasShineEffect');
     this.isEnabled = button.stateGetter('isEnabled');
     this.isLoaderVisible = button.stateGetter('isLoaderVisible');
     this.text = button.stateGetter('text');
+    this.iconCustomEmojiId = withDefault('iconCustomEmojiId', '');
     this.isVisible = button.stateGetter('isVisible');
     this.isMounted = button.isMounted;
     this.state = button.state;
@@ -100,6 +113,7 @@ export class SecondaryButton {
     ] = button.stateBoolSetters('isLoaderVisible');
 
     [this.setText, this.setTextFp] = button.stateSetters('text');
+    [this.setIconCustomEmojiId, this.setIconCustomEmojiIdFp] = button.stateSetters('iconCustomEmojiId');
     [[this.hide, this.hideFp], [this.show, this.showFp]] = button.stateBoolSetters('isVisible');
     this.setParams = button.setState;
     this.setParamsFp = button.setStateFp;
@@ -171,6 +185,12 @@ export class SecondaryButton {
    * params colors.
    */
   readonly textColor: Computed<RGB>;
+
+  /**
+   * The ID of custom emoji icon displayed alongside button text.
+   * @since Mini Apps v9.5
+   */
+  readonly iconCustomEmojiId: Computed<string>;
   //#endregion
 
   //#region Methods.
@@ -286,6 +306,17 @@ export class SecondaryButton {
    * @see setPositionFp
    */
   readonly setPosition: WithChecks<(position: SecondaryButtonPosition) => void, true>;
+
+  /**
+   * Updates the button custom emoji Id.
+   * @since Mini Apps v9.5
+   */
+  readonly setIconCustomEmojiIdFp: WithChecksFp<(value: string) => SecondaryButtonEither, false>;
+
+  /**
+   * @see setIconCustomEmojiIdFp
+   */
+  readonly setIconCustomEmojiId: WithChecks<(value: string) => void, false>;
 
   /**
    * Shows the button loader.

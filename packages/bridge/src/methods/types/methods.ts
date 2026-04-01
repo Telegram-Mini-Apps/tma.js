@@ -29,6 +29,11 @@ interface ButtonParams {
    */
   has_shine_effect?: boolean;
   /**
+   * The ID of custom emoji icon displayed alongside button text.
+   * @since 9.5
+   */
+  icon_custom_emoji_id?: string;
+  /**
    * Should the button be displayed.
    */
   is_visible?: boolean;
@@ -562,7 +567,7 @@ export interface Methods {
    * Updates the Main Button settings.
    * @see https://docs.telegram-mini-apps.com/platform/methods#web-app-setup-main-button
    */
-  web_app_setup_main_button: CreateMethodParams<ButtonParams, 'has_shine_effect'>;
+  web_app_setup_main_button: CreateMethodParams<ButtonParams, 'has_shine_effect' | 'icon_custom_emoji_id'>;
 
   /**
    * Updates the secondary button settings.
@@ -581,7 +586,7 @@ export interface Methods {
      * - `bottom`, displayed below the main button.
      */
     position?: SecondaryButtonPosition;
-  }>;
+  }, 'icon_custom_emoji_id'>;
 
   /**
    * Updates the current state of the Settings Button.

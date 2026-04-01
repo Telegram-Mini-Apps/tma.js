@@ -10,6 +10,7 @@ function instantiate() {
     bottomButtonOptions('secondaryButton', 'secondary_button_pressed', {
       bgColor: computed(() => miniApp.bottomBarColorRgb() || '#000000'),
       textColor: computed(() => themeParams.buttonColor() || '#2481cc'),
+      iconCustomEmojiId: computed(() => ''),
     }),
   );
 }

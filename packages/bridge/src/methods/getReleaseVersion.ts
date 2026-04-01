@@ -93,6 +93,10 @@ const releases = {
     'web_app_secure_storage_save_key',
   ],
   9.1: ['web_app_hide_keyboard'],
+  9.5: [
+    { method: 'web_app_setup_main_button', param: 'icon_custom_emoji_id' },
+    { method: 'web_app_setup_secondary_button', param: 'icon_custom_emoji_id' },
+  ],
 };
 
 /**

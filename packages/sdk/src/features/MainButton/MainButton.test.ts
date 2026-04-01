@@ -53,6 +53,7 @@ describe.each([
   ['hideLoader', (component: MainButton) => component.hideLoader(), true],
   ['setText', (component: MainButton) => component.setText('a'), true],
   ['setTextColor', (component: MainButton) => component.setTextColor('#aaa'), true],
+  ['setIconCustomEmojiId', (component: MainButton) => component.setIconCustomEmojiId('123'), true],
   ['setBgColor', (component: MainButton) => component.setBgColor('#ddd'), true],
 ] as const)('%s', (method, tryCall, requireMount) => {
   describe('safety', () => {
@@ -182,6 +183,13 @@ describe.each([
     usedValue: '#cba',
     use: (component: MainButton) => component.setTextColor('#cba'),
   },
+  {
+    method: 'setIconCustomEmojiId',
+    property: 'iconCustomEmojiId',
+    payloadProperty: 'icon_custom_emoji_id',
+    usedValue: '123',
+    use: (component: MainButton) => component.setIconCustomEmojiId('123'),
+  },
   // {
   //   method: 'setText',
   //   property: 'text',
@@ -265,6 +273,7 @@ describe('mount', () => {
         isLoaderVisible: false,
         text: 'Text',
         textColor: '#112',
+        iconCustomEmojiId: '123',
       } as const));
       const component = instantiate({ storage: { get, set: vi.fn() } });
       component.mount();
@@ -291,6 +300,7 @@ describe('mount', () => {
         isLoaderVisible: false,
         text: 'Text',
         textColor: '#112',
+        iconCustomEmojiId: '123',
       } as const));
       const component2 = instantiate({
         storage: { get: get2, set: vi.fn() },

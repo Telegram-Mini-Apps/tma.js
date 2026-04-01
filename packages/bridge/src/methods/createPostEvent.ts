@@ -72,6 +72,13 @@ export function createPostEvent(
     ) {
       return onUnsupported({ version, method, param: 'color' });
     }
+    if (
+      (method === 'web_app_setup_main_button' || method === 'web_app_setup_secondary_button')
+      && is(looseObject({ icon_custom_emoji_id: any() }), params)
+      && !supports(method, 'icon_custom_emoji_id', version)
+    ) {
+      return onUnsupported({ version, method, param: 'icon_custom_emoji_id' });
+    }
 
     return postEvent(method, params);
   }) as PostEventFn;

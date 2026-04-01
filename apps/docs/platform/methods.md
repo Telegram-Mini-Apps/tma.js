@@ -653,6 +653,7 @@ Updates the [Main Button](main-button.md) settings.
 | color               | `string`  | _Optional_. The button background color in `#RRGGBB` format.                                                                                                  |
 | text_color          | `string`  | _Optional_. The button text color in `#RRGGBB` format.                                                                                                        |
 | has_shine_effect    | `boolean` | _Optional_. Should the button have a shining effect.                                                                                                          | `v7.8`          |
+| icon_custom_emoji_id    | `string` | _Optional_. The ID of custom emoji icon displayed alongside button text.                                                        | `v9.5`          |
 
 ### `web_app_setup_settings_button`
 
@@ -750,6 +751,7 @@ The method that updates the Secondary Button settings.
     <th>Field</th>
     <th>Type</th>
     <th>Description</th>
+    <th>Available since</th>
   </tr>
 
   </thead>
@@ -761,6 +763,7 @@ The method that updates the Secondary Button settings.
       <code>boolean</code>
     </td>
     <td><i>Optional</i>. Should the button be displayed.</td>
+    <td><code>v7.10</code></td>
   </tr>
 
   <tr>
@@ -769,6 +772,7 @@ The method that updates the Secondary Button settings.
       <code>boolean</code>
     </td>
     <td><i>Optional</i>. Should the button be enabled.</td>
+    <td><code>v7.10</code></td>
   </tr>
 
   <tr>
@@ -780,6 +784,7 @@ The method that updates the Secondary Button settings.
       <i>Optional</i>. Should loader inside the button be displayed. Use this property in case, 
       some operation takes time. This loader will make user notified about it.
     </td>
+    <td><code>v7.10</code></td>
   </tr>
 
   <tr>
@@ -788,6 +793,7 @@ The method that updates the Secondary Button settings.
       <code>string</code>
     </td>
     <td><i>Optional</i>. The button background color in <code>#RRGGBB</code> format.</td>
+    <td><code>v7.10</code></td>
   </tr>
 
   <tr>
@@ -796,6 +802,7 @@ The method that updates the Secondary Button settings.
       <code>string</code>
     </td>
     <td><i>Optional</i>. The button text color in <code>#RRGGBB</code> format.</td>
+    <td><code>v7.10</code></td>
   </tr>
 
   <tr>
@@ -804,6 +811,7 @@ The method that updates the Secondary Button settings.
       <code>boolean</code>
     </td>
     <td><i>Optional</i>. Should the button have a shining effect.</td>
+    <td><code>v7.10</code></td>
   </tr>
 
   <tr>
@@ -829,7 +837,18 @@ The method that updates the Secondary Button settings.
         </li>
       </ul>
     </td>
+    <td><code>v7.10</code></td>
   </tr>
+
+  <tr>
+    <td>icon_custom_emoji_id</td>
+    <td>
+      <code>string</code>
+    </td>
+    <td><i>Optional</i>. The ID of custom emoji icon displayed alongside button text.</td>
+    <td><code>v9.5</code></td>
+  </tr>
+
   </tbody>
 </table>
 

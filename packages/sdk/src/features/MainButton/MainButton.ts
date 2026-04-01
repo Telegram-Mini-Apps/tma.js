@@ -18,6 +18,7 @@ export interface MainButtonState {
   isLoaderVisible: boolean;
   text: string;
   textColor?: RGB;
+  iconCustomEmojiId?: string;
 }
 
 export interface MainButtonOptions extends Omit<
@@ -30,6 +31,7 @@ export interface MainButtonOptions extends Omit<
   defaults: {
     bgColor: MaybeAccessor<RGB>;
     textColor: MaybeAccessor<RGB>;
+    iconCustomEmojiId: MaybeAccessor<string>;
   };
 }
 
@@ -44,6 +46,7 @@ export class MainButton {
         isLoaderVisible: false,
         isVisible: false,
         text: 'Continue',
+        iconCustomEmojiId: '',
       },
       method: 'web_app_setup_main_button',
       payload: state => ({
@@ -54,10 +57,11 @@ export class MainButton {
         text: state.text,
         color: state.bgColor,
         text_color: state.textColor,
+        icon_custom_emoji_id: state.iconCustomEmojiId,
       }),
     });
 
-    const withDefault = (
+    const withDefaultColor = (
       field: 'bgColor' | 'textColor',
       getDefault: MaybeAccessor<RGB>,
     ) => {
@@ -65,12 +69,21 @@ export class MainButton {
       return computed(() => fromState() || access(getDefault));
     };
 
-    this.bgColor = withDefault('bgColor', defaults.bgColor);
-    this.textColor = withDefault('textColor', defaults.textColor);
+    const withDefault = (
+      field: 'iconCustomEmojiId',
+      getDefault: MaybeAccessor<string>,
+    ) => {
+      const fromState = button.stateGetter(field);
+      return computed(() => fromState() || access(getDefault));
+    };
+
+    this.bgColor = withDefaultColor('bgColor', defaults.bgColor);
+    this.textColor = withDefaultColor('textColor', defaults.textColor);
     this.hasShineEffect = button.stateGetter('hasShineEffect');
     this.isEnabled = button.stateGetter('isEnabled');
     this.isLoaderVisible = button.stateGetter('isLoaderVisible');
     this.text = button.stateGetter('text');
+    this.iconCustomEmojiId = withDefault('iconCustomEmojiId', '');
     this.isVisible = button.stateGetter('isVisible');
     this.isMounted = button.isMounted;
     this.state = button.state;
@@ -91,6 +104,7 @@ export class MainButton {
     ] = button.stateBoolSetters('isLoaderVisible');
 
     [this.setText, this.setTextFp] = button.stateSetters('text');
+    [this.setIconCustomEmojiId, this.setIconCustomEmojiIdFp] = button.stateSetters('iconCustomEmojiId');
     [[this.hide, this.hideFp], [this.show, this.showFp]] = button.stateBoolSetters('isVisible');
     this.setParams = button.setState;
     this.setParamsFp = button.setStateFp;
@@ -152,6 +166,12 @@ export class MainButton {
    * params colors.
    */
   readonly textColor: Computed<RGB>;
+
+  /**
+   * The ID of custom emoji icon displayed alongside button text.
+   * @since Mini Apps v9.5
+   */
+  readonly iconCustomEmojiId: Computed<string>;
   //#endregion
 
   //#region Methods.
@@ -244,6 +264,17 @@ export class MainButton {
    * @see setTextFp
    */
   readonly setText: WithChecks<(value: string) => void, false>;
+
+  /**
+   * Updates the button custom emoji ID.
+   * @since Mini Apps v9.5
+   */
+  readonly setIconCustomEmojiIdFp: WithChecksFp<(value: string) => MainButtonEither, false>;
+
+  /**
+   * @see setIconCustomEmojiIdFp
+   */
+  readonly setIconCustomEmojiId: WithChecks<(value: string) => void, false>;
 
   /**
    * Shows the button loader.
