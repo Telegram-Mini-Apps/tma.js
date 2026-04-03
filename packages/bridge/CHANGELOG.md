@@ -1,5 +1,11 @@
 # @tma.js/bridge
 
+## 2.3.0
+
+### Minor Changes
+
+- 2d24b83: added support for icon_custom_emoji_id in bottom buttons
+
 ## 2.2.5
 
 ### Patch Changes
