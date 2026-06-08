@@ -1,5 +1,13 @@
 # @tma.js/sdk
 
+## 3.2.1
+
+### Patch Changes
+
+- b6b3243: Set button type to "default" if it was omitted in Popup.
+- Updated dependencies [2ba6ea0]
+  - @tma.js/bridge@2.3.1
+
 ## 3.2.0
 
 ### Minor Changes
