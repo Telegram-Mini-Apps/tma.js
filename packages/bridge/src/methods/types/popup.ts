@@ -31,10 +31,8 @@ export type PopupButton = {
    * - `default`, a button with the default style;
    * - `destructive`, a button with a style that indicates a destructive
    * action (e.g. "Remove", "Delete", etc.).
-   *
-   * @default "default"
    */
-  type?: 'default' | 'destructive';
+  type: 'default' | 'destructive';
   /**
    * The text to be displayed on the button, 0-64 characters.
    */
