@@ -1,5 +1,11 @@
 # @tma.js/bridge
 
+## 2.3.1
+
+### Patch Changes
+
+- 2ba6ea0: Mark "type" as required in popup button.
+
 ## 2.3.0
 
 ### Minor Changes
