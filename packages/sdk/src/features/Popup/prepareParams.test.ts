@@ -19,15 +19,19 @@ function createError(message: string) {
   return E.left(new InvalidArgumentsError(message));
 }
 
-const anyRight = E.right(expect.anything());
-
 describe('title', () => {
   it('should return error if title length > 64', () => {
-    const title = text(65);
-    expect(prepareParams({ title, message: 'Hey!' })).toStrictEqual(
+    let title = text(65);
+    const message = 'Hey!';
+    expect(prepareParams({ title, message })).toStrictEqual(
       createError(`Invalid title: ${title}`),
     );
-    expect(prepareParams({ title: text(64), message: 'Hey!' })).toStrictEqual(anyRight);
+    title = text(64);
+    expect(prepareParams({ title, message })).toStrictEqual(E.right({
+      title,
+      message,
+      buttons: [{ id: '', type: 'close' }],
+    }));
   });
 });
 
@@ -35,11 +39,16 @@ describe('message', () => {
   it('should return error if message length is out of [1, 256]', () => {
     expect(prepareParams({ message: '' })).toStrictEqual(createError('Invalid message: '));
 
-    const message = text(257);
+    let message = text(257);
     expect(prepareParams({ message })).toStrictEqual(
       createError(`Invalid message: ${message}`),
     );
-    expect(prepareParams({ message: text(256) })).toStrictEqual(anyRight);
+    message = text(256);
+    expect(prepareParams({ message })).toStrictEqual(E.right({
+      title: '',
+      message,
+      buttons: [{ id: '', type: 'close' }],
+    }));
   });
 });
 
@@ -53,7 +62,11 @@ describe('buttons', () => {
     expect(prepareParams({
       message: 'a',
       buttons: new Array(3).fill({ type: 'close' }),
-    })).toStrictEqual(anyRight);
+    })).toStrictEqual(E.right({
+      title: '',
+      message: 'a',
+      buttons: new Array(3).fill({ id: '', type: 'close' }),
+    }));
   });
 
   it('should append button type "close" if buttons array is empty', () => {
@@ -79,7 +92,17 @@ describe('buttons', () => {
           { type: 'ok', id: text(1) },
           { type: 'ok', id: text(64) },
         ],
-      })).toStrictEqual(anyRight);
+      })).toStrictEqual(E.right(expect.anything()));
+    });
+
+    it('should set type "default" if it was omitted', () => {
+      const btnText = text(64);
+      expect(prepareParams({
+        message: 'A',
+        buttons: [{ text: btnText }],
+      })).toStrictEqual(E.right(expect.objectContaining({
+        buttons: [{ id: '', type: 'default', text: btnText }],
+      })));
     });
 
     it.each([
@@ -98,7 +121,7 @@ describe('buttons', () => {
         expect(prepareParams({
           message: 'A',
           buttons: [{ type, text: text(64) }],
-        })).toStrictEqual(anyRight);
+        })).toStrictEqual(E.right(expect.anything()));
       },
     );
   });

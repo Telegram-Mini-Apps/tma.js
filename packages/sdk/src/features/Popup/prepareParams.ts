@@ -39,7 +39,7 @@ export function prepareParams(params: ShowOptions): E.Either<InvalidArgumentsErr
         if (!text || text.length > 64) {
           return E.left(new InvalidArgumentsError(`Button with index ${i} has invalid text: ${text}`));
         }
-        buttons.push({ type: button.type, text, id });
+        buttons.push({ type: button.type || 'default', text, id });
       } else {
         buttons.push({ type: button.type, id });
       }
