@@ -17,7 +17,7 @@ describe('createStartParam', () => {
   it(
     'should return a base64 value based on the value\'s JSON.stringify representation if the value is not a string',
     () => {
-      expect(createStartParam({ field: 'value' })).toBe('eyJmaWVsZCI6InZhbHVlIn0=');
+      expect(createStartParam({ field: 'value' })).toBe('eyJmaWVsZCI6InZhbHVlIn0');
     },
   );
 
@@ -38,7 +38,7 @@ describe('createStartParamFp', () => {
   it(
     'should return a base64 value based on the value\'s JSON.stringify representation if the value is not a string',
     () => {
-      expect(createStartParamFp({ field: 'value' })).toMatchObject({ right: 'eyJmaWVsZCI6InZhbHVlIn0=' });
+      expect(createStartParamFp({ field: 'value' })).toMatchObject({ right: 'eyJmaWVsZCI6InZhbHVlIn0' });
     },
   );
 
@@ -57,19 +57,19 @@ describe('decodeStartParam', () => {
   });
 
   it('should properly decode Unicode value', () => {
-    expect(decodeStartParam('0KLQtdC70LXQs9GA0LDQvA==')).toBe('Телеграм');
+    expect(decodeStartParam('0KLQtdC70LXQs9GA0LDQvA')).toBe('Телеграм');
   });
 
   it('should apply specified parser to the decoded value', () => {
     expect(
-      decodeStartParam('0KLQtdC70LXQs9GA0LDQvA==', v => {
+      decodeStartParam('0KLQtdC70LXQs9GA0LDQvA', v => {
         return v === 'Телеграм' ? 'Телеграм Крута' : 'Телеграм Не Крута';
       }),
     ).toBe('Телеграм Крута');
   });
 
   it('should apply JSON.parse to the decoded value if the second argument is "json"', () => {
-    expect(decodeStartParam('IlRlbGVncmFtIEtydXRhIg==', 'json')).toBe('Telegram Kruta');
+    expect(decodeStartParam('IlRlbGVncmFtIEtydXRhIg', 'json')).toBe('Telegram Kruta');
   });
 
   it('should correctly decode a value returned from createStartParam', () => {
@@ -88,7 +88,7 @@ describe('decodeStartParamFp', () => {
   });
 
   it('should properly decode Unicode value', () => {
-    expect(decodeStartParamFp('0KLQtdC70LXQs9GA0LDQvA==')).toMatchObject({ right: 'Телеграм' });
+    expect(decodeStartParamFp('0KLQtdC70LXQs9GA0LDQvA')).toMatchObject({ right: 'Телеграм' });
   });
 
   it('should apply specified parser to the decoded value', () => {
@@ -100,7 +100,7 @@ describe('decodeStartParamFp', () => {
   });
 
   it('should apply JSON.parse to the decoded value if the second argument is "json"', () => {
-    expect(decodeStartParamFp('IlRlbGVncmFtIEtydXRhIg==', 'json')).toMatchObject({ right: 'Telegram Kruta' });
+    expect(decodeStartParamFp('IlRlbGVncmFtIEtydXRhIg', 'json')).toMatchObject({ right: 'Telegram Kruta' });
   });
 });
 
