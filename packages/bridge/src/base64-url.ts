@@ -49,5 +49,6 @@ export function encodeBase64Url(value: string): string {
     }),
   )
     .replace(/\+/g, '-')
-    .replace(/\//g, '_');
+    .replace(/\//g, '_')
+    .replace(/=/g, '');
 }

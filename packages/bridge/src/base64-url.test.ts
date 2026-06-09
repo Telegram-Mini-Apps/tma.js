@@ -9,6 +9,7 @@ describe('decodeBase64Url', () => {
 
   it('should properly decode Unicode value', () => {
     expect(decodeBase64Url('0KLQtdC70LXQs9GA0LDQvA==')).toBe('Телеграм');
+    expect(decodeBase64Url('0KLQtdC70LXQs9GA0LDQvA')).toBe('Телеграм');
   });
 });
 
@@ -19,6 +20,7 @@ describe('decodeBase64UrlFp', () => {
 
   it('should properly decode Unicode value', () => {
     expect(decodeBase64UrlFp('0KLQtdC70LXQs9GA0LDQvA==')).toMatchObject({ right: 'Телеграм' });
+    expect(decodeBase64UrlFp('0KLQtdC70LXQs9GA0LDQvA')).toMatchObject({ right: 'Телеграм' });
   });
 });
 
@@ -28,6 +30,6 @@ describe('encodeBase64Url', () => {
   });
 
   it('should properly encode Unicode value', () => {
-    expect(encodeBase64Url('Телеграм')).toBe('0KLQtdC70LXQs9GA0LDQvA==');
+    expect(encodeBase64Url('Телеграм')).toBe('0KLQtdC70LXQs9GA0LDQvA');
   });
 });
