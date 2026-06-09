@@ -1,5 +1,11 @@
 # @tma.js/bridge
 
+## 2.3.2
+
+### Patch Changes
+
+- 5823079: Remove base64 paddings in `encodeBase64Url`.
+
 ## 2.3.1
 
 ### Patch Changes
