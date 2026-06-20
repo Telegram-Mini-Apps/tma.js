@@ -130,7 +130,7 @@ export function launchParams() {
     tgWebAppPlatform: string(),
     tgWebAppShowSettings: optBool,
     tgWebAppStartParam: optional(string()),
-    tgWebAppThemeParams: optional(pipeJsonToSchema(themeParams()), {}),
+    tgWebAppThemeParams: optional(pipeJsonToSchema(themeParams()), '{}'),
     tgWebAppVersion: string(),
   } satisfies { [K in keyof LaunchParams]-?: BaseSchema<any, LaunchParams[K], any> });
 }
