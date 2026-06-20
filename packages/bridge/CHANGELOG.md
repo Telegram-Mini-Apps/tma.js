@@ -1,5 +1,12 @@
 # @tma.js/bridge
 
+## 2.3.3
+
+### Patch Changes
+
+- Updated dependencies [279de3a]
+  - @tma.js/transformers@1.2.0
+
 ## 2.3.2
 
 ### Patch Changes

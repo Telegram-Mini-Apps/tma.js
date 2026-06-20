@@ -1,5 +1,12 @@
 # @tma.js/init-data-node
 
+## 2.0.8
+
+### Patch Changes
+
+- Updated dependencies [279de3a]
+  - @tma.js/transformers@1.2.0
+
 ## 2.0.7
 
 ### Patch Changes
