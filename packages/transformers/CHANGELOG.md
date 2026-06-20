@@ -1,5 +1,11 @@
 # @tma.js/transformers
 
+## 1.2.0
+
+### Minor Changes
+
+- 279de3a: fix: default tgWebAppThemeParams to empty object when missing from launch params
+
 ## 1.1.3
 
 ### Patch Changes
