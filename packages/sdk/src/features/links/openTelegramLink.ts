@@ -9,6 +9,7 @@ import {
 import { withPostEvent, type WithPostEvent } from '@/fn-options/withPostEvent.js';
 import { withVersion, type WithVersion } from '@/fn-options/withVersion.js';
 import { access } from '@/helpers/access.js';
+import { isTelegramHostname } from '@/helpers/isTelegramHostname.js';
 import { throwifyWithChecksFp } from '@/with-checks/throwifyWithChecksFp.js';
 import { withChecksFp } from '@/with-checks/withChecksFp.js';
 
@@ -32,9 +33,8 @@ export function createOpenTelegramLink({
     } catch {
       return fp.either.left(new InvalidArgumentsError(`"${url.toString()}" is invalid URL`));
     }
-    const allowedHostnames = ['t.me', 'telegram.dog', 'telegram.me'];
-    if (!allowedHostnames.includes(url.hostname)) {
-      return fp.either.left(new InvalidArgumentsError(`"${url.toString()}" is invalid URL`));
+    if (!isTelegramHostname(url.hostname)) {
+      return fp.either.left(new InvalidArgumentsError(`URL has disallowed hostname: ${url.hostname}`));
     }
     const path = url.pathname + url.search;
     if (supports('web_app_open_tg_link', access(version))) {
