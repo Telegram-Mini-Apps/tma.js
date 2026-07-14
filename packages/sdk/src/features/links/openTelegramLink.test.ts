@@ -1,8 +1,6 @@
 import * as fp from 'fp-ts';
 import { it, expect, afterEach, vi, describe } from 'vitest';
 
-import { InvalidArgumentsError } from '@/errors.js';
-
 import { createOpenTelegramLink, CreateOpenTelegramLinkOptions } from './openTelegramLink.js';
 
 function instantiate({
@@ -20,13 +18,6 @@ function instantiate({
 afterEach(() => {
   vi.restoreAllMocks();
 });
-
-// TODO: Doesn't work if CI for some reason.
-// it.each(['', 'https://a.com'])('should return error for link "%s"', link => {
-//   expect(instantiate()(link)).toMatchObject({
-//     left: new InvalidArgumentsError(`"${link}" is invalid URL`),
-//   });
-// });
 
 describe('version is 6.0', () => {
   it.each([
