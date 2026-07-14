@@ -1,5 +1,5 @@
 import { supports, type PostEventError } from '@tma.js/bridge';
-import { either as E, function as fn } from 'fp-ts';
+import * as fp from 'fp-ts';
 
 import { InvalidArgumentsError } from '@/errors.js';
 import {
@@ -9,36 +9,45 @@ import {
 import { withPostEvent, type WithPostEvent } from '@/fn-options/withPostEvent.js';
 import { withVersion, type WithVersion } from '@/fn-options/withVersion.js';
 import { access } from '@/helpers/access.js';
+import { isTelegramHostname } from '@/helpers/isTelegramHostname.js';
 import { throwifyWithChecksFp } from '@/with-checks/throwifyWithChecksFp.js';
 import { withChecksFp } from '@/with-checks/withChecksFp.js';
 
-interface CreateOptions extends SharedFeatureOptions, WithPostEvent, WithVersion {
+export interface CreateOpenTelegramLinkOptions extends SharedFeatureOptions,
+  WithPostEvent,
+  WithVersion {
 }
 
 export type OpenTelegramLinkError = PostEventError | InvalidArgumentsError;
 
-function create({ postEvent, version, ...rest }: CreateOptions) {
+export function createOpenTelegramLink({
+  postEvent,
+  version,
+  ...rest
+}: CreateOpenTelegramLinkOptions) {
   return withChecksFp((
     url: string | URL,
-  ): E.Either<OpenTelegramLinkError, void> => {
-    const urlString = url.toString();
-    if (!urlString.match(/^https:\/\/t.me\/.+/)) {
-      return E.left(new InvalidArgumentsError(`"${urlString}" is invalid URL`));
-    }
-
-    if (supports('web_app_open_tg_link', access(version))) {
+  ): fp.either.Either<OpenTelegramLinkError, void> => {
+    try {
       url = new URL(url);
-      return postEvent('web_app_open_tg_link', { path_full: url.pathname + url.search });
+    } catch {
+      return fp.either.left(new InvalidArgumentsError(`"${url.toString()}" is invalid URL`));
     }
-
-    window.location.href = urlString;
-    return E.right(undefined);
+    if (!isTelegramHostname(url.hostname)) {
+      return fp.either.left(new InvalidArgumentsError(`URL has disallowed hostname: ${url.hostname}`));
+    }
+    const path = url.pathname + url.search;
+    if (supports('web_app_open_tg_link', access(version))) {
+      return postEvent('web_app_open_tg_link', { path_full: path });
+    }
+    window.location.href = 'https://telegram.me' + path;
+    return fp.either.right(undefined);
   }, { ...rest, returns: 'either' });
 }
 
 // #__NO_SIDE_EFFECTS__
 function instantiate() {
-  return create(fn.pipe(
+  return createOpenTelegramLink(fp.function.pipe(
     sharedFeatureOptions(),
     withPostEvent,
     withVersion,

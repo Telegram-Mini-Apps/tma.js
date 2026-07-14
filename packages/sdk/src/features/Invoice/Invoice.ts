@@ -8,6 +8,7 @@ import type { SharedFeatureOptions } from '@/fn-options/sharedFeatureOptions.js'
 import type { WithRequest } from '@/fn-options/withRequest.js';
 import type { WithVersion } from '@/fn-options/withVersion.js';
 import { createIsSupportedSignal } from '@/helpers/createIsSupportedSignal.js';
+import { isTelegramHostname } from '@/helpers/isTelegramHostname.js';
 import type { AsyncOptions } from '@/types.js';
 import { throwifyWithChecksFp } from '@/with-checks/throwifyWithChecksFp.js';
 import { createWithChecksFp, type WithChecks, type WithChecksFp } from '@/with-checks/withChecksFp.js';
@@ -60,7 +61,7 @@ export class Invoice {
     });
     this.openUrlFp = wrapSupportedTask((url, options) => {
       const { hostname, pathname } = new URL(url, window.location.href);
-      if (hostname !== 't.me') {
+      if (!isTelegramHostname(hostname)) {
         return TE.left(new InvalidArgumentsError(`Link has unexpected hostname: ${hostname}`));
       }
 
