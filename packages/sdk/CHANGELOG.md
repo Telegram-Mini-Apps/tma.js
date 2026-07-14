@@ -1,5 +1,11 @@
 # @tma.js/sdk
 
+## 3.3.0
+
+### Minor Changes
+
+- f61770a: Allow domains telegram.dog and telegram.me to be used in openTelegramLink. Use telegram.me for redirect instead of t.me. Add tests
+
 ## 3.2.3
 
 ### Patch Changes
