@@ -43,7 +43,7 @@
     "@tma.js/sdk": "workspace:^"
   },
   "peerDependencies": {
-    "solid-js": "^1.0.0"
+    "solid-js": "^1.0.0 || ^2.0.0-rc.0"
   },
   "devDependencies": {
     "tsconfig": "workspace:*"
