@@ -8,7 +8,7 @@ export function useSignal<T>(signal: {
   (): T;
   sub(fn: (v: T) => void): VoidFunction;
 }): Accessor<T> {
-  const [get, set] = createSignal<T>(signal());
+  const [get, set] = createSignal<T>(signal() as Exclude<T, Function>);
   onCleanup(signal.sub(set));
   return get;
 }
