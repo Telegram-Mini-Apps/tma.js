@@ -27,6 +27,13 @@ import { openTelegramLink } from '@tma.js/sdk';
 openTelegramLink('https://t.me/heyqbnk');
 ```
 
+You can also pass an optional second argument, an object with the optional property
+`forceRequest: boolean`, to make the Telegram client force the link request processing.
+
+```ts
+openTelegramLink('https://t.me/heyqbnk', { forceRequest: true });
+```
+
 ## `shareURL`
 
 To share a URL with another user, channel, or group, use the `shareURL` method.

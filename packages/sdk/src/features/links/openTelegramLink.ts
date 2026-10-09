@@ -18,6 +18,13 @@ export interface CreateOpenTelegramLinkOptions extends SharedFeatureOptions,
   WithVersion {
 }
 
+export interface OpenTelegramLinkOptions {
+  /**
+   * Should the Telegram client force the link request processing.
+   */
+  forceRequest?: boolean;
+}
+
 export type OpenTelegramLinkError = PostEventError | InvalidArgumentsError;
 
 export function createOpenTelegramLink({
@@ -27,6 +34,7 @@ export function createOpenTelegramLink({
 }: CreateOpenTelegramLinkOptions) {
   return withChecksFp((
     url: string | URL,
+    options: OpenTelegramLinkOptions = {},
   ): fp.either.Either<OpenTelegramLinkError, void> => {
     try {
       url = new URL(url);
@@ -38,7 +46,10 @@ export function createOpenTelegramLink({
     }
     const path = url.pathname + url.search;
     if (supports('web_app_open_tg_link', access(version))) {
-      return postEvent('web_app_open_tg_link', { path_full: path });
+      return postEvent('web_app_open_tg_link', {
+        path_full: path,
+        ...(options.forceRequest ? { force_request: true } : {}),
+      });
     }
     window.location.href = 'https://telegram.me' + path;
     return fp.either.right(undefined);
@@ -60,8 +71,10 @@ function instantiate() {
  *
  * The Mini App will be closed.
  * @param url - URL to be opened.
+ * @param options - additional options.
  * @example
  * openTelegramLink('https://t.me/heyqbnk');
+ * openTelegramLink('https://t.me/heyqbnk', { forceRequest: true });
  */
 export const openTelegramLinkFp = instantiate();
 

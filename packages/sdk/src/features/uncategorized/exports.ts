@@ -7,6 +7,7 @@ export {
   readTextFromClipboardFp,
   type ReadTextFromClipboardError,
 } from './readTextFromClipboard.js';
+export { requestChat, requestChatFp, type RequestChatFnError } from './requestChat.js';
 export { retrieveAndroidDeviceData } from './retrieveAndroidDeviceData.js';
 export {
   retrieveAndroidDeviceDataFrom,
