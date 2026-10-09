@@ -11,11 +11,11 @@
     "dev": "turbo run dev",
     "docs:build": "turbo run build --filter=\"./apps/docs\"",
     "docs:dev": "turbo run dev --filter=\"./apps/docs\"",
-    "packages:build": "turbo run build --filter=\"./packages/*\"",
-    "packages:lint": "turbo run lint --filter=\"./packages/*\"",
-    "packages:lint:fix": "turbo run lint:fix --filter=\"./packages/*\"",
+    "packages:build": "turbo run build --filter=\"./packages2/*\"",
+    "packages:lint": "turbo run lint --filter=\"./packages2/*\"",
+    "packages:lint:fix": "turbo run lint:fix --filter=\"./packages2/*\"",
     "packages:test": "vitest --run --retry 3",
-    "packages:typecheck": "turbo run typecheck --filter=\"./packages/*\"",
+    "packages:typecheck": "turbo run typecheck --filter=\"./packages2/*\"",
     "prepare": "husky"
   },
   "devDependencies": {
@@ -26,7 +26,7 @@
     "@turbo/gen": "^2.3.3",
     "@types/eslint__js": "^8.42.3",
     "@vitest/coverage-v8": "^3.2.4",
-    "@vitest/eslint-plugin": "^1.3.4",
+    "@vitest/eslint-plugin": "^1.6.27",
     "@vitest/ui": "^3.2.4",
     "commitizen": "^4.3.1",
     "cz-conventional-changelog": "^3.3.0",
@@ -39,8 +39,8 @@
     "tslib": "^2.8.1",
     "tsx": "^4.19.2",
     "turbo": "^2.3.3",
-    "typescript": "5.9.2",
-    "typescript-eslint": "^8.41.0",
+    "typescript": "6.0.3",
+    "typescript-eslint": "^8.71.1",
     "vite": "^6.3.3",
     "vite-plugin-dts": "^4.5.3",
     "vite-plugin-mkcert": "^1.17.6",
@@ -49,7 +49,7 @@
     "vitest": "^3.2.4"
   },
   "type": "module",
-  "packageManager": "pnpm@10.25.0",
+  "packageManager": "pnpm@12.10.1",
   "name": "monorepo",
   "config": {
     "commitizen": {

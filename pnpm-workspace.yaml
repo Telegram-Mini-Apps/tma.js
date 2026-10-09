@@ -1,3 +1,15 @@
 packages:
   - "apps/*"
-  - "packages/*"
+  # The previous major packages are excluded while the next major is being developed in packages2.
+  - "packages2/*"
+
+# Since pnpm 11, every package with a build script must be listed explicitly.
+allowBuilds:
+  "@swc/core": true
+  core-js-pure: true
+  esbuild: true
+  unrs-resolver: true
+  vue-demi: true
+
+minimumReleaseAgeExclude:
+  - error-kid@3.1.0

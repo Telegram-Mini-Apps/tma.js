@@ -1,8 +1,13 @@
 {
   "extends": "tsconfig/esnext.json",
   "compilerOptions": {
+    // Required by the project reference in tsconfig.json.
     "composite": true,
-    "module": "NodeNext"
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "outDir": "node_modules/.tmp",
+    "module": "ESNext",
+    "moduleResolution": "Bundler"
   },
   "include": [
     "vite.config.ts"

@@ -7,15 +7,15 @@
     "dev": "vite",
     "dev:https": "cross-env HTTPS=true vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "typecheck": "tsc -p tsconfig.json && tsc -p tsconfig.node.json --noEmit"
   },
   "dependencies": {
-    "fp-ts": "^2.16.11",
-    "tsconfig": "workspace:*",
     "@tma.js/bridge": "workspace:*",
-    "@tma.js/sdk": "workspace:*"
+    "@tma.js/init-data": "workspace:*"
   },
   "devDependencies": {
-    "cross-env": "^7.0.3"
+    "cross-env": "^7.0.3",
+    "tsconfig": "workspace:*"
   }
 }

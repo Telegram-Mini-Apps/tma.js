@@ -1,0 +1,55 @@
+{
+  "name": "@tma.js/bridge",
+  "version": "2.4.0",
+  "description": "Communication layer between a Telegram Mini App and the Telegram client.",
+  "author": "Vladislav Kibenko <wolfram.deus@gmail.com>",
+  "homepage": "https://github.com/Telegram-Mini-Apps/tma.js#readme",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:Telegram-Mini-Apps/tma.js.git",
+    "directory": "packages/bridge"
+  },
+  "bugs": {
+    "url": "https://github.com/Telegram-Mini-Apps/tma.js/issues"
+  },
+  "keywords": [
+    "telegram-mini-apps",
+    "typescript",
+    "bridge"
+  ],
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": false,
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/dts/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/dts/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs",
+      "default": "./dist/index.cjs"
+    }
+  },
+  "scripts": {
+    "test": "vitest --run",
+    "lint": "eslint src",
+    "lint:fix": "pnpm run lint --fix",
+    "typecheck": "tsc --noEmit",
+    "build": "rimraf dist && vite build"
+  },
+  "devDependencies": {
+    "happy-dom": "^20.0.5",
+    "tsconfig": "workspace:*"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "error-kid": "^3.1.0",
+    "valibot": "^1.5.0"
+  }
+}

@@ -53,39 +53,55 @@ public API or the platform description, update the related documentation pages a
 Before diving deep into the code, it's important to understand the philosophy behind our repositories' development.
 
 The first thing to know here is we don't really like handling errors using `try-catch` construction.
-This approach often requires you to read the source code of a function to know what specific errors it might throw.
-Instead, we use the `Either` abstraction from [fp-ts](https://www.npmjs.com/package/fp-ts). This provides a clear and
-explicit way to see whether a function executed successfully or failed.
+This approach often requires you to read the source code of a function to know what specific errors it might throw,
+and TypeScript doesn't check thrown errors at all. Instead, functions return their expected errors as a `Result`,
+so the compiler knows exactly how a function can fail:
+
+```typescript
+type Result<T, E> = { ok: true; data: T } | { ok: false; error: E };
+```
 
 However, we recognize that many developers may be more comfortable with a traditional `try-catch` approach. To
-accommodate this, all functions that can fail must return an `Either`. Additionally, you must provide a "throwing"
-alternative that wraps the `Either` and throws the error for those who prefer that style.
+accommodate this, a function failing with expected errors must have two versions:
 
-When writing your code, ensure that if a function can throw an error, it always returns an `Either` and has a throwing
-counterpart.
+- `safeX` returning a `Result`. This is the main implementation;
+- `x` unwrapping the result and throwing its error. It has no logic of its own.
+
+Follow these rules:
+
+- Errors are classes created with [error-kid](https://www.npmjs.com/package/error-kid), so users can handle each
+  of them with `matchError` and get a compilation error when one is left unhandled.
+- Only expected errors go to `Result`: invalid input, a timeout, a failed operation. Environment and usage errors,
+  like calling a method outside Telegram or calling an unsupported method, are thrown.
+- Internal functions return `Result` too, instead of throwing and catching. This way the compiler checks that
+  the error type of the safe version matches its implementation. Never cast the caught error to the expected type.
+- Document errors with `@returns` in the safe version and with `@throws` in the throwing one, and cover the error
+  types with type tests.
 
 Here is an example:
 
 ```typescript
-import * as E from 'fp-ts/Either';
-import { pipe } from 'fp-ts/function';
+import { errorClass } from 'error-kid';
 
-class MyError extends Error {
+import { err, ok, type Result, unwrap } from './result.js';
+
+export class NotFoundError extends errorClass({ name: 'NotFoundError', message: 'Not found' }) {
 }
 
-function nonThrowing(): E.Either<MyError, string> {
-  return Math.random() < 0.5
-    ? E.left(new MyError())
-    : E.right('just some string');
+/**
+ * @returns The value, or `NotFoundError` if it is missing.
+ */
+export function safeGetValue(key: string): Result<string, NotFoundError> {
+  const value = storage.get(key);
+  return value === undefined ? err(new NotFoundError()) : ok(value);
 }
 
-function throwing(): string {
-  return pipe(nonThrowing(), E.match(
-    e => {
-      throw e;
-    },
-    result => result
-  ))
+/**
+ * Throwing version of `safeGetValue`.
+ * @throws {NotFoundError} The value is missing.
+ */
+export function getValue(key: string): string {
+  return unwrap(safeGetValue(key));
 }
 ```
 

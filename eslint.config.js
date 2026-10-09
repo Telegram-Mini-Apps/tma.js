@@ -13,11 +13,11 @@ export default tseslint.config(
   },
   {
     name: 'app/files-to-lint',
-    files: ['{packages,playgrounds}/**/*.{js,ts,mts,tsx,vue}'],
+    files: ['packages2/**/*.{js,ts,mts,tsx,vue}'],
     languageOptions: {
       parserOptions: {
         project: [
-          './packages/*/tsconfig.eslint.json',
+          './packages2/*/tsconfig.json',
         ],
         tsconfigRootDir: import.meta.dirname,
         ecmaVersion: 'latest',
@@ -35,7 +35,7 @@ export default tseslint.config(
       'import/resolver': {
         'typescript': {
           project: [
-            './packages/*/tsconfig.eslint.json'
+            './packages2/*/tsconfig.json'
           ],
         },
         'node': true,

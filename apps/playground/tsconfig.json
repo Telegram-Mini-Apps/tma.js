@@ -1,15 +1,24 @@
 {
   "extends": "tsconfig/esnext-dom.json",
   "compilerOptions": {
+    "lib": [
+      "esnext",
+      "dom",
+      "dom.iterable"
+    ],
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    // Vite builds the app, TypeScript only checks types.
+    "noEmit": true,
+    // Packages sources are outside the app directory.
+    "rootDir": "../..",
+    // Packages are imported from their sources, so changes are applied without building them.
     "paths": {
-      "@/*": [
-        "../../packages/*/src/index.ts"
+      "@tma.js/*": [
+        "../../packages2/*/src/index.ts"
       ]
     }
   },
-  "exclude": [
-    "node_modules"
-  ],
   "include": [
     "src"
   ],
