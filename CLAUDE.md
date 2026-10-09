@@ -8,3 +8,5 @@
 - Documentation source lives in `apps/docs` and is published at
   https://docs.telegram-mini-apps.com/. Update it when the public API changes.
 - Contribution rules, philosophy and the check commands are in @CONTRIBUTING.md.
+- AI attribution is forbidden. Don't add `Co-Authored-By` trailers, "Generated with" lines or any
+  other mention of AI tools to commits, pull requests, issues, code or documentation.
