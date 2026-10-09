@@ -1,5 +1,11 @@
 # @tma.js/bridge
 
+## 2.4.0
+
+### Minor Changes
+
+- 2d454d9: Add `requested_chat_sent` and `requested_chat_failed` events, `web_app_request_chat` method and `force_request` parameter of the `web_app_open_tg_link` method.
+
 ## 2.3.3
 
 ### Patch Changes
