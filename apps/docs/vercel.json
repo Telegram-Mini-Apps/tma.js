@@ -1,4 +1,11 @@
 {
+  "redirects": [
+    {
+      "source": "/packages/tma-js-create-mini-app",
+      "destination": "/packages/tma-js-sdk",
+      "permanent": true
+    }
+  ],
   "rewrites": [
     {
       "source": "/:path*",

@@ -14,7 +14,7 @@ Additionally, the official Telegram [platform documentation](https://core.telegr
 provide valuable insights and a different perspective on the platform.
 
 Before diving into development, it’s also advisable to explore the available 
-[libraries](https://docs.telegram-mini-apps.com/packages/tma-js-create-mini-app) for 
+[libraries](https://docs.telegram-mini-apps.com/packages/tma-js-sdk) for 
 both client-side and backend development to gain a better understanding of the tools at your
 disposal.
 

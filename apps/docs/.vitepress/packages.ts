@@ -90,7 +90,6 @@ export const packagesLinksGenerator = (prefix: string = '') => {
           'Migrating from telegram-apps': 'migrate-from-telegram-apps',
         }],
       }),
-      section('CLI', { '@tma.js/create-mini-app': 'tma-js-create-mini-app' }),
       section('GoLang', { 'init-data-golang': 'init-data-golang' }),
     ],
   };
