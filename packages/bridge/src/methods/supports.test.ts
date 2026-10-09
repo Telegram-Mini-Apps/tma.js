@@ -136,6 +136,7 @@ describe.each<[
     'web_app_secure_storage_save_key',
   ]],
   ['9.1', ['web_app_hide_keyboard']],
+  ['9.6', ['web_app_request_chat']],
 ])('%s', (version, methods) => {
   const higher = increaseVersion(version, 1);
   const lower = increaseVersion(version, -1);

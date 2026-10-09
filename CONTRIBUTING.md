@@ -29,6 +29,25 @@ only, as long as the current repository is a pnpm monorepo):
 pnpm i
 ```
 
+## Project Goal
+
+The main goal of `@tma.js` is to be a better alternative to the official Telegram Mini Apps SDK,
+[telegram-web-app.js](https://telegram.org/js/telegram-web-app.js) (see the
+[motivation](./MOTIVATION.md)). When adding or changing platform functionality, check how the
+official SDK implements it to keep feature parity, and aim to do better in typing, ergonomics and
+reliability.
+
+The official platform documentation is published
+at [core.telegram.org/bots/webapps](https://core.telegram.org/bots/webapps). Together with the
+official SDK's source code, treat it as the source of truth for how Mini Apps methods and events
+work and should behave.
+
+## Documentation
+
+The documentation located in the [apps/docs](./apps/docs) directory is published
+at [docs.telegram-mini-apps.com](https://docs.telegram-mini-apps.com/). If your changes affect the
+public API or the platform description, update the related documentation pages as well.
+
 ## Philosophy
 
 Before diving deep into the code, it's important to understand the philosophy behind our repositories' development.

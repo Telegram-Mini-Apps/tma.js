@@ -41,4 +41,13 @@ describe('version is at least 6.1', () => {
     instantiate({ version: '6.1', postEvent })(link);
     expect(postEvent).toHaveBeenCalledExactlyOnceWith('web_app_open_tg_link', { path_full: path });
   });
+
+  it('should pass force_request if forceRequest option is true', () => {
+    const postEvent = vi.fn();
+    instantiate({ version: '6.1', postEvent })('https://t.me/a', { forceRequest: true });
+    expect(postEvent).toHaveBeenCalledExactlyOnceWith('web_app_open_tg_link', {
+      path_full: '/a',
+      force_request: true,
+    });
+  });
 });

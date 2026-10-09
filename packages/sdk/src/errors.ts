@@ -95,6 +95,12 @@ export class ShareMessageError extends /* #__PURE__ */ errorClass<[error: string
 }) {
 }
 
+export class RequestChatError extends /* #__PURE__ */ errorClass<[error: string]>({
+  name: 'RequestChatError',
+  super: msgToTuple,
+}) {
+}
+
 export class UnknownThemeParamsKeyError extends /* #__PURE__ */ errorClass<[key: string]>({
   name: 'UnknownThemeParamsKeyError',
   super: key => [`Unknown theme params key passed: ${key}`],

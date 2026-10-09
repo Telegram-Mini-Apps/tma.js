@@ -537,6 +537,23 @@ export interface Events {
    */
   reload_iframe: never;
   /**
+   * Failed to share a chat requested via the `web_app_request_chat` method.
+   * @since v9.6
+   * @see https://docs.telegram-mini-apps.com/platform/events#requested-chat-failed
+   */
+  requested_chat_failed: {
+    /**
+     * Occurred error.
+     */
+    error: string;
+  };
+  /**
+   * A chat requested via the `web_app_request_chat` method was shared.
+   * @since v9.6
+   * @see https://docs.telegram-mini-apps.com/platform/events#requested-chat-sent
+   */
+  requested_chat_sent: never;
+  /**
    * Occurs whenever the device's safe area insets change
    * (e.g., due to orientation change or screen adjustments).
    * @since Mini Apps v8.0

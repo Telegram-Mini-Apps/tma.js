@@ -1,6 +1,7 @@
 export { type OpenLinkError, openLinkFp, openLink, type OpenLinkOptions } from './openLink.js';
 export {
   type OpenTelegramLinkError,
+  type OpenTelegramLinkOptions,
   openTelegramLinkFp,
   openTelegramLink,
 } from './openTelegramLink.js';

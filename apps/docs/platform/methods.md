@@ -432,9 +432,10 @@ Available since: **v6.1**
 Opens the Telegram link by its pathname and query parameters. The link will be opened in the
 Telegram app, Mini App will be closed.
 
-| Field     | Type     | Description                                                                                                                  |
-|-----------|----------|------------------------------------------------------------------------------------------------------------------------------|
-| path_full | `string` | Should be a value taken from the link of this format: `https://t.me/{path_full}`. Can additionally contain query parameters. |
+| Field         | Type      | Description                                                                                                                  |
+|---------------|-----------|------------------------------------------------------------------------------------------------------------------------------|
+| path_full     | `string`  | Should be a value taken from the link of this format: `https://t.me/{path_full}`. Can additionally contain query parameters. |
+| force_request | `boolean` | _Optional_. Should the client force the link request processing.                                                             |
 
 ### `web_app_read_text_from_clipboard`
 
@@ -452,6 +453,18 @@ the [clipboard_text_received](events.md#clipboard-text-received) event.
 
 Notifies Telegram about current application is ready to be shown. This method will make Telegram to
 remove application loader and display Mini App.
+
+### `web_app_request_chat`
+
+Available since: **v9.6**
+
+Prompts the user to choose a chat to share with the Mini App. As a result, Telegram triggers
+the [requested_chat_sent](events.md#requested-chat-sent) or
+[requested_chat_failed](events.md#requested-chat-failed) event.
+
+| Field  | Type     | Description                |
+|--------|----------|----------------------------|
+| req_id | `string` | Unique request identifier. |
 
 ### `web_app_request_content_safe_area`
 

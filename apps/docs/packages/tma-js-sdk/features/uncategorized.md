@@ -147,6 +147,20 @@ sendData('my-data-goes-here');
 > the `web_app_data` field in the [Message](https://core.telegram.org/bots/api#message) class for
 > more details.
 
+## `requestChat`
+
+To prompt the user to choose a chat to share with the Mini App, use the `requestChat` function.
+It accepts the identifier of a prepared keyboard button returned by the bot.
+
+```ts
+import { requestChat } from '@tma.js/sdk';
+
+await requestChat('prepared button id');
+```
+
+The function resolves when the chat was shared, and rejects with `RequestChatError` if Telegram
+reports an error.
+
 ## `shareMessage`
 
 To share a prepared by your server message, use the `shareMessage` function. It opens a dialog

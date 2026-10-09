@@ -136,6 +136,7 @@ describe.each<[
       param: 'icon_custom_emoji_id',
     },
   ]],
+  ['9.6', ['web_app_request_chat']],
 ])('%s', (version, methods) => {
   const methodsOnly = methods.filter((m): m is MethodName => {
     return typeof m === 'string';
