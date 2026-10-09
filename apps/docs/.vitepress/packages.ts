@@ -67,6 +67,7 @@ export const packagesLinksGenerator = (prefix: string = '') => {
               utils('privacy'),
               component('qr-scanner', 'QR Scanner'),
               component('secondary-button'),
+              component('serverless'),
               component('settings-button'),
               component('swipe-behavior'),
               component('theme-params'),

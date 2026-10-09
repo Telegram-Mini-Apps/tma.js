@@ -17,6 +17,7 @@ export * from './features/privacy/exports.js';
 export * from './features/QrScanner/exports.js';
 export * from './features/SecondaryButton/exports.js';
 export * from './features/SecureStorage/exports.js';
+export * from './features/Serverless/exports.js';
 export * from './features/SettingsButton/exports.js';
 export * from './features/SwipeBehavior/exports.js';
 export * from './features/ThemeParams/exports.js';
