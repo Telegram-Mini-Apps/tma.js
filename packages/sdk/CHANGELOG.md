@@ -1,5 +1,17 @@
 # @tma.js/sdk
 
+## 3.4.0
+
+### Minor Changes
+
+- d48041d: Add `requestChat` function and `forceRequest` option of the `openTelegramLink` function.
+- 93317ef: Add `serverless` component allowing to call endpoints of the bot's Serverless project, and `ServerlessError`.
+
+### Patch Changes
+
+- Updated dependencies [2d454d9]
+  - @tma.js/bridge@2.4.0
+
 ## 3.3.0
 
 ### Minor Changes
