@@ -57,11 +57,6 @@ yarn add @tma.js/sdk
 > Installing both `@tma.js/sdk` and `@tma.js/sdk-react` (for example) may lead to bugs
 > due to SDK package duplication, resulting in incorrect application behavior.
 
-> [!TIP] Start with @tma.js/create-mini-app
-> To avoid potential issues with bootstrapping your project, consider using the
-> [@tma.js/create-mini-app](../tma-js-create-mini-app.md) package. This will
-> quickly generate a properly configured application for you.
-
 ## Initialize the SDK
 
 The SDK provides a list of components that might seem ready to use once imported, but this is only
