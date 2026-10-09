@@ -345,6 +345,10 @@ export interface Methods {
      * additionally contain query parameters.
      */
     path_full: string;
+    /**
+     * Should the client force the link request processing.
+     */
+    force_request?: boolean;
   }>;
   /**
    * Reads text from the clipboard. The method accepts a request identifier which is used to
@@ -359,6 +363,13 @@ export interface Methods {
    * @see https://docs.telegram-mini-apps.com/platform/methods#web-app-ready
    */
   web_app_ready: CreateMethodParams;
+  /**
+   * Prompts the user to choose a chat to share with the Mini App. As a result, Telegram creates
+   * the `requested_chat_sent` or `requested_chat_failed` event.
+   * @since v9.6
+   * @see https://docs.telegram-mini-apps.com/platform/methods#web-app-request-chat
+   */
+  web_app_request_chat: CreateMethodParams<WithReqId>;
   /**
    * Requests content safe area of the user's phone.
    * @since v8.0

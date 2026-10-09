@@ -97,6 +97,7 @@ const releases = {
     { method: 'web_app_setup_main_button', param: 'icon_custom_emoji_id' },
     { method: 'web_app_setup_secondary_button', param: 'icon_custom_emoji_id' },
   ],
+  9.6: ['web_app_request_chat'],
 };
 
 /**

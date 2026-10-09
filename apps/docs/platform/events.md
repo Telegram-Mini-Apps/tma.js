@@ -511,6 +511,22 @@ The QR scanner scanned some QR and extracted its content.
 
 Parent iframe requested current iframe reload.
 
+### `requested_chat_failed`
+
+Available since: **v9.6**
+
+Failed to share a chat requested via the `web_app_request_chat` method.
+
+| Field | Type     | Description     |
+|-------|----------|-----------------|
+| error | `string` | Occurred error. |
+
+### `requested_chat_sent`
+
+Available since: **v9.6**
+
+A chat requested via the `web_app_request_chat` method was shared.
+
 ### `safe_area_changed`
 
 Available since: **v8.0**
