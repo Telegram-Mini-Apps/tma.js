@@ -101,6 +101,31 @@ export class RequestChatError extends /* #__PURE__ */ errorClass<[error: string]
 }) {
 }
 
+export interface ServerlessErrorData {
+  /**
+   * HTTP status code of the response, or 0 if the request could not be completed.
+   */
+  status: number;
+  /**
+   * "ENDPOINT_ERROR" if the endpoint refused the call by throwing an EndpointError.
+   */
+  type?: string;
+  /**
+   * Additional data passed by the endpoint along with its EndpointError.
+   */
+  parameters?: unknown;
+}
+
+export class ServerlessError extends /* #__PURE__ */ errorClassWithData<
+  ServerlessErrorData,
+  [message: string, options: ServerlessErrorData & { cause?: unknown }]
+>({
+  name: 'ServerlessError',
+  data: (_, { status, type, parameters }) => ({ status, type, parameters }),
+  super: (message, { cause }) => [message, { cause }],
+}) {
+}
+
 export class UnknownThemeParamsKeyError extends /* #__PURE__ */ errorClass<[key: string]>({
   name: 'UnknownThemeParamsKeyError',
   super: key => [`Unknown theme params key passed: ${key}`],
