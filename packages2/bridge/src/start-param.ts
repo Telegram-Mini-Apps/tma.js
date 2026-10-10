@@ -1,5 +1,5 @@
 import { StartParamTooLongError } from './errors.js';
-import { err, ok, type Result, unwrap } from './result.js';
+import { err, ok, type Result, throwing } from './result.js';
 
 const MAX_LENGTH = 512;
 
@@ -47,7 +47,7 @@ export function isSafeToCreateStartParam(value: string): boolean {
  * characters.
  * @see https://docs.telegram-mini-apps.com/platform/start-parameter
  */
-export function safeCreateStartParam(value: unknown): Result<string, StartParamTooLongError> {
+export function safeCreateStartParam(value: unknown): Result<StartParamTooLongError, string> {
   const encoded = encodeBase64Url(typeof value === 'string' ? value : JSON.stringify(value));
   return encoded.length > MAX_LENGTH
     ? err(new StartParamTooLongError(encoded.length))
@@ -62,9 +62,7 @@ export function safeCreateStartParam(value: unknown): Result<string, StartParamT
  * @throws {StartParamTooLongError} The encoded value exceeds 512 characters.
  * @see https://docs.telegram-mini-apps.com/platform/start-parameter
  */
-export function createStartParam(value: unknown): string {
-  return unwrap(safeCreateStartParam(value));
-}
+export const createStartParam = /* @__PURE__ */ throwing(safeCreateStartParam);
 
 /**
  * Decodes a start parameter created with `createStartParam`.

@@ -16,7 +16,7 @@ import {
 
 import { isIframe, telegramWindow } from './env.js';
 import { debugLog, getLogger } from './logger.js';
-import { themeParams } from './theme-params.js';
+import { ThemeParamsSchema } from './theme-params.js';
 import type {
   AnyEventListener,
   EventListener,
@@ -56,7 +56,7 @@ let restoreWindow: Restore | undefined;
 /**
  * Schema of a message sent by Telegram Web clients via `window.postMessage`.
  */
-export const miniAppsMessage = pipe(
+export const MiniAppsMessageSchema = pipe(
   string(),
   parseJson(),
   looseObject({ eventType: string(), eventData: optional(unknown()) }),
@@ -79,7 +79,7 @@ const payloadSchemas: { [E in EventName]?: GenericSchema<unknown, EventListenerP
     nullish(looseObject({ button_id: nullish(string()) })),
     transform(data => (data && typeof data.button_id === 'string' ? { button_id: data.button_id } : {})),
   ),
-  theme_changed: looseObject({ theme_params: themeParams }),
+  theme_changed: looseObject({ theme_params: ThemeParamsSchema }),
   viewport_changed: nullish(
     looseObject({
       height: number(),
@@ -144,7 +144,7 @@ function onMessage(event: MessageEvent): void {
     return;
   }
   // Messages may be sent by any other code. We are ignoring unknown ones.
-  const message = safeParse(miniAppsMessage, event.data);
+  const message = safeParse(MiniAppsMessageSchema, event.data);
   message.success && receiveEvent(message.output.eventType, message.output.eventData);
 }
 

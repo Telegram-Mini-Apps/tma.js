@@ -16,7 +16,7 @@ import type { RGB, ThemeParams } from './types/index.js';
  * Theme color. Some Telegram clients send colors as numbers, so they are converted to
  * the `#RRGGBB` format.
  */
-const color = pipe(
+const ColorSchema = pipe(
   union([string(), number()]),
   transform(value => (
     typeof value === 'number'
@@ -32,13 +32,13 @@ const color = pipe(
 /**
  * Schema of a raw theme parameters object.
  */
-export const themeParams: GenericSchema<unknown, ThemeParams> = record(string(), color);
+export const ThemeParamsSchema: GenericSchema<unknown, ThemeParams> = record(string(), ColorSchema);
 
 /**
  * Schema of theme parameters in the JSON format.
  */
-export const themeParamsJson: GenericSchema<unknown, ThemeParams> = pipe(
+export const ThemeParamsJsonSchema: GenericSchema<unknown, ThemeParams> = pipe(
   string(),
   parseJson(),
-  themeParams,
+  ThemeParamsSchema,
 );

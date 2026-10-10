@@ -10,8 +10,8 @@ import {
 } from 'valibot';
 
 import { InvalidLaunchParamsError, LaunchParamsRetrieveError } from './errors.js';
-import { err, ok, type Result, unwrap } from './result.js';
-import { themeParamsJson } from './theme-params.js';
+import { err, ok, type Result, throwing } from './result.js';
+import { ThemeParamsJsonSchema } from './theme-params.js';
 import type { Platform, ThemeParams, Version } from './types/index.js';
 
 const STORAGE_KEY = 'tma.js/launch-params';
@@ -61,17 +61,17 @@ export interface LaunchParams {
   tgWebAppVersion: Version;
 }
 
-const optionalBoolean = optional(pipe(string(), transform(value => value === '1')));
+const OptionalBooleanSchema = optional(pipe(string(), transform(value => value === '1')));
 
-const launchParams = object({
-  tgWebAppBotInline: optionalBoolean,
+const LaunchParamsSchema = object({
+  tgWebAppBotInline: OptionalBooleanSchema,
   tgWebAppData: optional(string()),
-  tgWebAppDefaultColors: optional(themeParamsJson),
-  tgWebAppFullscreen: optionalBoolean,
+  tgWebAppDefaultColors: optional(ThemeParamsJsonSchema),
+  tgWebAppFullscreen: OptionalBooleanSchema,
   tgWebAppPlatform: pipe(string(), nonEmpty()),
-  tgWebAppShowSettings: optionalBoolean,
+  tgWebAppShowSettings: OptionalBooleanSchema,
   tgWebAppStartParam: optional(string()),
-  tgWebAppThemeParams: optional(themeParamsJson, '{}'),
+  tgWebAppThemeParams: optional(ThemeParamsJsonSchema, '{}'),
   tgWebAppVersion: pipe(string(), nonEmpty()),
 });
 
@@ -83,14 +83,14 @@ const launchParams = object({
  */
 export function safeParseLaunchParams(
   value: string | URLSearchParams,
-): Result<LaunchParams, InvalidLaunchParamsError> {
+): Result<InvalidLaunchParamsError, LaunchParams> {
   const query = new URLSearchParams(value);
   const input: Record<string, string> = {};
   query.forEach((item, key) => {
     // Like URLSearchParams.get, take the first value.
     key in input || (input[key] = item);
   });
-  const result = safeParse(launchParams, input);
+  const result = safeParse(LaunchParamsSchema, input);
   return result.success
     ? ok(result.output)
     : err(new InvalidLaunchParamsError(query.toString(), new ValiError(result.issues)));
@@ -103,9 +103,7 @@ export function safeParseLaunchParams(
  * @param value - launch parameters query.
  * @throws {InvalidLaunchParamsError} The value doesn't represent valid launch parameters.
  */
-export function parseLaunchParams(value: string | URLSearchParams): LaunchParams {
-  return unwrap(safeParseLaunchParams(value));
-}
+export const parseLaunchParams = /* @__PURE__ */ throwing(safeParseLaunchParams);
 
 /**
  * Converts launch parameters to their query representation.
@@ -193,7 +191,7 @@ export function saveLaunchParams(value: string): void {
 /**
  * Retrieves launch parameters from any known source and saves them in the session storage.
  */
-function retrieve(): Result<{ raw: string; parsed: LaunchParams }, LaunchParamsRetrieveError> {
+function retrieve(): Result<LaunchParamsRetrieveError, { raw: string; parsed: LaunchParams }> {
   const errors: { source: string; error: unknown }[] = [];
   for (const [source, retrieveSource] of sources) {
     let raw: string | null | undefined;
@@ -223,7 +221,7 @@ function retrieve(): Result<{ raw: string; parsed: LaunchParams }, LaunchParamsR
  * the session storage.
  * @returns Launch parameters, or `LaunchParamsRetrieveError` if they were not found.
  */
-export function safeRetrieveRawLaunchParams(): Result<string, LaunchParamsRetrieveError> {
+export function safeRetrieveRawLaunchParams(): Result<LaunchParamsRetrieveError, string> {
   const result = retrieve();
   return result.ok ? ok(result.data.raw) : result;
 }
@@ -235,15 +233,13 @@ export function safeRetrieveRawLaunchParams(): Result<string, LaunchParamsRetrie
  * Throwing version of `safeRetrieveRawLaunchParams`.
  * @throws {LaunchParamsRetrieveError} Launch parameters were not found.
  */
-export function retrieveRawLaunchParams(): string {
-  return unwrap(safeRetrieveRawLaunchParams());
-}
+export const retrieveRawLaunchParams = /* @__PURE__ */ throwing(safeRetrieveRawLaunchParams);
 
 /**
  * Retrieves launch parameters from any known source.
  * @returns Launch parameters, or `LaunchParamsRetrieveError` if they were not found.
  */
-export function safeRetrieveLaunchParams(): Result<LaunchParams, LaunchParamsRetrieveError> {
+export function safeRetrieveLaunchParams(): Result<LaunchParamsRetrieveError, LaunchParams> {
   const result = retrieve();
   return result.ok ? ok(result.data.parsed) : result;
 }
@@ -254,16 +250,14 @@ export function safeRetrieveLaunchParams(): Result<LaunchParams, LaunchParamsRet
  * Throwing version of `safeRetrieveLaunchParams`.
  * @throws {LaunchParamsRetrieveError} Launch parameters were not found.
  */
-export function retrieveLaunchParams(): LaunchParams {
-  return unwrap(safeRetrieveLaunchParams());
-}
+export const retrieveLaunchParams = /* @__PURE__ */ throwing(safeRetrieveLaunchParams);
 
 /**
  * Retrieves init data in the raw format. Pass it to your server to authorize the user.
  * @returns Init data (`undefined` if it is missing in launch parameters), or
  * `LaunchParamsRetrieveError` if launch parameters were not found.
  */
-export function safeRetrieveRawInitData(): Result<string | undefined, LaunchParamsRetrieveError> {
+export function safeRetrieveRawInitData(): Result<LaunchParamsRetrieveError, string | undefined> {
   const result = retrieve();
   return result.ok ? ok(result.data.parsed.tgWebAppData) : result;
 }
@@ -275,6 +269,4 @@ export function safeRetrieveRawInitData(): Result<string | undefined, LaunchPara
  * @returns Init data, or `undefined` if it is missing in launch parameters.
  * @throws {LaunchParamsRetrieveError} Launch parameters were not found.
  */
-export function retrieveRawInitData(): string | undefined {
-  return unwrap(safeRetrieveRawInitData());
-}
+export const retrieveRawInitData = /* @__PURE__ */ throwing(safeRetrieveRawInitData);

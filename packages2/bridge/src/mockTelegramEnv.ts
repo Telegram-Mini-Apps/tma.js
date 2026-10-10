@@ -1,7 +1,7 @@
 import { safeParse } from 'valibot';
 
 import { isIframe, telegramWindow, type TelegramWindow } from './env.js';
-import { miniAppsMessage } from './events.js';
+import { MiniAppsMessageSchema } from './events.js';
 import {
   parseLaunchParams,
   saveLaunchParams,
@@ -85,7 +85,7 @@ export function mockTelegramEnv(
     const original = getPostMessage();
     return setPostMessage((message, targetOrigin) => {
       const next = () => original(message, targetOrigin);
-      const call = safeParse(miniAppsMessage, message);
+      const call = safeParse(MiniAppsMessageSchema, message);
       if (!call.success) {
         return next();
       }

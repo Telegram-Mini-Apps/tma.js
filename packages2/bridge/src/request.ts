@@ -80,7 +80,7 @@ export function safeRequest<M extends MethodName, E extends AnyEventName>(
   method: M,
   events: E,
   ...args: RequestFnArgs<M, E>
-): Promise<Result<RequestResult<E>, TimeoutError>> {
+): Promise<Result<TimeoutError, RequestResult<E>>> {
   const {
     capture = () => true,
     timeout,
@@ -89,7 +89,7 @@ export function safeRequest<M extends MethodName, E extends AnyEventName>(
     postEvent = defaultPostEvent,
   } = (args[0] || {}) as RequestOptions<E> & { params?: unknown };
 
-  return new Promise<Result<RequestResult<E>, TimeoutError>>((resolve, reject) => {
+  return new Promise<Result<TimeoutError, RequestResult<E>>>((resolve, reject) => {
     if (signal && signal.aborted) {
       // Rejecting with the abort reason is the standard behavior of abortable APIs.
       // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors

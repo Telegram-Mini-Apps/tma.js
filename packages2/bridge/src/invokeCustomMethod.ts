@@ -24,17 +24,17 @@ export function safeInvokeCustomMethod<M extends CustomMethodName>(
   method: M,
   params: CustomMethodParams<M>,
   options?: InvokeCustomMethodOptions,
-): Promise<Result<unknown, InvokeCustomMethodFailedError | TimeoutError>>;
+): Promise<Result<InvokeCustomMethodFailedError | TimeoutError, unknown>>;
 export function safeInvokeCustomMethod(
   method: string,
   params: object,
   options?: InvokeCustomMethodOptions,
-): Promise<Result<unknown, InvokeCustomMethodFailedError | TimeoutError>>;
+): Promise<Result<InvokeCustomMethodFailedError | TimeoutError, unknown>>;
 export async function safeInvokeCustomMethod(
   method: string,
   params: object,
   { requestId = createRequestId(), ...options }: InvokeCustomMethodOptions = {},
-): Promise<Result<unknown, InvokeCustomMethodFailedError | TimeoutError>> {
+): Promise<Result<InvokeCustomMethodFailedError | TimeoutError, unknown>> {
   const response = await safeRequest(
     'web_app_invoke_custom_method',
     'custom_method_invoked',

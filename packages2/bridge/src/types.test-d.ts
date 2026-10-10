@@ -20,7 +20,7 @@ import {
 } from './launch-params.js';
 import { postEvent } from './post-event.js';
 import { request, safeRequest } from './request.js';
-import type { Result } from './result.js';
+import { ok, type Result, throwing } from './result.js';
 import { safeCreateStartParam } from './start-param.js';
 import { supports } from './versions.js';
 
@@ -79,11 +79,11 @@ export function checkTypes(): void {
 export async function checkSafeTypes(): Promise<void> {
   expectTypeOf(safeRequest('web_app_request_phone', 'phone_requested'))
     .resolves
-    .toEqualTypeOf<Result<{ status: string }, TimeoutError>>();
+    .toEqualTypeOf<Result<TimeoutError, { status: string }>>();
 
   const invoked = await safeInvokeCustomMethod('getCurrentTime', {});
   expectTypeOf(invoked)
-    .toEqualTypeOf<Result<unknown, InvokeCustomMethodFailedError | TimeoutError>>();
+    .toEqualTypeOf<Result<InvokeCustomMethodFailedError | TimeoutError, unknown>>();
   if (!invoked.ok) {
     matchError(invoked.error, {
       InvokeCustomMethodFailedError: () => null,
@@ -95,17 +95,23 @@ export async function checkSafeTypes(): Promise<void> {
 
   expectTypeOf(safeParseLaunchParams)
     .returns
-    .toEqualTypeOf<Result<LaunchParams, InvalidLaunchParamsError>>();
+    .toEqualTypeOf<Result<InvalidLaunchParamsError, LaunchParams>>();
   expectTypeOf(safeRetrieveLaunchParams)
     .returns
-    .toEqualTypeOf<Result<LaunchParams, LaunchParamsRetrieveError>>();
+    .toEqualTypeOf<Result<LaunchParamsRetrieveError, LaunchParams>>();
   expectTypeOf(safeRetrieveRawLaunchParams)
     .returns
-    .toEqualTypeOf<Result<string, LaunchParamsRetrieveError>>();
+    .toEqualTypeOf<Result<LaunchParamsRetrieveError, string>>();
   expectTypeOf(safeRetrieveRawInitData)
     .returns
-    .toEqualTypeOf<Result<string | undefined, LaunchParamsRetrieveError>>();
+    .toEqualTypeOf<Result<LaunchParamsRetrieveError, string | undefined>>();
   expectTypeOf(safeCreateStartParam)
     .returns
-    .toEqualTypeOf<Result<string, StartParamTooLongError>>();
+    .toEqualTypeOf<Result<StartParamTooLongError, string>>();
+
+  // throwing keeps the arguments and unwraps the result.
+  expectTypeOf(throwing((a: number, b?: string): Result<TimeoutError, boolean> => ok(!!a && !b)))
+    .toEqualTypeOf<(a: number, b?: string) => boolean>();
+  expectTypeOf(throwing(async (a: number): Promise<Result<TimeoutError, string>> => ok(String(a))))
+    .toEqualTypeOf<(a: number) => Promise<string>>();
 }
