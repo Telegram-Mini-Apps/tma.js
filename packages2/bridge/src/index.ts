@@ -63,7 +63,7 @@ export {
   isSafeToCreateStartParam,
   safeCreateStartParam,
 } from './start-param.js';
-export type { Result } from './result.js';
+export { err, ok, type Result, throwing, unwrap } from './result.js';
 export {
   compareVersions,
   createPostEvent,
