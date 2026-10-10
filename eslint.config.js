@@ -37,6 +37,21 @@ export default tseslint.config(
           project: [
             './packages2/*/tsconfig.json'
           ],
+          // Workspace packages are resolved to their source code, see the "@tma.js/source"
+          // condition in their package.json files. The rest are the resolver defaults.
+          conditionNames: [
+            '@tma.js/source',
+            'types',
+            'import',
+            'esm2020',
+            'es2020',
+            'es2015',
+            'require',
+            'node',
+            'node-addons',
+            'browser',
+            'default',
+          ],
         },
         'node': true,
       },
