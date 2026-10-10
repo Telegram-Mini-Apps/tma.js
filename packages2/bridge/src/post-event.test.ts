@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 
 import { UnknownEnvError } from './errors.js';
-import { postEvent, setTargetOrigin } from './postEvent.js';
+import { postEvent, setTargetOrigin } from './post-event.js';
 import { catchError } from '../test/catchError.js';
 
 const w = window as any;

@@ -1,6 +1,5 @@
-import { isIframe } from './env.js';
+import { isIframe, telegramWindow } from './env.js';
 import { UnknownEnvError } from './errors.js';
-import { telegramWindow } from './globals.js';
 import { debugLog } from './logger.js';
 import type { MethodArgs, MethodName } from './types/index.js';
 

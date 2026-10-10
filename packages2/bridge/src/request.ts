@@ -1,6 +1,6 @@
 import { TimeoutError } from './errors.js';
 import { onEvent } from './events.js';
-import { postEvent as defaultPostEvent, type PostEventFn } from './postEvent.js';
+import { postEvent as defaultPostEvent, type PostEventFn } from './post-event.js';
 import { err, ok, type Result, unwrap } from './result.js';
 import type {
   EventListenerPayload,

@@ -14,8 +14,7 @@ import {
   unknown,
 } from 'valibot';
 
-import { isIframe } from './env.js';
-import { telegramWindow } from './globals.js';
+import { isIframe, telegramWindow } from './env.js';
 import { debugLog, getLogger } from './logger.js';
 import { themeParams } from './theme-params.js';
 import type {

@@ -2,7 +2,7 @@ import { afterEach } from 'vitest';
 
 import { offAll } from '../src/events.js';
 import { setDebug, setLogger } from '../src/logger.js';
-import { setTargetOrigin } from '../src/postEvent.js';
+import { setTargetOrigin } from '../src/post-event.js';
 
 afterEach(() => {
   offAll();

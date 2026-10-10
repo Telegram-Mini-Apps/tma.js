@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { InvalidLaunchParamsError } from './errors.js';
 import { emitEvent } from './events.js';
 import { mockTelegramEnv, type MockedMethodCall } from './mockTelegramEnv.js';
-import { postEvent } from './postEvent.js';
+import { postEvent } from './post-event.js';
 import { request } from './request.js';
 import { catchError } from '../test/catchError.js';
 

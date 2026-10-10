@@ -1,6 +1,6 @@
 import { MethodParameterUnsupportedError, MethodUnsupportedError } from './errors.js';
 import { getLogger } from './logger.js';
-import { postEvent, type PostEventFn } from './postEvent.js';
+import { postEvent, type PostEventFn } from './post-event.js';
 import type { MethodName, Version } from './types/index.js';
 
 /**

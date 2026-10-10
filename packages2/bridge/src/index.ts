@@ -1,6 +1,6 @@
 export { matchError } from 'error-kid';
 
-export { hasWebviewProxy, isIframe } from './env.js';
+export { hasWebviewProxy, isIframe, isTMA, isTMAAsync } from './env.js';
 export {
   InvalidLaunchParamsError,
   InvokeCustomMethodFailedError,
@@ -26,7 +26,6 @@ export {
   safeInvokeCustomMethod,
   type InvokeCustomMethodOptions,
 } from './invokeCustomMethod.js';
-export { isTMA, isTMAAsync } from './isTMA.js';
 export {
   parseLaunchParams,
   retrieveLaunchParams,
@@ -45,7 +44,7 @@ export {
   type MockedMethodCall,
   type MockTelegramEnvOptions,
 } from './mockTelegramEnv.js';
-export { getTargetOrigin, postEvent, setTargetOrigin, type PostEventFn } from './postEvent.js';
+export { getTargetOrigin, postEvent, setTargetOrigin, type PostEventFn } from './post-event.js';
 export {
   captureSameReq,
   createRequestId,

@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 
+import { isTMA, isTMAAsync } from './env.js';
 import { emitEvent } from './events.js';
-import { isTMA, isTMAAsync } from './isTMA.js';
 
 function mockNoLaunchParams() {
   vi.spyOn(window, 'location', 'get').mockReturnValue({ href: 'https://example.com' } as Location);

@@ -1,8 +1,7 @@
 import { safeParse } from 'valibot';
 
-import { isIframe } from './env.js';
+import { isIframe, telegramWindow, type TelegramWindow } from './env.js';
 import { miniAppsMessage } from './events.js';
-import { telegramWindow, type TelegramWindow } from './globals.js';
 import {
   parseLaunchParams,
   saveLaunchParams,
@@ -10,7 +9,7 @@ import {
   type LaunchParams,
 } from './launch-params.js';
 import { debugLog } from './logger.js';
-import { getPostMessage, setPostMessage } from './postEvent.js';
+import { getPostMessage, setPostMessage } from './post-event.js';
 import type { MethodName, MethodParams } from './types/index.js';
 
 /**

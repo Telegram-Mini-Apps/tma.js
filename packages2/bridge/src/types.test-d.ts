@@ -18,7 +18,7 @@ import {
   safeRetrieveRawInitData,
   safeRetrieveRawLaunchParams,
 } from './launch-params.js';
-import { postEvent } from './postEvent.js';
+import { postEvent } from './post-event.js';
 import { request, safeRequest } from './request.js';
 import type { Result } from './result.js';
 import { safeCreateStartParam } from './start-param.js';
