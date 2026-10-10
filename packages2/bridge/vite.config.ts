@@ -7,6 +7,9 @@ export default defineConfig({
   plugins: [
     dts({
       outDir: 'dist/dts',
+      // TypeScript 6 resolves the root directory to the tsconfig directory, which would place
+      // declarations in the "dist/dts/src" directory.
+      compilerOptions: { rootDir: 'src' },
       include: ['src'],
       exclude: ['src/**/*.test*.ts'],
     }),
