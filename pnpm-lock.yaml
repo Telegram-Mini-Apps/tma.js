@@ -302,6 +302,28 @@ importers:
         specifier: workspace:*
         version: link:../tsconfig
 
+  packages2/sdk:
+    dependencies:
+      '@tma.js/bridge':
+        specifier: workspace:^
+        version: link:../bridge
+      '@tma.js/init-data':
+        specifier: workspace:^
+        version: link:../init-data
+      error-kid:
+        specifier: ^3.1.0
+        version: 3.1.0
+      valibot:
+        specifier: ^1.5.0
+        version: 1.5.0(typescript@6.0.3)
+    devDependencies:
+      happy-dom:
+        specifier: ^20.0.5
+        version: 20.0.5
+      tsconfig:
+        specifier: workspace:*
+        version: link:../tsconfig
+
   packages2/tsconfig: {}
 
 packages:
