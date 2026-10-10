@@ -14,14 +14,14 @@ import {
 } from 'valibot';
 
 import { InvalidInitDataError } from './errors.js';
-import { err, ok, type Result, unwrap } from './result.js';
+import { err, ok, type Result, throwing } from './result.js';
 import type { Chat, InitData, User } from './types.js';
 
 function json<T>(schema: GenericSchema<unknown, T>): GenericSchema<unknown, T> {
   return pipe(string(), parseJson(), schema);
 }
 
-const user: GenericSchema<unknown, User> = object({
+const UserSchema: GenericSchema<unknown, User> = object({
   added_to_attachment_menu: optional(boolean()),
   allows_write_to_pm: optional(boolean()),
   first_name: string(),
@@ -34,7 +34,7 @@ const user: GenericSchema<unknown, User> = object({
   username: optional(string()),
 });
 
-const chat: GenericSchema<unknown, Chat> = object({
+const ChatSchema: GenericSchema<unknown, Chat> = object({
   id: number(),
   photo_url: optional(string()),
   title: string(),
@@ -42,19 +42,19 @@ const chat: GenericSchema<unknown, Chat> = object({
   username: optional(string()),
 });
 
-const initData: GenericSchema<unknown, InitData> = object({
+const InitDataSchema: GenericSchema<unknown, InitData> = object({
   auth_date: pipe(string(), digits(), transform(value => new Date(Number(value) * 1000))),
   can_send_after: optional(pipe(string(), digits(), transform(Number))),
-  chat: optional(json(chat)),
+  chat: optional(json(ChatSchema)),
   chat_instance: optional(string()),
   chat_join_request_query_id: optional(string()),
   chat_type: optional(string()),
   hash: string(),
   query_id: optional(string()),
-  receiver: optional(json(user)),
+  receiver: optional(json(UserSchema)),
   signature: optional(string()),
   start_param: optional(string()),
-  user: optional(json(user)),
+  user: optional(json(UserSchema)),
 });
 
 /**
@@ -64,14 +64,14 @@ const initData: GenericSchema<unknown, InitData> = object({
  * @returns Parsed init data, or `InvalidInitDataError` if the value doesn't represent valid
  * init data.
  */
-export function safeParse(value: string | URLSearchParams): Result<InitData, InvalidInitDataError> {
+export function safeParse(value: string | URLSearchParams): Result<InvalidInitDataError, InitData> {
   const query = new URLSearchParams(value);
   const input: Record<string, string> = {};
   query.forEach((item, key) => {
     // Like URLSearchParams.get, take the first value.
     key in input || (input[key] = item);
   });
-  const result = safeParseSchema(initData, input);
+  const result = safeParseSchema(InitDataSchema, input);
   return result.success
     ? ok(result.output)
     : err(new InvalidInitDataError(query.toString(), new ValiError(result.issues)));
@@ -85,9 +85,7 @@ export function safeParse(value: string | URLSearchParams): Result<InitData, Inv
  * @param value - init data query.
  * @throws {InvalidInitDataError} The value doesn't represent valid init data.
  */
-export function parse(value: string | URLSearchParams): InitData {
-  return unwrap(safeParse(value));
-}
+export const parse = /* @__PURE__ */ throwing(safeParse);
 
 /**
  * Converts init data to its query representation.

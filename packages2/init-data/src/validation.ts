@@ -6,7 +6,7 @@ import {
   SignatureMissingError,
 } from './errors.js';
 import { safeParse } from './parsing.js';
-import { err, ok, type Result, unwrap } from './result.js';
+import { err, ok, type Result, throwing } from './result.js';
 import { createDataCheckString, hexToBytes, type Secret, toSecretKey } from './signing.js';
 import type { InitData } from './types.js';
 
@@ -57,8 +57,8 @@ function prepare(
   exclude: string[],
   { expiresIn = 86400 }: ValidateOptions,
 ): Result<
-  { signature: string; dataCheckString: string },
-  SignatureMissingError | AuthDateInvalidError | ExpiredError
+  SignatureMissingError | AuthDateInvalidError | ExpiredError,
+  { signature: string; dataCheckString: string }
 > {
   const query = new URLSearchParams(value);
   const signature = query.get(param);
@@ -90,7 +90,7 @@ async function verify(
   value: string | URLSearchParams,
   secret: Secret,
   options: ValidateOptions = {},
-): Promise<Result<void, VerifyError>> {
+): Promise<Result<VerifyError, void>> {
   const prepared = prepare(value, 'hash', ['hash'], options);
   if (!prepared.ok) {
     return prepared;
@@ -111,7 +111,7 @@ async function verify3rd(
   value: string | URLSearchParams,
   botId: number,
   options: Validate3rdOptions = {},
-): Promise<Result<void, VerifyError>> {
+): Promise<Result<VerifyError, void>> {
   const prepared = prepare(value, 'signature', ['hash', 'signature'], options);
   if (!prepared.ok) {
     return prepared;
@@ -168,7 +168,7 @@ export async function safeValidate(
   value: string | URLSearchParams,
   secret: Secret,
   options?: ValidateOptions,
-): Promise<Result<InitData, ValidateError>> {
+): Promise<Result<ValidateError, InitData>> {
   const verified = await verify(value, secret, options);
   return verified.ok ? safeParse(value) : verified;
 }
@@ -190,13 +190,7 @@ export async function safeValidate(
  * @example
  * const initData = await validate(rawInitData, botToken);
  */
-export async function validate(
-  value: string | URLSearchParams,
-  secret: Secret,
-  options?: ValidateOptions,
-): Promise<InitData> {
-  return unwrap(await safeValidate(value, secret, options));
-}
+export const validate = /* @__PURE__ */ throwing(safeValidate);
 
 /**
  * @returns True if init data is signed with the bot token and hasn't expired.
@@ -230,7 +224,7 @@ export async function safeValidate3rd(
   value: string | URLSearchParams,
   botId: number,
   options?: Validate3rdOptions,
-): Promise<Result<InitData, ValidateError>> {
+): Promise<Result<ValidateError, InitData>> {
   const verified = await verify3rd(value, botId, options);
   return verified.ok ? safeParse(value) : verified;
 }
@@ -251,13 +245,7 @@ export async function safeValidate3rd(
  * @throws {InvalidInitDataError} Init data is signed, but has an unexpected structure.
  * @see https://core.telegram.org/bots/webapps#validating-data-for-third-party-use
  */
-export async function validate3rd(
-  value: string | URLSearchParams,
-  botId: number,
-  options?: Validate3rdOptions,
-): Promise<InitData> {
-  return unwrap(await safeValidate3rd(value, botId, options));
-}
+export const validate3rd = /* @__PURE__ */ throwing(safeValidate3rd);
 
 /**
  * @returns True if init data is signed by Telegram for the specified bot and hasn't expired.

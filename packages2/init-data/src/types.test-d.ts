@@ -53,5 +53,5 @@ export async function checkTypes(): Promise<void> {
   }
 
   expectTypeOf(safeValidate3rd).returns
-    .toEqualTypeOf<Promise<Result<InitData, ValidateError>>>();
+    .toEqualTypeOf<Promise<Result<ValidateError, InitData>>>();
 }
