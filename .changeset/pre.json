@@ -13,5 +13,10 @@
     "@tma.js/sdk-vue": "1.0.24",
     "tsconfig": "0.0.2"
   },
-  "changesets": []
+  "changesets": [
+    "v4-bindings",
+    "v4-bridge",
+    "v4-init-data",
+    "v4-sdk"
+  ]
 }
