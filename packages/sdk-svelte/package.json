@@ -1,7 +1,7 @@
 {
   "name": "@tma.js/sdk-svelte",
   "version": "1.0.24",
-  "description": "Svelte.js bindings for Mini Apps client SDK.",
+  "description": "Svelte bindings for the Telegram Mini Apps SDK.",
   "author": "Nazar Ugrinovsky <nazar9505@gmail.com>",
   "homepage": "https://github.com/Telegram-Mini-Apps/tma.js#readme",
   "repository": {
@@ -30,6 +30,7 @@
   "types": "./dist/dts/index.d.ts",
   "exports": {
     ".": {
+      "@tma.js/source": "./src/index.ts",
       "types": "./dist/dts/index.d.ts",
       "import": "./dist/index.js",
       "require": "./dist/index.cjs",
@@ -37,16 +38,21 @@
     }
   },
   "scripts": {
+    "test": "vitest --run",
+    "lint": "eslint src",
+    "lint:fix": "pnpm run lint --fix",
     "typecheck": "tsc --noEmit",
-    "build": "vite build"
+    "build": "rimraf dist && vite build"
   },
   "dependencies": {
     "@tma.js/sdk": "workspace:^"
   },
   "peerDependencies": {
-    "svelte": "^5.2.3"
+    "svelte": "^3.0.0 || ^4.0.0 || ^5.0.0"
   },
   "devDependencies": {
+    "svelte": "^5.2.3",
+    "happy-dom": "^20.0.5",
     "tsconfig": "workspace:*"
   },
   "publishConfig": {

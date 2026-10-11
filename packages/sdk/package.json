@@ -28,6 +28,7 @@
   "types": "./dist/dts/index.d.ts",
   "exports": {
     ".": {
+      "@tma.js/source": "./src/index.ts",
       "types": "./dist/dts/index.d.ts",
       "import": "./dist/index.js",
       "require": "./dist/index.cjs",
@@ -38,27 +39,20 @@
     "test": "vitest --run",
     "lint": "eslint src",
     "lint:fix": "pnpm run lint --fix",
-    "typecheck": "tsc --noEmit -p tsconfig.build.json",
-    "build": "rimraf dist && pnpm run build:default && pnpm run build:iife",
-    "build:default": "vite build -c vite.config.ts",
-    "build:iife": "vite build -c vite.iife.config.ts"
-  },
-  "dependencies": {
-    "@tma.js/bridge": "workspace:^",
-    "@tma.js/signals": "workspace:^",
-    "@tma.js/toolkit": "workspace:^",
-    "@tma.js/transformers": "workspace:^",
-    "@tma.js/types": "workspace:^",
-    "better-promises": "^1.0.0",
-    "error-kid": "^2.0.0",
-    "fp-ts": "^2.16.11",
-    "valibot": "^1.1.0"
+    "typecheck": "tsc --noEmit",
+    "build": "rimraf dist && vite build"
   },
   "devDependencies": {
-    "test-utils": "workspace:*",
+    "happy-dom": "^20.0.5",
     "tsconfig": "workspace:*"
   },
   "publishConfig": {
     "access": "public"
+  },
+  "dependencies": {
+    "@tma.js/bridge": "workspace:^",
+    "@tma.js/init-data": "workspace:^",
+    "error-kid": "^3.1.0",
+    "valibot": "^1.5.0"
   }
 }

@@ -1,5 +1,5 @@
 /**
- * Packages from the "packages2" directory are imported from their sources, so any change in them
+ * Packages from the "packages" directory are imported from their sources, so any change in them
  * is applied immediately. See the "paths" option in tsconfig.json.
  *
  * The SDK re-exports the bridge. Import bridge functions from the SDK, so both use the same bridge

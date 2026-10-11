@@ -1,7 +1,7 @@
 packages:
   - "apps/*"
-  # The previous major packages are excluded while the next major is being developed in packages2.
-  - "packages2/*"
+  # The previous major packages are kept in packages-old for reference and excluded from the workspace.
+  - "packages/*"
 
 # Since pnpm 11, every package with a build script must be listed explicitly.
 allowBuilds:

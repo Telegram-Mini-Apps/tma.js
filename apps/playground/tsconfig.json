@@ -15,7 +15,7 @@
     // Packages are imported from their sources, so changes are applied without building them.
     "paths": {
       "@tma.js/*": [
-        "../../packages2/*/src/index.ts"
+        "../../packages/*/src/index.ts"
       ]
     }
   },

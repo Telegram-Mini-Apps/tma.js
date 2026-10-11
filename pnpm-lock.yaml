@@ -261,22 +261,22 @@ importers:
     dependencies:
       '@tma.js/bridge':
         specifier: workspace:*
-        version: link:../../packages2/bridge
+        version: link:../../packages/bridge
       '@tma.js/init-data':
         specifier: workspace:*
-        version: link:../../packages2/init-data
+        version: link:../../packages/init-data
       '@tma.js/sdk':
         specifier: workspace:*
-        version: link:../../packages2/sdk
+        version: link:../../packages/sdk
     devDependencies:
       cross-env:
         specifier: ^7.0.3
         version: 7.0.3
       tsconfig:
         specifier: workspace:*
-        version: link:../../packages2/tsconfig
+        version: link:../../packages/tsconfig
 
-  packages2/bridge:
+  packages/bridge:
     dependencies:
       error-kid:
         specifier: ^3.1.0
@@ -292,7 +292,7 @@ importers:
         specifier: workspace:*
         version: link:../tsconfig
 
-  packages2/init-data:
+  packages/init-data:
     dependencies:
       error-kid:
         specifier: ^3.1.0
@@ -305,7 +305,7 @@ importers:
         specifier: workspace:*
         version: link:../tsconfig
 
-  packages2/sdk:
+  packages/sdk:
     dependencies:
       '@tma.js/bridge':
         specifier: workspace:^
@@ -327,7 +327,7 @@ importers:
         specifier: workspace:*
         version: link:../tsconfig
 
-  packages2/sdk-react:
+  packages/sdk-react:
     dependencies:
       '@tma.js/sdk':
         specifier: workspace:^
@@ -352,7 +352,7 @@ importers:
         specifier: workspace:*
         version: link:../tsconfig
 
-  packages2/sdk-solid:
+  packages/sdk-solid:
     dependencies:
       '@tma.js/sdk':
         specifier: workspace:^
@@ -368,7 +368,7 @@ importers:
         specifier: workspace:*
         version: link:../tsconfig
 
-  packages2/sdk-svelte:
+  packages/sdk-svelte:
     dependencies:
       '@tma.js/sdk':
         specifier: workspace:^
@@ -384,7 +384,7 @@ importers:
         specifier: workspace:*
         version: link:../tsconfig
 
-  packages2/sdk-vue:
+  packages/sdk-vue:
     dependencies:
       '@tma.js/sdk':
         specifier: workspace:^
@@ -400,7 +400,7 @@ importers:
         specifier: ^3.5.13
         version: 3.5.13(typescript@6.0.3)
 
-  packages2/tsconfig: {}
+  packages/tsconfig: {}
 
 packages:
 

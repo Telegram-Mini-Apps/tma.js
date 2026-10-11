@@ -13,11 +13,11 @@ export default tseslint.config(
   },
   {
     name: 'app/files-to-lint',
-    files: ['packages2/**/*.{js,ts,mts,tsx,vue}'],
+    files: ['packages/**/*.{js,ts,mts,tsx,vue}'],
     languageOptions: {
       parserOptions: {
         project: [
-          './packages2/*/tsconfig.json',
+          './packages/*/tsconfig.json',
         ],
         tsconfigRootDir: import.meta.dirname,
         ecmaVersion: 'latest',
@@ -35,7 +35,7 @@ export default tseslint.config(
       'import/resolver': {
         'typescript': {
           project: [
-            './packages2/*/tsconfig.json'
+            './packages/*/tsconfig.json'
           ],
           // Workspace packages are resolved to their source code, see the "@tma.js/source"
           // condition in their package.json files. The rest are the resolver defaults.

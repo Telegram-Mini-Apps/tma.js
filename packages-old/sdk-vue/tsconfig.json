@@ -1,0 +1,14 @@
+{
+  "extends": "tsconfig/esnext-dom.json",
+  "compilerOptions": {
+    "allowSyntheticDefaultImports": true
+  },
+  "include": [
+    "src"
+  ],
+  "references": [
+    {
+      "path": "./tsconfig.node.json"
+    }
+  ]
+}

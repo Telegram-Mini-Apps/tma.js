@@ -1,123 +1,46 @@
-import { either as E } from 'fp-ts';
 import { describe, expect, it } from 'vitest';
 
+import { StartParamTooLongError } from './errors.js';
 import {
   createStartParam,
-  createStartParamFp,
+  decodeBase64Url,
   decodeStartParam,
-  decodeStartParamFp,
+  encodeBase64Url,
   isSafeToCreateStartParam,
+  safeCreateStartParam,
 } from './start-param.js';
+import { catchError } from '../test/catchError.js';
 
-describe('createStartParam', () => {
-  it('should return value\'s base64 representation if its length is less than 513', () => {
-    expect(createStartParam('ABCDEF')).toBe('QUJDREVG');
+describe('base64url', () => {
+  it('should encode and decode unicode strings', () => {
+    const value = 'Привет, 世界! ✓ <>?';
+    const encoded = encodeBase64Url(value);
+    expect(encoded).toMatch(/^[\w-]*$/);
+    expect(decodeBase64Url(encoded)).toBe(value);
   });
 
-  it(
-    'should return a base64 value based on the value\'s JSON.stringify representation if the value is not a string',
-    () => {
-      expect(createStartParam({ field: 'value' })).toBe('eyJmaWVsZCI6InZhbHVlIn0');
-    },
-  );
-
-  it('should throw if value\'s base64 representation length exceeds 512', () => {
-    expect(() => createStartParam(
-      new Array(385)
-        .fill('A')
-        .join(''),
-    )).toThrow('Value is too long for start parameter');
+  it('should throw on invalid values', () => {
+    expect(() => decodeBase64Url('%%%')).toThrow();
   });
 });
 
-describe('createStartParamFp', () => {
-  it('should return value\'s base64 representation if its length is less than 513', () => {
-    expect(createStartParamFp('ABCDEF')).toMatchObject({ right: 'QUJDREVG' });
+describe('createStartParam / decodeStartParam', () => {
+  it('should encode strings and JSON values', () => {
+    expect(decodeStartParam(createStartParam('hello'))).toBe('hello');
+    expect(decodeStartParam(createStartParam({ a: [1] }), 'json')).toEqual({ a: [1] });
+    expect(decodeStartParam(createStartParam('42'), Number)).toBe(42);
   });
 
-  it(
-    'should return a base64 value based on the value\'s JSON.stringify representation if the value is not a string',
-    () => {
-      expect(createStartParamFp({ field: 'value' })).toMatchObject({ right: 'eyJmaWVsZCI6InZhbHVlIn0' });
-    },
-  );
-
-  it('should throw if value\'s base64 representation length exceeds 512', () => {
-    expect(createStartParamFp(
-      new Array(385)
-        .fill('A')
-        .join(''),
-    )).toMatchObject({ left: new Error('Value is too long for start parameter') });
-  });
-});
-
-describe('decodeStartParam', () => {
-  it('should properly decode ASCII value', () => {
-    expect(decodeStartParam('QUJDREVG')).toBe('ABCDEF');
+  it('should throw StartParamTooLongError', () => {
+    expect(catchError(() => createStartParam('a'.repeat(400))))
+      .toSatisfy(e => StartParamTooLongError.is(e));
+    expect(isSafeToCreateStartParam('a'.repeat(384))).toBe(true);
+    expect(isSafeToCreateStartParam('a'.repeat(385))).toBe(false);
   });
 
-  it('should properly decode Unicode value', () => {
-    expect(decodeStartParam('0KLQtdC70LXQs9GA0LDQvA')).toBe('Телеграм');
-  });
-
-  it('should apply specified parser to the decoded value', () => {
-    expect(
-      decodeStartParam('0KLQtdC70LXQs9GA0LDQvA', v => {
-        return v === 'Телеграм' ? 'Телеграм Крута' : 'Телеграм Не Крута';
-      }),
-    ).toBe('Телеграм Крута');
-  });
-
-  it('should apply JSON.parse to the decoded value if the second argument is "json"', () => {
-    expect(decodeStartParam('IlRlbGVncmFtIEtydXRhIg', 'json')).toBe('Telegram Kruta');
-  });
-
-  it('should correctly decode a value returned from createStartParam', () => {
-    const value = {
-      string: 'gen-view',
-      number: -3,
-      array: [1, 'test', { field: 1 }, []],
-    };
-    expect(decodeStartParam(createStartParam(value), 'json')).toMatchObject(value);
-  });
-});
-
-describe('decodeStartParamFp', () => {
-  it('should properly decode ASCII value', () => {
-    expect(decodeStartParamFp('QUJDREVG')).toMatchObject({ right: 'ABCDEF' });
-  });
-
-  it('should properly decode Unicode value', () => {
-    expect(decodeStartParamFp('0KLQtdC70LXQs9GA0LDQvA')).toMatchObject({ right: 'Телеграм' });
-  });
-
-  it('should apply specified parser to the decoded value', () => {
-    expect(
-      decodeStartParamFp('0KLQtdC70LXQs9GA0LDQvA==', v => {
-        return E.right(v === 'Телеграм' ? 'Телеграм Крута' : 'Телеграм Не Крута');
-      }),
-    ).toMatchObject({ right: 'Телеграм Крута' });
-  });
-
-  it('should apply JSON.parse to the decoded value if the second argument is "json"', () => {
-    expect(decodeStartParamFp('IlRlbGVncmFtIEtydXRhIg', 'json')).toMatchObject({ right: 'Telegram Kruta' });
-  });
-});
-
-describe('isSafeToCreateStartParam', () => {
-  it('should return true if value\'s base64 representation length is less than 513', () => {
-    expect(
-      isSafeToCreateStartParam(new Array(384)
-        .fill('A')
-        .join('')),
-    ).toBe(true);
-  });
-
-  it('should return false if value\'s base64 representation length exceeds 512', () => {
-    expect(
-      isSafeToCreateStartParam(new Array(385)
-        .fill('A')
-        .join('')),
-    ).toBe(false);
+  it('should return StartParamTooLongError from safeCreateStartParam', () => {
+    expect(safeCreateStartParam('42')).toEqual({ ok: true, data: createStartParam('42') });
+    expect(safeCreateStartParam('a'.repeat(400)))
+      .toEqual({ ok: false, error: new StartParamTooLongError(534) });
   });
 });

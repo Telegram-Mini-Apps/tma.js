@@ -11,11 +11,11 @@
     "dev": "turbo run dev",
     "docs:build": "turbo run build --filter=\"./apps/docs\"",
     "docs:dev": "turbo run dev --filter=\"./apps/docs\"",
-    "packages:build": "turbo run build --filter=\"./packages2/*\"",
-    "packages:lint": "turbo run lint --filter=\"./packages2/*\"",
-    "packages:lint:fix": "turbo run lint:fix --filter=\"./packages2/*\"",
+    "packages:build": "turbo run build --filter=\"./packages/*\"",
+    "packages:lint": "turbo run lint --filter=\"./packages/*\"",
+    "packages:lint:fix": "turbo run lint:fix --filter=\"./packages/*\"",
     "packages:test": "vitest --run --retry 3",
-    "packages:typecheck": "turbo run typecheck --filter=\"./packages2/*\"",
+    "packages:typecheck": "turbo run typecheck --filter=\"./packages/*\"",
     "prepare": "husky"
   },
   "devDependencies": {

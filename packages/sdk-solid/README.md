@@ -1,25 +1,31 @@
 # @tma.js/sdk-solid
 
-[code-badge]: https://img.shields.io/badge/source-black?logo=github
+Solid bindings for [@tma.js/sdk](../sdk). The package re-exports the SDK, so it is the only
+package to install.
 
-[docs-badge]: https://img.shields.io/badge/documentation-blue?logo=gitbook&logoColor=white
+```bash
+pnpm i @tma.js/sdk-solid
+```
 
-[code-link]: https://github.com/Telegram-Mini-Apps/tma.js/tree/master/tma.js/sdk-solid
+## Components state
 
-[docs-link]: https://docs.telegram-mini-apps.com/packages/tma-js-sdk-solid
+Reactive values of SDK components, like `backButton.isVisible` or `mainButton.state`, are
+computed values. Use `useComputed` to get an accessor updated whenever such a value changes:
 
-[npm-link]: https://npmjs.com/package/@tma.js/sdk-solid
+```tsx
+import { backButton, mainButton, useComputed } from '@tma.js/sdk-solid';
 
-[npm-badge]: https://img.shields.io/npm/v/@tma.js/sdk-solid?logo=npm
+function Status() {
+  const isVisible = useComputed(backButton.isVisible);
+  const mainButtonState = useComputed(mainButton.state);
+  return (
+    <>
+      <p>Back button is {isVisible() ? 'visible' : 'hidden'}</p>
+      <p>Main button text: {mainButtonState().text}</p>
+    </>
+  );
+}
+```
 
-[size-badge]: https://img.shields.io/bundlephobia/minzip/@tma.js/sdk-solid
-
-[![NPM][npm-badge]][npm-link]
-![Size][size-badge]
-[![docs-badge]][docs-link]
-[![code-badge]][code-link]
-
-Solid JS bindings
-for [client SDK](https://docs.telegram-mini-apps.com/packages/tma-js-sdk). Includes
-hooks, components and utilities
-for comfortable usage of Solid JS on the Telegram Mini Apps platform.
+Inside a reactive owner, e.g. a component, the subscription is removed when the owner is
+disposed.
