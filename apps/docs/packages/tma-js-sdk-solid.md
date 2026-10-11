@@ -27,27 +27,28 @@ See [Migrating from 3.x](./tma-js-sdk-solid/migrate-from-v3.md).
 
 ## Installation
 
-The package requires `solid-js` 1.x as a peer dependency.
+The package requires [@tma.js/sdk](./tma-js-sdk.md) and `solid-js` 1.x as peer dependencies.
 
 ::: code-group
 
 ```bash [pnpm]
-pnpm i @tma.js/sdk-solid
+pnpm i @tma.js/sdk @tma.js/sdk-solid
 ```
 
 ```bash [npm]
-npm i @tma.js/sdk-solid
+npm i @tma.js/sdk @tma.js/sdk-solid
 ```
 
 ```bash [yarn]
-yarn add @tma.js/sdk-solid
+yarn add @tma.js/sdk @tma.js/sdk-solid
 ```
 
 :::
 
 ::: info
-The package re-exports everything from [@tma.js/sdk](./tma-js-sdk.md), so you don't need to
-install the SDK separately. Import both the SDK and `useComputed` from `@tma.js/sdk-solid`.
+The package re-exports everything from [@tma.js/sdk](./tma-js-sdk.md), so you can import both
+the SDK and `useComputed` from `@tma.js/sdk-solid`. The SDK is a peer dependency, so the
+application always has a single copy of it: its components are singletons with their own state.
 :::
 
 ## Usage

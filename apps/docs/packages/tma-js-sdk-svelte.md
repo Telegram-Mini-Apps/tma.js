@@ -27,27 +27,28 @@ See [Migrating from 1.x](./tma-js-sdk-svelte/migrate-from-v1.md).
 
 ## Installation
 
-The package requires `svelte` 3, 4 or 5 as a peer dependency.
+The package requires [@tma.js/sdk](./tma-js-sdk.md) and `svelte` 3, 4 or 5 as peer dependencies.
 
 ::: code-group
 
 ```bash [pnpm]
-pnpm i @tma.js/sdk-svelte
+pnpm i @tma.js/sdk @tma.js/sdk-svelte
 ```
 
 ```bash [npm]
-npm i @tma.js/sdk-svelte
+npm i @tma.js/sdk @tma.js/sdk-svelte
 ```
 
 ```bash [yarn]
-yarn add @tma.js/sdk-svelte
+yarn add @tma.js/sdk @tma.js/sdk-svelte
 ```
 
 :::
 
 ::: info
-The package re-exports everything from [@tma.js/sdk](./tma-js-sdk.md), so you don't need to
-install the SDK separately. Import both the SDK and `useComputed` from `@tma.js/sdk-svelte`.
+The package re-exports everything from [@tma.js/sdk](./tma-js-sdk.md), so you can import both
+the SDK and `useComputed` from `@tma.js/sdk-svelte`. The SDK is a peer dependency, so the
+application always has a single copy of it: its components are singletons with their own state.
 :::
 
 ## Usage

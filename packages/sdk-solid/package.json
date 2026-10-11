@@ -43,13 +43,12 @@
     "typecheck": "tsc --noEmit",
     "build": "rimraf dist && vite build"
   },
-  "dependencies": {
-    "@tma.js/sdk": "workspace:^"
-  },
   "peerDependencies": {
+    "@tma.js/sdk": "workspace:^",
     "solid-js": "^1.0.0"
   },
   "devDependencies": {
+    "@tma.js/sdk": "workspace:^",
     "solid-js": "^1.9.3",
     "happy-dom": "^20.0.5",
     "tsconfig": "workspace:*"

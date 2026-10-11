@@ -27,27 +27,28 @@ See [Migrating from 3.x](./tma-js-sdk-react/migrate-from-v3.md).
 
 ## Installation
 
-The package requires `react` 18 or 19 as a peer dependency.
+The package requires [@tma.js/sdk](./tma-js-sdk.md) and `react` 18 or 19 as peer dependencies.
 
 ::: code-group
 
 ```bash [pnpm]
-pnpm i @tma.js/sdk-react
+pnpm i @tma.js/sdk @tma.js/sdk-react
 ```
 
 ```bash [npm]
-npm i @tma.js/sdk-react
+npm i @tma.js/sdk @tma.js/sdk-react
 ```
 
 ```bash [yarn]
-yarn add @tma.js/sdk-react
+yarn add @tma.js/sdk @tma.js/sdk-react
 ```
 
 :::
 
 ::: info
-The package re-exports everything from [@tma.js/sdk](./tma-js-sdk.md), so you don't need to
-install the SDK separately. Import both the SDK and the hooks from `@tma.js/sdk-react`.
+The package re-exports everything from [@tma.js/sdk](./tma-js-sdk.md), so you can import both
+the SDK and the hooks from `@tma.js/sdk-react`. The SDK is a peer dependency, so the
+application always has a single copy of it: its components are singletons with their own state.
 :::
 
 ## Usage

@@ -8,10 +8,7 @@ import { defineConfig } from 'vitest/config';
 // Resolves workspace packages to their source code, so they don't have to be built.
 const SOURCE_CONDITION = '@tma.js/source';
 
-const EXTERNAL = [
-  ...Object.keys(packageJson.dependencies),
-  ...Object.keys(packageJson.peerDependencies),
-];
+const EXTERNAL = Object.keys(packageJson.peerDependencies);
 
 export default defineConfig({
   resolve: {

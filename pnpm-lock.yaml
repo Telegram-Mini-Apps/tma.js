@@ -328,11 +328,10 @@ importers:
         version: link:../tsconfig
 
   packages/sdk-react:
-    dependencies:
+    devDependencies:
       '@tma.js/sdk':
         specifier: workspace:^
         version: link:../sdk
-    devDependencies:
       '@types/react':
         specifier: ^18.3.12
         version: 18.3.12
@@ -353,11 +352,10 @@ importers:
         version: link:../tsconfig
 
   packages/sdk-solid:
-    dependencies:
+    devDependencies:
       '@tma.js/sdk':
         specifier: workspace:^
         version: link:../sdk
-    devDependencies:
       happy-dom:
         specifier: ^20.0.5
         version: 20.0.5
@@ -369,11 +367,10 @@ importers:
         version: link:../tsconfig
 
   packages/sdk-svelte:
-    dependencies:
+    devDependencies:
       '@tma.js/sdk':
         specifier: workspace:^
         version: link:../sdk
-    devDependencies:
       happy-dom:
         specifier: ^20.0.5
         version: 20.0.5
@@ -385,11 +382,10 @@ importers:
         version: link:../tsconfig
 
   packages/sdk-vue:
-    dependencies:
+    devDependencies:
       '@tma.js/sdk':
         specifier: workspace:^
         version: link:../sdk
-    devDependencies:
       happy-dom:
         specifier: ^20.0.5
         version: 20.0.5

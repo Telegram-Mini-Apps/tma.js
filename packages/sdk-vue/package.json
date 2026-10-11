@@ -44,13 +44,12 @@
     "typecheck": "tsc --noEmit",
     "build": "rimraf dist && vite build"
   },
-  "dependencies": {
-    "@tma.js/sdk": "workspace:^"
-  },
   "peerDependencies": {
+    "@tma.js/sdk": "workspace:^",
     "vue": "^3.2.0"
   },
   "devDependencies": {
+    "@tma.js/sdk": "workspace:^",
     "vue": "^3.5.13",
     "happy-dom": "^20.0.5",
     "tsconfig": "workspace:*"

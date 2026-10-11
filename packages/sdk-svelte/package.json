@@ -44,13 +44,12 @@
     "typecheck": "tsc --noEmit",
     "build": "rimraf dist && vite build"
   },
-  "dependencies": {
-    "@tma.js/sdk": "workspace:^"
-  },
   "peerDependencies": {
+    "@tma.js/sdk": "workspace:^",
     "svelte": "^3.0.0 || ^4.0.0 || ^5.0.0"
   },
   "devDependencies": {
+    "@tma.js/sdk": "workspace:^",
     "svelte": "^5.2.3",
     "happy-dom": "^20.0.5",
     "tsconfig": "workspace:*"

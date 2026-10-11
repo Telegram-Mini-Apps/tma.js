@@ -16,21 +16,21 @@ library instead of `@tma.js/sdk`:
 These packages re-export everything from `@tma.js/sdk` and add the `useComputed` function
 connecting the SDK [computed values](./features.md#computed-values) to the framework reactivity.
 
-For example, if your main library is React, you should install `@tma.js/sdk-react` instead
-of `@tma.js/sdk`:
+For example, if your main library is React, install `@tma.js/sdk-react` together with `@tma.js/sdk`,
+which is its peer dependency, and import everything from `@tma.js/sdk-react`:
 
 ::: code-group
 
 ```bash [pnpm]
-pnpm i @tma.js/sdk-react
+pnpm i @tma.js/sdk @tma.js/sdk-react
 ```
 
 ```bash [npm]
-npm i @tma.js/sdk-react
+npm i @tma.js/sdk @tma.js/sdk-react
 ```
 
 ```bash [yarn]
-yarn add @tma.js/sdk-react
+yarn add @tma.js/sdk @tma.js/sdk-react
 ```
 
 :::

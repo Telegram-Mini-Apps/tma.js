@@ -8,7 +8,18 @@ there. For an overview of all packages, see [Upgrading Packages](../upgrading.md
 
 ## Peer Dependencies
 
-The peer dependency is unchanged: `solid-js` 1.x.
+`@tma.js/sdk` is now a peer dependency instead of a regular one, so install it alongside the
+package:
+
+```bash
+pnpm i @tma.js/sdk @tma.js/sdk-solid
+```
+
+This guarantees a single copy of the SDK in the application. The SDK components are singletons
+with their own state, and a second copy would make the bindings track a state the application
+never changes.
+
+The `solid-js` peer dependency is unchanged: 1.x.
 
 ## `useSignal` Replaced With `useComputed`
 

@@ -605,6 +605,10 @@ All bindings re-export `@tma.js/sdk`, so the SDK changes from section 4 apply to
 `useSignal(signal)` hook is replaced with **`useComputed(computed)`**. It only accepts a `Computed`
 from the new SDK, not any object with `.sub`.
 
+**`@tma.js/sdk` moved from `dependencies` to `peerDependencies`** in all bindings, so it has to be
+installed explicitly: `pnpm i @tma.js/sdk @tma.js/sdk-react`. This keeps a single copy of the SDK
+in the application, as its components are singletons with their own state.
+
 | Package | Changes |
 |---|---|
 | **React** | `useComputed` is built on `useSyncExternalStore`. **The `camelCase` argument is removed from `useLaunchParams()`**, and the hook returns the new `LaunchParams`, where `tgWebAppData` is a string. `useRawLaunchParams`, `useRawInitData`, `useAndroidDeviceData` and `useAndroidDeviceDataFrom` are unchanged. **React 17 support is dropped**: the peer dependency is `^18 \|\| ^19`. |

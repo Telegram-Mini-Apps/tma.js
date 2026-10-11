@@ -27,27 +27,28 @@ See [Migrating from 1.x](./tma-js-sdk-vue/migrate-from-v1.md).
 
 ## Installation
 
-The package requires `vue` 3.2 or newer as a peer dependency.
+The package requires [@tma.js/sdk](./tma-js-sdk.md) and `vue` 3.2 or newer as peer dependencies.
 
 ::: code-group
 
 ```bash [pnpm]
-pnpm i @tma.js/sdk-vue
+pnpm i @tma.js/sdk @tma.js/sdk-vue
 ```
 
 ```bash [npm]
-npm i @tma.js/sdk-vue
+npm i @tma.js/sdk @tma.js/sdk-vue
 ```
 
 ```bash [yarn]
-yarn add @tma.js/sdk-vue
+yarn add @tma.js/sdk @tma.js/sdk-vue
 ```
 
 :::
 
 ::: info
-The package re-exports everything from [@tma.js/sdk](./tma-js-sdk.md), so you don't need to
-install the SDK separately. Import both the SDK and `useComputed` from `@tma.js/sdk-vue`.
+The package re-exports everything from [@tma.js/sdk](./tma-js-sdk.md), so you can import both
+the SDK and `useComputed` from `@tma.js/sdk-vue`. The SDK is a peer dependency, so the
+application always has a single copy of it: its components are singletons with their own state.
 :::
 
 ## Usage

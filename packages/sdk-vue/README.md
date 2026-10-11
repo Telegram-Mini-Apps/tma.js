@@ -1,10 +1,10 @@
 # @tma.js/sdk-vue
 
-Vue bindings for [@tma.js/sdk](../sdk). The package re-exports the SDK, so it is the only
-package to install.
+Vue bindings for [@tma.js/sdk](../sdk). The package re-exports the SDK, which is a peer
+dependency and has to be installed too.
 
 ```bash
-pnpm i @tma.js/sdk-vue
+pnpm i @tma.js/sdk @tma.js/sdk-vue
 ```
 
 ## Components state

@@ -29,6 +29,8 @@ are not compatible with each other.
 
 The framework bindings re-export `@tma.js/sdk`, and the SDK re-exports `@tma.js/bridge`. If you
 use a binding, read the bridge and the SDK guides too, as their changes apply to it.
+The bindings now list `@tma.js/sdk` as a peer dependency, so install it next to the binding:
+`pnpm i @tma.js/sdk @tma.js/sdk-react`.
 
 ## Changes in All Packages
 
