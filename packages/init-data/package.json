@@ -1,6 +1,6 @@
 {
   "name": "@tma.js/init-data",
-  "version": "0.2.22",
+  "version": "4.0.0-rc.0",
   "description": "Parse, validate and sign Telegram Mini Apps init data in any JavaScript runtime with Web Crypto.",
   "author": "Vladislav Kibenko <wolfram.deus@gmail.com>",
   "homepage": "https://github.com/Telegram-Mini-Apps/tma.js#readme",

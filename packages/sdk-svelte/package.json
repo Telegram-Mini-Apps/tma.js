@@ -1,6 +1,6 @@
 {
   "name": "@tma.js/sdk-svelte",
-  "version": "1.0.24",
+  "version": "4.0.0-rc.0",
   "description": "Svelte bindings for the Telegram Mini Apps SDK.",
   "author": "Nazar Ugrinovsky <nazar9505@gmail.com>",
   "homepage": "https://github.com/Telegram-Mini-Apps/tma.js#readme",
