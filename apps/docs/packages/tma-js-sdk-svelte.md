@@ -13,16 +13,21 @@ outline: [ 2, 3 ]
   </a>
 </p>
 
-Svelte.js package providing utilities that developers may find useful when developing a mini application.
+Svelte bindings for [@tma.js/sdk](./tma-js-sdk.md). The package turns reactive values of SDK
+components into Svelte stores.
 
-> [!TIP]
-> Since this package offers utility functions that extend the functionality of [@tma.js/sdk](./tma-js-sdk.md), it is
-> recommended to review the SDK package documentation first.
+::: tip
+The package extends [@tma.js/sdk](./tma-js-sdk.md), so it is recommended to review the SDK
+documentation first.
+:::
+
+::: info Upgrading from 1.x?
+See [Migrating from 1.x](./tma-js-sdk-svelte/migrate-from-v1.md).
+:::
 
 ## Installation
 
-Before proceeding, it is assumed that you have already installed the `svelte-js` package, as it is a
-peer dependency of this package.
+The package requires `svelte` 3, 4 or 5 as a peer dependency.
 
 ::: code-group
 
@@ -40,39 +45,41 @@ yarn add @tma.js/sdk-svelte
 
 :::
 
-> [!INFO]
-> This package fully re-exports the [@tma.js/sdk](./tma-js-sdk.md) package, so you don't need to install it separately.
+::: info
+The package re-exports everything from [@tma.js/sdk](./tma-js-sdk.md), so you don't need to
+install the SDK separately. Import both the SDK and `useComputed` from `@tma.js/sdk-svelte`.
+:::
 
 ## Usage
 
-Here is a simple usage example of the package:
+Initialize the SDK and mount the components you use before mounting the application. Then read
+the components state using [useComputed](#usecomputed).
 
 :::code-group
 
-```svelte [index.svelte]
-<script lang="ts">
-  import { init, backButton } from '@tma.js/sdk-svelte';
+```ts [main.ts]
+import { mount } from 'svelte';
+import { init, backButton } from '@tma.js/sdk-svelte';
 
-  import { BackButton } from './BackButton.svelte';
+import App from './App.svelte';
 
-  // Initialize the package.
-  init();
-</script>
+// Initialize the SDK.
+init();
 
-<BackButton />
+// Mount the Back Button, so it works with its actual state.
+backButton.mount();
+
+mount(App, { target: document.getElementById('app')! });
 ```
 
-```svelte [BackButton.svelte]
-/**
- * Component which controls the Back Button visibility.
- */
+```svelte [App.svelte]
 <script lang="ts">
-  import { onMount, onDestroy } from 'svelte';
-  import { backButton, useSignal } from '@tma.js/sdk-svelte';
+  import { onDestroy, onMount } from 'svelte';
+  import { backButton, useComputed } from '@tma.js/sdk-svelte';
 
-  const isVisible = useSignal(backButton.isVisible);
+  const isVisible = useComputed(backButton.isVisible);
 
-  $: console.log('The button is', isVisible.value ? 'visible' : 'invisible')
+  $: console.log('The button is', $isVisible ? 'visible' : 'hidden');
 
   onMount(() => {
     backButton.show();
@@ -82,32 +89,51 @@ Here is a simple usage example of the package:
     backButton.hide();
   });
 </script>
+
+<p>Back button is {$isVisible ? 'visible' : 'hidden'}</p>
 ```
 
 :::
 
-## Hooks
+::: tip
+`mount` from `svelte` is Svelte 5 API. In Svelte 3 and 4, create the application using
+`new App({ target })`.
+:::
 
-### `useSignal`
+## `useComputed`
 
-A helper that allows you to use our [signals](./tma-js-signals.md) in the application. It returns a Svelte ref which
-updates every time, our signal changes.
+Reactive values of SDK components, like `backButton.isVisible` or `mainButton.state`, are
+computed values (the `Computed` type). Calling such a value returns its current state, and its
+`subscribe` method tracks changes.
+
+`useComputed` returns a readable Svelte store reflecting the computed value. Use it with the `$`
+prefix in components, or subscribe to it manually.
 
 ```svelte
 <script lang="ts">
-  import { onMount, onDestroy } from 'svelte';
-  import { backButton, useSignal } from '@tma.js/sdk-svelte';
+  import { backButton, mainButton, useComputed } from '@tma.js/sdk-svelte';
 
-  const isVisible = useSignal(backButton.isVisible);
-
-  $: console.log('The button is', isVisible.value ? 'visible' : 'invisible')
-
-  onMount(() => {
-    backButton.show();
-  });
-
-  onDestroy(() => {
-    backButton.hide();
-  });
+  const isVisible = useComputed(backButton.isVisible);
+  const mainButtonState = useComputed(mainButton.state);
 </script>
+
+<p>Back button is {$isVisible ? 'visible' : 'hidden'}</p>
+<p>Main button text: {$mainButtonState.text}</p>
+```
+
+The hook accepts only computed values provided by the SDK. To store your own reactive state, use
+Svelte's `writable` store or runes.
+
+The store is read-only. To change the state, call the component methods, e.g. `backButton.show()`.
+
+### Lifetime
+
+The store is subscribed to the computed value only while the store itself has subscribers, and
+reads the current value when the first subscriber is added. So the store can be created anywhere,
+not only during a component initialization, for example in a separate module:
+
+```ts
+import { mainButton, useComputed } from '@tma.js/sdk-svelte';
+
+export const isMainButtonVisible = useComputed(mainButton.isVisible);
 ```

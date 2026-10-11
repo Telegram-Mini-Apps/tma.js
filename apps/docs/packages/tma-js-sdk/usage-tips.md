@@ -13,10 +13,11 @@ library instead of `@tma.js/sdk`:
 - Svelte: [@tma.js/sdk-svelte](../tma-js-sdk-svelte.md)
 - Solid: [@tma.js/sdk-solid](../tma-js-sdk-solid.md)
 
-For example, if your main library is React, you should install `@tma.js/sdk-react` instead
-of `@tma.js/sdk`.
+These packages re-export everything from `@tma.js/sdk` and add the `useComputed` function
+connecting the SDK [computed values](./features.md#computed-values) to the framework reactivity.
 
-Here is the command to install the package:
+For example, if your main library is React, you should install `@tma.js/sdk-react` instead
+of `@tma.js/sdk`:
 
 ::: code-group
 
@@ -59,16 +60,13 @@ yarn add @tma.js/sdk
 
 ## Initialize the SDK
 
-The SDK provides a list of components that might seem ready to use once imported, but this is only
-partially true.
+The SDK provides a list of components and functions that might seem ready to use once imported,
+but this is only partially true.
 
-It’s important to understand that the SDK does not have any side effects. To avoid various issues,
-it doesn’t perform operations automatically upon import. Instead, you need to initialize it
-manually.
-
-By default, the SDK is uninitialized and not ready for use. All components remain unmounted. To
-initialize the SDK and unlock not only the components’ `mount` method but also other
-non-component-related methods, you **must** use the `init` function.
+The SDK does not have any side effects. To avoid various issues, it doesn't perform operations
+automatically upon import. Instead, you need to initialize it manually with the
+[`init`](./initializing.md) function. Until then, almost all functions and component methods
+throw `NotInitializedError`.
 
 ```ts
 import { init } from '@tma.js/sdk';
@@ -76,14 +74,57 @@ import { init } from '@tma.js/sdk';
 init();
 ```
 
-After calling this, it is now safe to mount any components you wish to use in your application.
+To develop the app outside Telegram, mock the environment with `mockTelegramEnv` before calling
+`init`. Learn more in the [Initializing](./initializing.md#developing-outside-telegram) section.
+
+## Check Support
+
+Not all Telegram Mini Apps methods were implemented in a single release. Some may have been
+implemented years ago, while others were introduced only recently.
+
+Because there are many users with different versions of the native Telegram application, check if
+a component or a function is supported before using it. Calling an unsupported method throws
+`MethodUnsupportedError`.
+
+```ts
+import { backButton, shareStory } from '@tma.js/sdk';
+
+if (backButton.isSupported()) {
+  // ...
+}
+
+if (shareStory.isSupported()) {
+  shareStory('https://example.com/background.png');
+}
+```
+
+The `isSupported` method returns `true` if the SDK is initialized and the Telegram client supports
+the component or the function. It doesn't check if the component is mounted.
+
+Some methods were released later than their component, so they have their own `isSupported`
+method. Methods and functions with parameters released later than themselves also have the
+`supports` method accepting the feature name:
+
+```ts
+import { miniApp } from '@tma.js/sdk';
+
+if (miniApp.setBottomBarColor.isSupported()) {
+  miniApp.setBottomBarColor('#aabbcc');
+}
+
+if (miniApp.setHeaderColor.supports('rgb')) {
+  miniApp.setHeaderColor('#aabbcc');
+} else {
+  miniApp.setHeaderColor('bg_color');
+}
+```
+
+Learn more in the [Features](./features.md#checking-support) section.
 
 ## Mount Used Components
 
-In the previous section, we initialized the SDK, allowing us to use components.
-
-Before using specific components in your application, you must mount them. Not mounting components
-will cause their methods to throw errors. For example, the following code will cause issues:
+Before using stateful components in your application, you must mount them. Calling methods
+changing the state of an unmounted component throws `NotMountedError`:
 
 ```ts
 import { init, backButton } from '@tma.js/sdk';
@@ -93,7 +134,7 @@ init();
 
 // Attempt to show the Back Button.
 backButton.show();
-// Error: The backButton component was not mounted.
+// NotMountedError: The "backButton" component is not mounted. Call its mount method first
 ```
 
 To avoid this issue, mount the component before using its methods:
@@ -104,51 +145,60 @@ import { init, backButton } from '@tma.js/sdk';
 // Initialize the SDK.
 init();
 
-// Mount the Back Button.
-backButton.mount();
+if (backButton.isSupported()) {
+  // Mount the Back Button.
+  backButton.mount();
 
-// Show the Back Button.
-backButton.show();
-```
-
-> [!TIP]
-> The mount-checking mechanism ensures that you are working with a properly initialized component.
-
-## Always Check Availability
-
-Not all Telegram Mini Apps methods were implemented in a single release. Some may have been
-implemented years ago, while others were introduced only recently.
-
-Because there are many users with different versions of the native Telegram application, you must
-check if a method is available on their device before using it:
-
-```ts
-import { backButton } from '@tma.js/sdk';
-
-// ... the SDK is already initialized, and the Back Button is mounted.
-if (backButton.show.isAvailable()) {
+  // Show the Back Button.
   backButton.show();
 }
 ```
 
-The `isAvailable()` method verifies if the function is currently available and can be safely called.
-It performs the following checks:
+Mounting restores the component state saved before the page reload, so the SDK knows the actual
+state of the Telegram client UI after reloads.
 
-- The current environment is Telegram Mini Apps
-- The SDK is initialized
-- The method is supported by the current Telegram Mini Apps version
-- The parent component is mounted
-
-Not using this signal and simply calling the method may lead to errors related to one of the above
-checks.
-
-If you don’t want to perform this check every time and the result of the method execution is not
-crucial, use the `ifAvailable(...args)` method. This method accepts the same parameters as the
-original function:
+Some components retrieve their state from the Telegram client, so their `mount` method is
+asynchronous:
 
 ```ts
-import { backButton } from '@tma.js/sdk';
+import { viewport } from '@tma.js/sdk';
 
-// ... the SDK is already initialized, and the Back Button is mounted.
-backButton.show.ifAvailable();
+await viewport.mount();
+viewport.bindCssVars();
 ```
+
+## Track Changes
+
+Reactive values of components, like `backButton.isVisible` or `themeParams.bgColor`, are
+[computed values](./features.md#computed-values). Call one to get the current value, or subscribe
+to its changes:
+
+```ts
+import { themeParams } from '@tma.js/sdk';
+
+themeParams.bgColor(); // '#17212b'
+
+const unsubscribe = themeParams.bgColor.subscribe((next, prev) => {
+  console.log('Background color changed:', prev, '->', next);
+});
+```
+
+## Handle Errors
+
+Functions and methods failing with expected errors, like a timeout or the user's refusal, have
+a version with the `safe` prefix. It returns a result object instead of throwing:
+
+```ts
+import { popup } from '@tma.js/sdk';
+
+const result = await popup.safeShow({ message: 'Are you sure?', timeout: 60_000 });
+if (result.ok) {
+  console.log('Pressed button:', result.data);
+} else {
+  console.error(result.error);
+}
+```
+
+Errors meaning that the SDK is used incorrectly, like `NotInitializedError`, `NotMountedError` or
+`MethodUnsupportedError`, are always thrown. Learn more in the
+[Features](./features.md#handling-errors) section.

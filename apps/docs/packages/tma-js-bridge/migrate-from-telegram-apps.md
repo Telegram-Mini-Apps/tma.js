@@ -2,6 +2,12 @@
 
 This guide provides a summary of the migration process from `@telegram-apps/bridge` to `@tma.js/bridge`.
 
+::: warning
+This guide describes the migration to `@tma.js/bridge` 2.x, and the code samples below use the 2.x
+API. After completing it, follow the [Migrating from 2.x](migrate-from-v2.md) guide to upgrade to
+the current major version.
+:::
+
 ## `mockTelegramEnv`
 
 - `onEvent` option now receives not a tuple, but an object with properties `event: string` and

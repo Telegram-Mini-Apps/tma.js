@@ -1,11 +1,13 @@
 # 💠Haptic Feedback
 
 A component responsible for the Telegram Mini
-Apps [haptic feedback](../../../platform/haptic-feedback.md).
+Apps [haptic feedback](../../../platform/haptic-feedback.md). Haptic feedback is supported since
+Mini Apps v6.1.
 
 ## Checking Support
 
-To check if the haptic feedback is supported by the current Telegram Mini Apps version, the `isSupported` signal is used:
+To check if haptic feedback can be used, call the `isSupported` function. It returns `true` if
+the SDK is [initialized](../initializing.md) and the Telegram client supports haptic feedback.
 
 ```ts
 import { hapticFeedback } from '@tma.js/sdk';
@@ -13,45 +15,48 @@ import { hapticFeedback } from '@tma.js/sdk';
 hapticFeedback.isSupported(); // boolean
 ```
 
+All methods of the component throw `NotInitializedError` if the SDK is not initialized, and
+`MethodUnsupportedError` if haptic feedback is unsupported. The component doesn't need to be
+mounted.
+
 ## Impact Occurred
 
-`impactOccurred` is the method that signals an impact event. The Telegram app may play the
-appropriate haptic feedback based on the style value passed.
+`impactOccurred` signals that an impact occurred. The Telegram client may play the appropriate
+haptic feedback based on the passed style.
 
 ```ts
 hapticFeedback.impactOccurred('medium');
 ```
 
-The available styles for the impact haptic event are:
+The available styles are:
 
-- `light`: indicates a collision between small or lightweight UI objects.
-- `medium`: indicates a collision between medium-sized or medium-weight UI objects.
-- `heavy`: indicates a collision between large or heavyweight UI objects.
-- `rigid`: indicates a collision between hard or inflexible UI objects.
-- `soft`: indicates a collision between soft or flexible UI objects.
+- `light`: a collision between small or lightweight UI objects.
+- `medium`: a collision between medium-sized or medium-weight UI objects.
+- `heavy`: a collision between large or heavyweight UI objects.
+- `rigid`: a collision between hard or inflexible UI objects.
+- `soft`: a collision between soft or flexible UI objects.
 
 ## Notification Occurred
 
-`notificationOccurred` is the method that signals a task or action has succeeded, failed, or
-triggered a warning. The Telegram app may play the appropriate haptic feedback based on the type
-value passed.
+`notificationOccurred` signals that a task or action succeeded, failed, or produced a warning.
+The Telegram client may play the appropriate haptic feedback based on the passed type.
 
 ```ts
 hapticFeedback.notificationOccurred('success');
 ```
 
-The types of notification events are:
+The available types are:
 
-- `error`: indicates that a task or action has failed.
-- `success`: indicates that a task or action has been completed successfully.
-- `warning`: indicates that a task or action has triggered a warning.
+- `error`: a task or action failed.
+- `success`: a task or action completed successfully.
+- `warning`: a task or action produced a warning.
 
 ## Selection Changed
 
-`selectionChanged` is the method that signals a user has changed a selection. The Telegram app may
-play the appropriate haptic feedback.
+`selectionChanged` signals that the user changed a selection. The Telegram client may play the
+appropriate haptic feedback.
 
-Use this feedback only when the selection changes, not when a selection is made or confirmed.
+Use it only when the selection changes, not when a selection is made or confirmed.
 
 ```ts
 hapticFeedback.selectionChanged();

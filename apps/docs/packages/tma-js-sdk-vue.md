@@ -13,16 +13,21 @@ outline: [ 2, 3 ]
   </a>
 </p>
 
-Vue.js package providing utilities that developers may find useful when developing a mini application.
+Vue bindings for [@tma.js/sdk](./tma-js-sdk.md). The package turns reactive values of SDK
+components into Vue refs.
 
-> [!TIP]
-> Since this package offers utility functions that extend the functionality of [@tma.js/sdk](./tma-js-sdk.md), it is
-> recommended to review the SDK package documentation first.
+::: tip
+The package extends [@tma.js/sdk](./tma-js-sdk.md), so it is recommended to review the SDK
+documentation first.
+:::
+
+::: info Upgrading from 1.x?
+See [Migrating from 1.x](./tma-js-sdk-vue/migrate-from-v1.md).
+:::
 
 ## Installation
 
-Before proceeding, it is assumed that you have already installed the `vue` package, as it is a peer dependency of this
-package.
+The package requires `vue` 3.2 or newer as a peer dependency.
 
 ::: code-group
 
@@ -40,96 +45,131 @@ yarn add @tma.js/sdk-vue
 
 :::
 
-> [!INFO]
-> This package fully re-exports the [@tma.js/sdk](./tma-js-sdk.md) package, so you don't need to install it separately.
+::: info
+The package re-exports everything from [@tma.js/sdk](./tma-js-sdk.md), so you don't need to
+install the SDK separately. Import both the SDK and `useComputed` from `@tma.js/sdk-vue`.
+:::
 
 ## Usage
 
-Here is a simple usage example of the package:
+Initialize the SDK and mount the components you use before mounting the application. Then read
+the components state using [useComputed](#usecomputed).
 
 :::code-group
 
-```ts [index.ts]
+```ts [main.ts]
 import { createApp } from 'vue';
-import { init } from '@tma.js/sdk-vue';
+import { init, backButton } from '@tma.js/sdk-vue';
+
 import App from './App.vue';
 
-// Initialize the package.
+// Initialize the SDK.
 init();
 
-const app = createApp(App);
+// Mount the Back Button, so it works with its actual state.
+backButton.mount();
 
-app.mount('#root');
+createApp(App).mount('#app');
 ```
 
-```vue [PopupButton.vue]
-
+```vue [App.vue]
 <script setup lang="ts">
-  /**
-   * Component which opens native Telegram Popup.
-   */
-  import { popup } from '@tma.js/sdk-vue'
+import { onMounted, onUnmounted, watch } from 'vue';
+import { backButton, useComputed } from '@tma.js/sdk-vue';
 
-  const props = defineProps<{ title: string, message: string }>()
+const isVisible = useComputed(backButton.isVisible);
 
-  function open() {
-    if (popup.isSupported()) {
-      popup.open(props);
-      return;
-    }
+watch(isVisible, value => {
+  console.log('The button is', value ? 'visible' : 'hidden');
+});
 
-    // Open fallback HTML dialog...
-  }
+onMounted(() => {
+  backButton.show();
+});
+
+onUnmounted(() => {
+  backButton.hide();
+});
 </script>
 
 <template>
-  <button aria-haspopup="dialog" @click="open">
-    Open popup
-  </button>
+  <p>Back button is {{ isVisible ? 'visible' : 'hidden' }}</p>
 </template>
 ```
 
 :::
 
-## Hooks
+## `useComputed`
 
-### `useSignal`
+Reactive values of SDK components, like `backButton.isVisible` or `mainButton.state`, are
+computed values (the `Computed` type). Calling such a value returns its current state, and its
+`subscribe` method tracks changes.
 
-A helper that allows you to use our [signals](./tma-js-signals.md) in the application. It
-returns a Vue ref which updates every time, our signal changes.
+`useComputed` returns a readonly ref updated whenever the computed value changes.
 
-```ts [useMainButton.vue]
+```vue
+<script setup lang="ts">
+import { backButton, mainButton, useComputed } from '@tma.js/sdk-vue';
+
+const isVisible = useComputed(backButton.isVisible);
+const mainButtonState = useComputed(mainButton.state);
+</script>
+
+<template>
+  <p>Back button is {{ isVisible ? 'visible' : 'hidden' }}</p>
+  <p>Main button text: {{ mainButtonState.text }}</p>
+</template>
+```
+
+The hook accepts only computed values provided by the SDK. To store your own reactive state, use
+Vue's `ref` or `reactive`.
+
+The ref is shallow: objects returned by the SDK are not wrapped into reactive proxies, so they keep
+their identity. Every change of the computed value replaces the ref value, so watchers of the ref
+are triggered without the `deep` option. To change the state, call the component methods, e.g.
+`backButton.show()`.
+
+### Lifetime
+
+Inside an effect scope, e.g. a component setup, a composable called from it, or a scope created
+with `effectScope`, the subscription is removed when the scope is disposed.
+
+`useComputed` can also be called outside any effect scope, e.g. in a module scope, to create a ref
+shared by the whole application. In this case, the subscription is never removed, so avoid calling
+it this way repeatedly.
+
+```ts [useMainButton.ts]
+import { mainButton, useComputed } from '@tma.js/sdk-vue';
+
 /**
- * Composable which encapsulates mainButton interaction logic
+ * Composable encapsulating the Main Button logic.
  */
-import { mainButton, useSignal } from '@tma.js/sdk-vue';
-
 export function useMainButton() {
   if (!mainButton.isMounted()) {
     mainButton.mount();
   }
-
-  const isVisible = useSignal(mainButton.isVisible);
-
-  return { isVisible };
+  return {
+    isVisible: useComputed(mainButton.isVisible),
+    text: useComputed(mainButton.text),
+  };
 }
 ```
 
-## Vue Router integration
+## Vue Router Integration
 
-Telegram application uses URL's hash to transmit launch parameters into TMA,
-see [that article](../platform/launch-parameters#transmission-method) for more details.
+Telegram passes launch parameters to the mini app in the URL hash, see
+[this article](../platform/launch-parameters.md#transmission-method) for more details.
 
-Therefore, [Vue router](https://router.vuejs.org/) should
-use [HTML5 mode](https://router.vuejs.org/guide/essentials/history-mode.html#HTML5-Mode):
+Therefore, [Vue Router](https://router.vuejs.org/) should use the
+[HTML5 mode](https://router.vuejs.org/guide/essentials/history-mode.html#HTML5-Mode):
 
 ```ts [router.ts]
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router';
 
 const router = createRouter({
   history: createWebHistory(),
   routes: [
-    //...
+    // ...
   ],
-})
+});
 ```

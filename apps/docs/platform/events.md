@@ -84,11 +84,11 @@ package, which greatly eases integration.
 Here's how to use it:
 
 ```ts
-import { on } from '@tma.js/sdk';
+import { onEvent } from '@tma.js/sdk';
 
 // Start listening to "viewport_changed" event. Returned value
 // is a function, which removes this event listener.
-const removeListener = on('viewport_changed', payload => {
+const removeListener = onEvent('viewport_changed', payload => {
   console.log('Viewport changed:', payload);
 });
 

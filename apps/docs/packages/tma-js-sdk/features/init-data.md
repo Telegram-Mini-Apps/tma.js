@@ -9,51 +9,56 @@ Apps [init data](../../../platform/init-data.md).
 
 ## Restoring
 
-To restore the component state, use the `restore` method.
+The component reads init data from the `tgWebAppData` launch parameter. To do so, call the
+`restore` method after the SDK is [initialized](../initializing.md). Until then, all computed
+values of the component return `undefined`.
 
 ```ts
-import { initData } from '@tma.js/sdk';
+import { init, initData } from '@tma.js/sdk';
 
+init();
 initData.restore();
+initData.user(); // { id: 99281932, first_name: 'Andrew', ... }
 ```
 
-## Parsing
+If launch parameters have no init data, the method does nothing, and the computed values keep
+returning `undefined`.
 
-To parse a value as init data, use the `parseInitDataQuery` function.
+`restore` throws `NotInitializedError` if the SDK is not initialized, and `InvalidInitDataError`
+if init data is invalid. `safeRestore` returns `InvalidInitDataError` as a result instead of
+throwing it.
 
 ```ts
-import { parseInitDataQuery } from '@tma.js/sdk';
-
-const initData = parseInitDataQuery('auth_date=123&query_id=anQQ231vs&...');
-// {
-//   user: {
-//     id: 99281932,
-//     first_name: 'Andrew',
-//     last_name: 'Rogue',
-//     username: 'rogue',
-//     language_code: 'en',
-//     is_premium: true,
-//     allows_write_to_pm: true,
-//   },
-//   hash: 'abcedef123',
-//   auth_date: Date(1716922846000),
-//   start_param: 'debug',
-//   chat_type: 'sender',
-//   chat_instance: '8428209589180549439',
-// };
+const result = initData.safeRestore();
+if (!result.ok) {
+  console.error('Init data is invalid:', result.error);
+}
 ```
 
-The function returns the [init data](../../../platform/init-data.md#parameters-list) object.
+::: tip
+To parse, validate or sign init data, use the [@tma.js/init-data](../../tma-js-init-data.md)
+package. The SDK re-exports the `InitData`, `User`, `Chat` and `ChatType` types, and the
+`InvalidInitDataError` class from it.
+:::
 
-## Signals
+## Computed Values
 
-This section provides a complete list of signals related to the init data.
+This section provides a complete list of computed values related to init data. Each of them
+returns `undefined` if init data was not restored or has no such property.
+
+All values can be subscribed to:
+
+```ts
+const unsubscribe = initData.user.subscribe((next, prev) => {
+  console.log('User changed:', prev, '->', next);
+});
+```
 
 ### `authDate`
 
 Return type: `Date | undefined`
 
-A date the initialization data was created.
+A date the init data was created.
 
 ```ts
 initData.authDate(); // Date(1727368894000)
@@ -74,10 +79,10 @@ initData.canSendAfter(); // 3600
 
 Return type: `Date | undefined`
 
-[canSendAfter](#cansendafter) but as a Date.
+[canSendAfter](#cansendafter) as a date, calculated from [authDate](#authdate).
 
 ```ts
-initData.canSendAfterDate(); // Date(1727368897600)
+initData.canSendAfterDate(); // Date(1727372494000)
 ```
 
 ### `chat`
@@ -87,7 +92,8 @@ Return type: `undefined` or [`Chat`](../../../platform/init-data.md#chat)
 An object containing data about the chat where the bot was launched via the attachment menu.
 
 > [!NOTE]
-> Returned for supergroups, channels and group chats – only for Mini Apps launched via the attachment menu.
+> Returned for supergroups, channels and group chats – only for Mini Apps launched via the
+> attachment menu.
 
 ```ts
 initData.chat();
@@ -102,9 +108,9 @@ initData.chat();
 
 ### `chatType`
 
-Return type: `string | undefined`
+Return type: `ChatType | undefined`
 
-A type of chat from which the Mini Apps was opened. Values:
+A type of chat from which the mini app was opened. Values:
 
 - `sender`
 - `private`
@@ -123,30 +129,30 @@ initData.chatType(); // 'group'
 
 Return type: `string | undefined`
 
-A global identifier indicating the chat from which the Mini Apps was opened.
+A global identifier indicating the chat from which the mini app was opened.
 
 > [!WARNING]
 > Returned only for applications opened by direct link.
 
 ```ts
-initData.chatInstance(); // 'group'
+initData.chatInstance(); // '8428209589180549439'
 ```
 
 ### `hash`
 
 Return type: `string | undefined`
 
-An initialization data signature.
+The init data signature.
 
 ```ts
-initData.hash(); // 'group'
+initData.hash(); // 'abcedef123'
 ```
 
 ### `queryId`
 
 Return type: `string | undefined`
 
-A unique session ID of the Mini App. Used in the process of sending a message via the
+A unique session ID of the mini app. Used in the process of sending a message via the
 method [answerWebAppQuery](https://core.telegram.org/bots/api#answerwebappquery).
 
 ```ts
@@ -157,7 +163,8 @@ initData.queryId(); // 'hSvhacj28716'
 
 Return type: `string | undefined`
 
-A raw string representation of the initialization data.
+The init data in the raw format. Pass it to your server to
+[authorize the user](../../../platform/authorizing-user.md).
 
 ```ts
 initData.raw(); // 'user=...&chat=...&...'
@@ -167,8 +174,8 @@ initData.raw(); // 'user=...&chat=...&...'
 
 Return type: `undefined` or [`User`](../../../platform/init-data.md#user)
 
-An object containing data about the chat partner of the current user in the chat where the bot was launched via the
-attachment menu.
+An object containing data about the chat partner of the current user in the chat where the bot
+was launched via the attachment menu.
 
 > [!NOTE]
 > Returned only for private chats and only for Mini Apps launched via the attachment menu.
@@ -189,14 +196,14 @@ initData.receiver();
 // }
 ```
 
-### `state`
+### `signature`
 
-Return type: `undefined` or [`InitData`](../../../platform/init-data.md#parameters-list)
+Return type: `string | undefined`
 
-An object containing the initialization data in object format.
+The init data signature allowing third parties to validate it without the bot token.
 
 ```ts
-initData.state();
+initData.signature(); // 'abc...'
 ```
 
 ### `startParam`
@@ -207,6 +214,16 @@ A value of the `startattach` or `startapp` query parameter specified in the link
 
 ```ts
 initData.startParam(); // 'my-value'
+```
+
+### `state`
+
+Return type: `undefined` or [`InitData`](../../../platform/init-data.md#parameters-list)
+
+The whole init data object. Its keys are in snake case, and `auth_date` is a `Date`.
+
+```ts
+initData.state();
 ```
 
 ### `user`

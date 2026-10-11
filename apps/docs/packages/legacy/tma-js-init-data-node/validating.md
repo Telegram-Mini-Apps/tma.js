@@ -182,7 +182,7 @@ This package allow developers to use a hashed token instead of a raw token.
 
 By "hashed token," we mean a token hashed using the HMAC-SHA-256 algorithm with a key derived
 from `WebAppData`, as specified in
-the [validation](../../platform/init-data#validating) section of the documentation.
+the [validation](../../../platform/init-data#validating) section of the documentation.
 
 Here are some examples:
 
