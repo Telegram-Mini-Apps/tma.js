@@ -43,7 +43,7 @@
     "lint": "eslint src",
     "lint:fix": "pnpm run lint --fix",
     "typecheck": "tsc --noEmit",
-    "build": "rimraf dist && vite build"
+    "build": "rimraf dist && vite build && vite build --mode iife"
   },
   "devDependencies": {
     "tsconfig": "workspace:*"
