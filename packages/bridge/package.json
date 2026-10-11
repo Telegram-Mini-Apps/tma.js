@@ -6,7 +6,7 @@
   "homepage": "https://github.com/Telegram-Mini-Apps/tma.js#readme",
   "repository": {
     "type": "git",
-    "url": "git@github.com:Telegram-Mini-Apps/tma.js.git",
+    "url": "git+https://github.com/Telegram-Mini-Apps/tma.js.git",
     "directory": "packages/bridge"
   },
   "bugs": {

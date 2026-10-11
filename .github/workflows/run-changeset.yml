@@ -5,8 +5,13 @@ on:
   push:
     branches:
       - "master"
-    paths:
-      - ".changeset/**.md"
+
+concurrency: ${{ github.workflow }}-${{ github.ref }}
+
+permissions:
+  contents: write
+  pull-requests: write
+  id-token: write
 
 jobs:
   run-changeset:
@@ -22,8 +27,7 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v6
         with:
-          node-version: 22
-          registry-url: 'https://registry.npmjs.org'
+          node-version: 24
           cache: 'pnpm'
 
       - name: Rollup
@@ -35,7 +39,3 @@ jobs:
           publish: pnpm changeset publish
           commit: 'chore(packages): version packages'
           title: 'chore(packages): version packages'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
