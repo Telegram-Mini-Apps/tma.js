@@ -1,72 +1,76 @@
-# Что изменилось в новых мажорных версиях пакетов @tma.js
+# What changed in the new major versions of the @tma.js packages
 
-Сравнение старых мажорных версий (`packages-old/*`, на ветке `master` это `packages/*`) с новыми,
-которые разрабатываются в ветке `feat/v4` (`packages/*`).
+A comparison of the previous major versions (`packages-old/*`, which is `packages/*` on the `master`
+branch) with the new ones developed in the `feat/v4` branch (`packages/*`).
 
-> Версии в `packages/*/package.json` пока не подняты: там стоят старые номера (bridge 2.4.0,
-> sdk 3.4.0 и т. д.). Ниже «старая» и «новая» версии означают `packages-old/*` и `packages/*`.
+> The versions in `packages/*/package.json` haven't been bumped yet and still hold the old numbers
+> (bridge 2.4.0, sdk 3.4.0, etc.). Below, "old" and "new" versions mean `packages-old/*` and
+> `packages/*`.
 
-## Содержание
+## Contents
 
-1. [Коротко](#1-коротко)
-2. [Сквозные изменения во всех пакетах](#2-сквозные-изменения-во-всех-пакетах)
+1. [Summary](#1-summary)
+2. [Changes across all packages](#2-changes-across-all-packages)
 3. [@tma.js/bridge](#3-tmajsbridge)
 4. [@tma.js/sdk](#4-tmajssdk)
 5. [@tma.js/init-data-node → @tma.js/init-data](#5-tmajsinit-data-node--tmajsinit-data)
-6. [Биндинги: sdk-react, sdk-vue, sdk-solid, sdk-svelte](#6-биндинги-sdk-react-sdk-vue-sdk-solid-sdk-svelte)
-7. [Удалённые пакеты](#7-удалённые-пакеты)
-8. [Что было в старых версиях и пропало без замены](#8-что-было-в-старых-версиях-и-пропало-без-замены)
-9. [Что нужно сделать до релиза](#9-что-нужно-сделать-до-релиза)
+6. [Bindings: sdk-react, sdk-vue, sdk-solid, sdk-svelte](#6-bindings-sdk-react-sdk-vue-sdk-solid-sdk-svelte)
+7. [Removed packages](#7-removed-packages)
+8. [What the old versions had and is gone without a replacement](#8-what-the-old-versions-had-and-is-gone-without-a-replacement)
+9. [What to do before the release](#9-what-to-do-before-the-release)
 
 ---
 
-## 1. Коротко
+## 1. Summary
 
-### Пакеты
+### Packages
 
-| Было | Стало | Статус |
+| Before | After | Status |
 |---|---|---|
-| `@tma.js/bridge` | `@tma.js/bridge` | Переписан |
-| `@tma.js/sdk` | `@tma.js/sdk` | Переписан |
-| `@tma.js/init-data-node` (+ `/web`) | **`@tma.js/init-data`** | Переименован и переписан |
-| `@tma.js/sdk-react` / `-vue` / `-solid` / `-svelte` | те же имена | `useSignal` → `useComputed` |
-| `@tma.js/signals` | — | **Удалён** |
-| `@tma.js/toolkit` | — | **Удалён** |
-| `@tma.js/transformers` | — | **Удалён** |
-| `@tma.js/types` | — | **Удалён**, типы переехали в bridge и init-data |
+| `@tma.js/bridge` | `@tma.js/bridge` | Rewritten |
+| `@tma.js/sdk` | `@tma.js/sdk` | Rewritten |
+| `@tma.js/init-data-node` (+ `/web`) | **`@tma.js/init-data`** | Renamed and rewritten |
+| `@tma.js/sdk-react` / `-vue` / `-solid` / `-svelte` | same names | `useSignal` → `useComputed` |
+| `@tma.js/signals` | — | **Removed** |
+| `@tma.js/toolkit` | — | **Removed** |
+| `@tma.js/transformers` | — | **Removed** |
+| `@tma.js/types` | — | **Removed**, the types moved to bridge and init-data |
 
-### Главное, что почувствует пользователь
+### What users will notice most
 
-1. **Нет fp-ts.** Все `xFp()` с `Either`/`TaskEither` заменены на `safeX()`, которые возвращают
-   `Result` вида `{ ok: true, data } | { ok: false, error }`. Обычные `x()` по-прежнему бросают
-   исключения.
-2. **Нет `BetterPromise`.** Везде обычный `Promise`. Отмена делается через стандартный
-   `AbortSignal` (опция `signal` вместо `abortSignal`), а `.cancel()` и `CancelledError` пропали.
-3. **Нет `@tma.js/signals`.** Реактивные значения стали `Computed<T>` с одним методом
-   `subscribe((next, prev) => …)`, который возвращает функцию отписки. `.sub`, `.unsub`,
-   `.unsubAll`, `once` и публичные `signal()`/`computed()`/`batch()` убраны.
-4. **Нет `isAvailable()` / `ifAvailable()`.** Есть только `isSupported()` (обычная функция, не
-   сигнал) и `supports(feature)`. Вызов неподдерживаемого метода, метода до `init()` или метода
-   несмонтированного компонента бросает исключение.
-5. **Компоненты SDK — обычные объекты-синглтоны**, а не классы с DI-опциями. `new BackButton(...)`,
-   `instanceof` и типы `*Options` больше не существуют.
-6. **`init()` обязателен для всего.** В старой версии часть функций работала без `init()`, теперь
-   они бросают `NotInitializedError`.
-7. **`LaunchParams.tgWebAppData` — сырая строка**, а не распарсенный объект. Для парсинга есть
-   `@tma.js/init-data` или компонент `initData` в SDK.
-8. **Нет IIFE-сборки.** Bridge и SDK больше не подключить через `<script>` с CDN как глобалы
-   `tapps.bridge` / `tmajs.sdk`. Остались только ESM и CJS.
-9. **Зависимости.** Удалены `fp-ts`, `better-promises`, `mitt` и внутренние signals, toolkit,
-   transformers и types. `error-kid` обновлён с 2 до 3, `valibot` с ^1.1 до ^1.5.
+1. **No fp-ts.** All `xFp()` functions with `Either`/`TaskEither` are replaced with `safeX()`, which
+   return a `Result` of the form `{ ok: true, data } | { ok: false, error }`. Plain `x()` functions
+   still throw.
+2. **No `BetterPromise`.** A regular `Promise` is used everywhere. Cancellation goes through the
+   standard `AbortSignal` (the `signal` option instead of `abortSignal`), and `.cancel()` and
+   `CancelledError` are gone.
+3. **No `@tma.js/signals`.** Reactive values are now `Computed<T>` with a single method,
+   `subscribe((next, prev) => …)`, which returns an unsubscribe function. `.sub`, `.unsub`,
+   `.unsubAll`, `once` and the public `signal()`/`computed()`/`batch()` are removed.
+4. **No `isAvailable()` / `ifAvailable()`.** Only `isSupported()` (a plain function, not a signal)
+   and `supports(feature)` remain. Calling an unsupported method, a method before `init()` or a
+   method of an unmounted component throws.
+5. **SDK components are plain singleton objects**, not classes with DI options. `new BackButton(...)`,
+   `instanceof` and the `*Options` types no longer exist.
+6. **`init()` is required for everything.** In the old version some functions worked without
+   `init()`. Now they throw `NotInitializedError`.
+7. **`LaunchParams.tgWebAppData` is a raw string**, not a parsed object. Use `@tma.js/init-data` or
+   the SDK's `initData` component to parse it.
+8. **The bridge IIFE global is renamed.** The IIFE build (`dist/index.iife.js`) is still there, but
+   bridge is now available as `tmajs.bridge` instead of `tapps.bridge`. The SDK is still
+   `tmajs.sdk`, and `@tma.js/init-data` got the `tmajs.initData` global.
+9. **Dependencies.** `fp-ts`, `better-promises`, `mitt` and the internal signals, toolkit,
+   transformers and types packages are removed. `error-kid` is upgraded from 2 to 3, `valibot` from
+   ^1.1 to ^1.5.
 
 ---
 
-## 2. Сквозные изменения во всех пакетах
+## 2. Changes across all packages
 
-### 2.1 Обработка ошибок: fp-ts → Result
+### 2.1 Error handling: fp-ts → Result
 
 ```ts
-// Было
+// Before
 import { requestFp } from '@tma.js/bridge';
 import { taskEither as TE, function as fn } from 'fp-ts';
 
@@ -75,7 +79,7 @@ await fn.pipe(
   TE.match(err => console.error(err), ({ status }) => console.log(status)),
 )();
 
-// Стало
+// After
 import { safeRequest, matchError } from '@tma.js/bridge';
 
 const r = await safeRequest('web_app_request_phone', 'phone_requested', { timeout: 5000 });
@@ -86,70 +90,72 @@ if (r.ok) {
 }
 ```
 
-- В `Result<E, T>` тип ошибки стоит **первым**.
-- Bridge экспортирует хелперы `ok`, `err`, `unwrap` и `throwing`. `throwing(safeX)` превращает
-  safe-функцию в бросающую.
-- `matchError` из error-kid v3 сопоставляет ошибки по имени и проверяет, что обработаны все варианты.
-- **Важно:** в `Result` попадают только *ожидаемые* ошибки, например таймаут, отказ пользователя или
-  невалидный ответ. Ошибки окружения и неправильного использования бросаются даже из `safeX`:
-  `UnknownEnvError`, `MethodUnsupportedError`, `NotInitializedError`, `NotMountedError`,
-  `ConcurrentCallError`, отмена через `signal.reason`.
-- Не у каждой функции есть safe-вариант. Если ожидаемых ошибок нет, safe-версии тоже нет, например
-  у `hideKeyboard`, `shareStory`, `shareURL` и `decodeStartParam`.
+- In `Result<E, T>` the error type comes **first**.
+- Bridge exports the `ok`, `err`, `unwrap` and `throwing` helpers. `throwing(safeX)` turns a safe
+  function into a throwing one.
+- `matchError` from error-kid v3 matches errors by name and checks that every variant is handled.
+- **Important:** only *expected* errors end up in a `Result`, such as a timeout, a user refusal or an
+  invalid response. Environment and misuse errors are thrown even from `safeX`: `UnknownEnvError`,
+  `MethodUnsupportedError`, `NotInitializedError`, `NotMountedError`, `ConcurrentCallError`, and
+  cancellation via `signal.reason`.
+- Not every function has a safe variant. If there are no expected errors, there is no safe version,
+  for example for `hideKeyboard`, `shareStory`, `shareURL` and `decodeStartParam`.
 
-### 2.2 Асинхронность: BetterPromise → Promise + AbortSignal
+### 2.2 Async: BetterPromise → Promise + AbortSignal
 
 ```ts
-// Было
+// Before
 const p = request('web_app_request_phone', 'phone_requested', { timeout: 5000 });
 p.cancel(); // CancelledError
 
-// Стало
+// After
 const ac = new AbortController();
 const p = request('web_app_request_phone', 'phone_requested', { signal: ac.signal, timeout: 5000 });
-ac.abort(); // промис отклоняется с ac.signal.reason
+ac.abort(); // the promise rejects with ac.signal.reason
 ```
 
-- Опция `abortSignal` переименована в `signal`.
-- `TimeoutError` теперь собственный класс bridge на error-kid с полем `.data.timeout`. Это **другой
-  класс**, поэтому старые проверки `instanceof` против `TimeoutError` из better-promises не сработают.
+- The `abortSignal` option is renamed to `signal`.
+- `TimeoutError` is now bridge's own error-kid class with a `.data.timeout` field. It's a **different
+  class**, so old `instanceof` checks against `TimeoutError` from better-promises won't work.
 
-### 2.3 Ошибки на error-kid v3
+### 2.3 Errors on error-kid v3
 
-- У всех классов ошибок есть статический метод `.is(value)`. Он проверяет тег, поэтому работает между
-  realm'ами и при дублировании пакета в бандле.
-- Большинство ошибок получили поле `.data` со структурированными данными, а сообщения стали
-  информативнее.
+- Every error class has a static `.is(value)` method. It checks a tag, so it works across realms and
+  when the package is duplicated in a bundle.
+- Most errors got a `.data` field with structured data, and the messages are more informative.
 
-### 2.4 Ключи sessionStorage
+### 2.4 sessionStorage keys
 
-| Что | Было | Стало |
+| What | Before | After |
 |---|---|---|
-| Launch params | `tapps/launchParams` (JSON) | `tma.js/launch-params` (query-строка) |
-| Состояние компонентов SDK | `tapps/<name>` | `tma.js/sdk/<name>` |
+| Launch params | `tapps/launchParams` (JSON) | `tma.js/launch-params` (query string) |
+| SDK component state | `tapps/<name>` | `tma.js/sdk/<name>` |
 
-После обновления сохранённое ранее состояние не подхватится. Это важно только при перезагрузке
-страницы внутри одной сессии во время выкатки.
+After the upgrade, previously saved state won't be picked up. This only matters when the page is
+reloaded within one session during the rollout.
 
-### 2.5 Сборка
+### 2.5 Build
 
-- Форматы: только `es` + `cjs`, IIFE больше не собирается.
-- В `exports` добавлено условие `"@tma.js/source": "./src/index.ts"`. Оно нужно для разработки в
-  монорепозитории, а в опубликованном пакете указывает на отсутствующий файл, потому что публикуется
-  только `dist`. Пользователей это не затронет, если они сами не включат такое условие.
-- `sideEffects: false`, как и раньше.
-- `engines` объявлен только у `@tma.js/init-data` (`node >= 20`).
+- Formats: `es` + `cjs`, plus `iife` (`dist/index.iife.js`) for bridge, SDK and init-data. It's built
+  by a separate `vite build --mode iife` pass and bundles all dependencies. Globals: `tmajs.bridge`
+  (formerly `tapps.bridge`), `tmajs.sdk`, `tmajs.initData`. The framework bindings have no IIFE, as
+  before.
+- `exports` got the `"@tma.js/source": "./src/index.ts"` condition. It's needed for development in
+  the monorepo, and in the published package it points to a missing file, because only `dist` is
+  published. Users aren't affected unless they enable this condition themselves.
+- `sideEffects: false`, as before.
+- Only `@tma.js/init-data` declares `engines` (`node >= 20`).
 
 ---
 
 ## 3. @tma.js/bridge
 
-Наборы методов (63) и событий (62) Mini Apps **не изменились**, таблица версий релизов тоже
-идентична. Поменялся API вокруг них.
+The sets of Mini Apps methods (63) and events (62) **haven't changed**, and the release versions
+table is identical too. The API around them changed.
 
-### 3.1 Переименования
+### 3.1 Renames
 
-| Было | Стало |
+| Before | After |
 |---|---|
 | `on(event, fn, once?)` | `onEvent(event, fn, { once?, signal? })` |
 | `off(event, fn, once?)` | `offEvent(event, fn)` |
@@ -158,134 +164,135 @@ ac.abort(); // промис отклоняется с ac.signal.reason
 | `requestFp` | `safeRequest` |
 | `invokeCustomMethodFp` | `safeInvokeCustomMethod` |
 | `isTMA('complete', opts)` | `isTMAAsync({ timeout?, signal? })` |
-| `isTMAFp` | — (используйте `isTMA()` / `isTMAAsync()`) |
-| `retrieveLaunchParamsFp` и др. `retrieve*Fp` | `safeRetrieveLaunchParams`, `safeRetrieveRawLaunchParams`, `safeRetrieveRawInitData` |
+| `isTMAFp` | — (use `isTMA()` / `isTMAAsync()`) |
+| `retrieveLaunchParamsFp` and other `retrieve*Fp` | `safeRetrieveLaunchParams`, `safeRetrieveRawLaunchParams`, `safeRetrieveRawInitData` |
 | `createStartParamFp` | `safeCreateStartParam` |
-| `debug()` (сигнал) | `isDebug()` |
-| `targetOrigin()` (сигнал) | `getTargetOrigin()` |
+| `debug()` (signal) | `isDebug()` |
+| `targetOrigin()` (signal) | `getTargetOrigin()` |
 | `logger()` / `logger.set(x)` | `getLogger()` / `setLogger(x)` |
 | `mockTelegramEnv({ onEvent })` | `mockTelegramEnv({ onMethod })` |
 | `parseLaunchParamsQuery` (transformers) | `parseLaunchParams` / `safeParseLaunchParams` |
 | `serializeLaunchParamsQuery` (transformers) | `serializeLaunchParams` |
-| Тип `SubscribeListener` | `AnyEventListener` |
-| Типы `EventWithPayload` / `EventWithoutPayload` | `EventNameWithPayload` / `EventNameWithoutPayload` |
-| Тип `MethodVersionedParams` | `MethodVersionedParam` |
-| Тип `RetrieveLaunchParamsResult` | `LaunchParams` |
+| `SubscribeListener` type | `AnyEventListener` |
+| `EventWithPayload` / `EventWithoutPayload` types | `EventNameWithPayload` / `EventNameWithoutPayload` |
+| `MethodVersionedParams` type | `MethodVersionedParam` |
+| `RetrieveLaunchParamsResult` type | `LaunchParams` |
 
-### 3.2 Удалено без прямой замены
+### 3.2 Removed without a direct replacement
 
-- `postEventFp`, `decodeBase64UrlFp`, `decodeStartParamFp`. Остались только бросающие версии.
-- `resetGlobals()`. Вместо него вызовите `offAll()`, `setDebug(false)`, `setLogger()` и
-  `setTargetOrigin('https://web.telegram.org')`.
-- `postMessage` и `postMessageImpl`.
-- `applyPolyfills()` (полифил `Object.hasOwn`). Если нужна поддержка очень старых WebView,
-  подключайте полифил сами.
-- Реэкспорты `createLogger`, `deepSnakeToCamelObjKeys`, `CancelledError` и типов `Logger*` /
-  `LogLevel` / `DeepConvertSnakeKeysToCamelCase`.
+- `postEventFp`, `decodeBase64UrlFp`, `decodeStartParamFp`. Only the throwing versions remain.
+- `resetGlobals()`. Call `offAll()`, `setDebug(false)`, `setLogger()` and
+  `setTargetOrigin('https://web.telegram.org')` instead.
+- `postMessage` and `postMessageImpl`.
+- `applyPolyfills()` (the `Object.hasOwn` polyfill). If you need to support very old WebViews,
+  include the polyfill yourself.
+- Re-exports of `createLogger`, `deepSnakeToCamelObjKeys`, `CancelledError` and the `Logger*` /
+  `LogLevel` / `DeepConvertSnakeKeysToCamelCase` types.
 
-### 3.3 Изменения поведения
+### 3.3 Behavior changes
 
 **`request`**
 
-- Возвращает `Promise`, а не `BetterPromise`.
-- **При массиве событий всегда резолвится в `{ event, payload }`**, как раньше делал `request2`.
-  Старый `request` с массивом возвращал только payload.
+- Returns a `Promise`, not a `BetterPromise`.
+- **With an array of events it always resolves to `{ event, payload }`**, as `request2` used to. The
+  old `request` with an array returned only the payload.
 
   ```ts
-  // Было
+  // Before
   const payload = await request('web_app_request_fullscreen', ['fullscreen_changed', 'fullscreen_failed']);
-  // Стало
+  // After
   const { event, payload } = await request('web_app_request_fullscreen', ['fullscreen_changed', 'fullscreen_failed']);
   ```
 
-- Исключение, брошенное в `capture`, теперь отклоняет запрос.
+- An exception thrown in `capture` now rejects the request.
 
-**`invokeCustomMethod`**: `requestId` переехал из позиционного аргумента в опции и стал
-необязательным. По умолчанию он генерируется через новую функцию `createRequestId()`.
+**`invokeCustomMethod`**: `requestId` moved from a positional argument into the options and became
+optional. By default it's generated with the new `createRequestId()` function.
 
 ```ts
-// Было
+// Before
 await invokeCustomMethod('getStorageKeys', {}, 'req-1', { timeout: 5000 });
-// Стало
+// After
 await invokeCustomMethod('getStorageKeys', {}, { timeout: 5000 });
 ```
 
-**События**
+**Events**
 
-- Повторная подписка той же функции ничего не делает. В mitt один и тот же обработчик мог
-  вызываться несколько раз.
-- Исключение в обработчике логируется через `getLogger().error` и не мешает остальным обработчикам.
-- У обработчиков событий без payload параметр типизирован как `undefined`, а не `never`.
-- `emitEvent` принимает только известные имена событий. Вне iframe он вызывает
-  `window.Telegram.WebView.receiveEvent`, если тот есть, поэтому событие получает и официальный SDK.
-- Нормализация payload:
-  - `viewport_changed` с `null` подставляет `width: window.innerWidth`;
-  - `popup_closed` приводится к `{}` или `{ button_id }`.
-- В режиме debug события логируются только пока есть хотя бы один подписчик. Раньше `setDebug(true)`
-  сам подписывался на все события.
+- Subscribing the same function again does nothing. In mitt, the same handler could be called
+  several times.
+- An exception in a handler is logged via `getLogger().error` and doesn't affect other handlers.
+- For events without a payload, the handler parameter is typed as `undefined`, not `never`.
+- `emitEvent` accepts only known event names. Outside an iframe it calls
+  `window.Telegram.WebView.receiveEvent` if it exists, so the official SDK receives the event too.
+- Payload normalization:
+  - `viewport_changed` with `null` substitutes `width: window.innerWidth`;
+  - `popup_closed` is normalized to `{}` or `{ button_id }`.
+- In debug mode, events are logged only while there is at least one subscriber. Previously
+  `setDebug(true)` subscribed to all events by itself.
 
 **`postEvent`**
 
-- Сигнатура стала одной generic-функцией `<M>(method: M, ...args: MethodArgs<M>)`.
-- Метод без параметров отправляется с `eventData: ""`, как в официальном SDK. Раньше `eventData`
-  отсутствовал.
+- The signature is now a single generic function `<M>(method: M, ...args: MethodArgs<M>)`.
+- A method without parameters is sent with `eventData: ""`, as in the official SDK. Previously
+  `eventData` was absent.
 
 **Launch params**
 
-- **`tgWebAppData` теперь строка**, а не распарсенный `InitData`.
-- Схема строже: неизвестные ключи вырезаются (`object` вместо `looseObject`), а `tgWebAppPlatform` и
-  `tgWebAppVersion` должны быть непустыми.
-- Невалидный `tgWebAppData` больше не ломает получение launch params, потому что bridge его не
-  валидирует.
-- Добавлен четвёртый источник: `sessionStorage['__telegram__initParams']` официального SDK.
+- **`tgWebAppData` is now a string**, not a parsed `InitData`.
+- The schema is stricter: unknown keys are stripped (`object` instead of `looseObject`), and
+  `tgWebAppPlatform` and `tgWebAppVersion` must be non-empty.
+- An invalid `tgWebAppData` no longer breaks retrieving launch params, because bridge doesn't
+  validate it.
+- A fourth source is added: the official SDK's `sessionStorage['__telegram__initParams']`.
 
 **`mockTelegramEnv`**
 
-- Возвращает функцию восстановления.
-- Опция `onEvent` → `onMethod(call, next)`, `resetPostMessage` удалена.
-- `launchParams` принимает `string | URLSearchParams | LaunchParams`.
+- Returns a restore function.
+- The `onEvent` option → `onMethod(call, next)`, `resetPostMessage` is removed.
+- `launchParams` accepts `string | URLSearchParams | LaunchParams`.
 
-**Прочее**
+**Other**
 
-- `getReleaseVersion` для неизвестного метода возвращает `undefined` вместо `null`.
-- `compareVersions` возвращает тип `-1 | 0 | 1`.
-- `hasWebviewProxy()` больше не принимает аргумент и проверяет `window`.
-- `createStartParam` бросает `StartParamTooLongError` вместо обычного `Error`.
-- `decodeBase64Url` на невалидном UTF-8 бросает `TypeError` вместо `URIError`.
-- Логгер: `setLogger({ log, warn, error })`. Фабрики `createLogger` и методов `force*` больше нет.
-  От debug зависит только `log`, а `warn` и `error` печатаются всегда.
+- `getReleaseVersion` returns `undefined` instead of `null` for an unknown method.
+- `compareVersions` returns the `-1 | 0 | 1` type.
+- `hasWebviewProxy()` no longer takes an argument and checks `window`.
+- `createStartParam` throws `StartParamTooLongError` instead of a plain `Error`.
+- `decodeBase64Url` throws `TypeError` instead of `URIError` on invalid UTF-8.
+- Logger: `setLogger({ log, warn, error })`. The `createLogger` factory and the `force*` methods are
+  gone. Only `log` depends on debug, while `warn` and `error` are always printed.
 
-### 3.4 Типы
+### 3.4 Types
 
-- `Methods[M]` теперь сам является типом параметров, а не `{ params, versionedParams }`. Код вида
-  `Methods[M]['params']` нужно поменять на `MethodParams<M>`.
-- Новые типы: `MethodArgs<M>`, `EventListenerPayload`, `AnyEvent`, `OnOptions`, `EmitEventArgs`,
+- `Methods[M]` is now the parameters type itself, not `{ params, versionedParams }`. Code like
+  `Methods[M]['params']` must be changed to `MethodParams<M>`.
+- New types: `MethodArgs<M>`, `EventListenerPayload`, `AnyEvent`, `OnOptions`, `EmitEventArgs`,
   `RequestFnArgs`, `RequestFnOptions`, `MockedMethodCall`.
-- `RGB`, `Version`, `Platform` и `ThemeParams` переехали сюда из `@tma.js/types`.
-- `ThemeParams` теперь интерфейс с явными snake_case-ключами. В него добавлен
-  `section_separator_color`, а `KnownThemeParamsKey` удалён.
-- `Platform` не содержит литерала `'web'`, но остаётся `| string`, так что это не ломающее изменение.
+- `RGB`, `Version`, `Platform` and `ThemeParams` moved here from `@tma.js/types`.
+- `ThemeParams` is now an interface with explicit snake_case keys. `section_separator_color` is added
+  to it, and `KnownThemeParamsKey` is removed.
+- `Platform` no longer contains the `'web'` literal, but stays `| string`, so this isn't a breaking
+  change.
 
-### 3.5 Ошибки
+### 3.5 Errors
 
-| Было | Стало |
+| Before | After |
 |---|---|
-| `UnknownEnvError` (без сообщения) | Появилось сообщение |
-| `MethodUnsupportedError`, `MethodParameterUnsupportedError` | Добавлено `.data` |
-| `InvalidLaunchParamsError(lp, cause)` | `(value, cause?)`, `.data.value`, новое сообщение |
-| `InvokeCustomMethodFailedError` с `name = 'InvokeCustomMethodError'` | **`name` = `'InvokeCustomMethodFailedError'`** |
-| `TimeoutError` из better-promises | Собственный класс, `.data.timeout` |
-| `CancelledError` | Удалён, отмена отклоняет промис с `signal.reason` |
-| — | Новая `StartParamTooLongError` |
+| `UnknownEnvError` (no message) | Has a message |
+| `MethodUnsupportedError`, `MethodParameterUnsupportedError` | `.data` added |
+| `InvalidLaunchParamsError(lp, cause)` | `(value, cause?)`, `.data.value`, new message |
+| `InvokeCustomMethodFailedError` with `name = 'InvokeCustomMethodError'` | **`name` = `'InvokeCustomMethodFailedError'`** |
+| `TimeoutError` from better-promises | Own class, `.data.timeout` |
+| `CancelledError` | Removed, cancellation rejects the promise with `signal.reason` |
+| — | New `StartParamTooLongError` |
 
 ---
 
 ## 4. @tma.js/sdk
 
-### 4.1 Форма компонентов
+### 4.1 Component shape
 
 ```ts
-// Было
+// Before
 backButton.mount.ifAvailable();
 if (backButton.show.isAvailable()) {
   backButton.show();
@@ -293,7 +300,7 @@ if (backButton.show.isAvailable()) {
 const off = backButton.isVisible.sub(v => console.log(v));
 backButton.onClick(handler, true); // once
 
-// Стало
+// After
 if (backButton.isSupported()) {
   backButton.mount();
   backButton.show();
@@ -302,381 +309,389 @@ const off = backButton.isVisible.subscribe((next, prev) => console.log(next));
 backButton.onClick(handler, { once: true });
 ```
 
-- Компоненты — объекты-синглтоны. Экспортируются только их TS-интерфейсы.
-- Удалены все `*Fp`, все `isAvailable` и `ifAvailable`, все типы `*Options` для DI (`BackButtonOptions`,
-  `MiniAppOptions` и т. п.).
-- У каждой кнопки появилось поле `state: Computed<S>`.
+- Components are singleton objects. Only their TS interfaces are exported.
+- All `*Fp`, all `isAvailable` and `ifAvailable`, and all `*Options` DI types (`BackButtonOptions`,
+  `MiniAppOptions`, etc.) are removed.
+- Every button got a `state: Computed<S>` field.
 
-### 4.2 Инициализация
+### 4.2 Initialization
 
 ```ts
-// Было
+// Before
 init({ version: '8.0', isInlineMode: false, themeParams: {...}, postEvent: postEventFp });
 initFp(opts); // Either
 
-// Стало
+// After
 init({
   launchParams: { tgWebAppVersion: '8.0', tgWebAppPlatform: 'tdesktop', tgWebAppThemeParams: {...} },
-  postEvent, // PostEventFn, бросающая
+  postEvent, // PostEventFn, throwing
   acceptCustomStyles: true,
 });
 safeInit(opts); // Result<LaunchParamsRetrieveError, VoidFunction>
-isInitialized(); // новое
+isInitialized(); // new
 ```
 
-- Опции `version`, `isInlineMode` и `themeParams` удалены. Вместо них передайте целиком
-  `launchParams`.
-- `postEvent` по умолчанию теперь `createPostEvent(version)` в строгом режиме, то есть **с проверкой
-  версии**: неподдерживаемый метод бросает `MethodUnsupportedError`. Старый вариант по умолчанию
-  версию не проверял.
-- Обработка `reload_iframe`, кастомные стили и отправка `iframe_ready` выполняются только внутри
-  iframe.
-- Повторный `init()` сначала выполняет очистку от предыдущего вызова.
+- The `version`, `isInlineMode` and `themeParams` options are removed. Pass the whole `launchParams`
+  instead.
+- The default `postEvent` is now `createPostEvent(version)` in strict mode, i.e. **with a version
+  check**: an unsupported method throws `MethodUnsupportedError`. The old default didn't check the
+  version.
+- Handling `reload_iframe`, custom styles and sending `iframe_ready` happen only inside an iframe.
+- A repeated `init()` first cleans up after the previous call.
 
-**Ломающее изменение, которое легко пропустить.** В старой версии многие функции проверяли только
-`isTMA()` и работали **без `init()`**: `closingBehavior`, `themeParams`, `mainButton`, `miniApp.mount`,
-`close`, `ready` и `bindCssVars`, `viewport.mount`, `expand` и `bindCssVars`, `openLink`, `sendData`,
-`shareURL`, `initData.restore`. **Теперь все они бросают `NotInitializedError` до вызова `init()`.**
+**A breaking change that's easy to miss.** In the old version many functions only checked `isTMA()`
+and worked **without `init()`**: `closingBehavior`, `themeParams`, `mainButton`, `miniApp.mount`,
+`close`, `ready` and `bindCssVars`, `viewport.mount`, `expand` and `bindCssVars`, `openLink`,
+`sendData`, `shareURL`, `initData.restore`. **Now all of them throw `NotInitializedError` before
+`init()` is called.**
 
-### 4.3 Проверки доступности
+### 4.3 Availability checks
 
-| Было | Стало |
+| Before | After |
 |---|---|
-| `fn.isAvailable()` — реактивный сигнал (TMA + init + поддержка + смонтирован) | — |
+| `fn.isAvailable()` — reactive signal (TMA + init + support + mounted) | — |
 | `fn.ifAvailable(...args)` | — |
-| `fn.isSupported()` — сигнал | `fn.isSupported()` — **обычная функция**: init + поддержка клиентом. Смонтированность **не проверяет** |
-| `fn.supports(key)` — только у `miniApp.setHeaderColor` | `supports()` есть у `openLink`, `miniApp.close`, `miniApp.setHeaderColor`, `mainButton.setParams`, `secondaryButton.setParams` |
+| `fn.isSupported()` — signal | `fn.isSupported()` — **plain function**: init + client support. **Doesn't check** mounting |
+| `fn.supports(key)` — only on `miniApp.setHeaderColor` | `supports()` exists on `openLink`, `miniApp.close`, `miniApp.setHeaderColor`, `mainButton.setParams`, `secondaryButton.setParams` |
 | `FunctionUnavailableError` | `NotInitializedError`, `MethodUnsupportedError`, `MethodParameterUnsupportedError`, `NotMountedError` |
 
-Замена для `ifAvailable` у метода, которому нужен смонтированный компонент:
+A replacement for `ifAvailable` on a method that needs a mounted component:
 `if (x.isSupported() && x.isMounted()) x.method()`.
 
-`isSupported()` впервые появился у `mainButton`, `closingBehavior`, `cloudStorage`, `deviceStorage`
-и `secureStorage`.
+`isSupported()` appeared for the first time on `mainButton`, `closingBehavior`, `deviceStorage` and
+`secureStorage`.
 
-### 4.4 Реактивность
+### 4.4 Reactivity
 
-- Тип `Computed<T>` имеет вид `x()` плюс `x.subscribe((next, prev) => void) → unsubscribe`.
-- Слушатель вызывается только при изменении значения (`Object.is`) и **не** вызывается при подписке.
-- Источники подписываются лениво, только пока у значения есть слушатели.
-- Ссылка на значение сохраняется, пока значение не изменилось, поэтому `Computed` совместим с
+- The `Computed<T>` type is `x()` plus `x.subscribe((next, prev) => void) → unsubscribe`.
+- A listener is called only when the value changes (`Object.is`) and is **not** called on subscribe.
+- Sources are subscribed to lazily, only while the value has listeners.
+- The value reference is preserved until the value changes, so `Computed` is compatible with
   `useSyncExternalStore(x.subscribe, x)`.
-- Публичных `computed` и `batch` нет. Если пользователь строил свои вычисляемые значения из сигналов
-  SDK, ему понадобится сторонняя библиотека.
+- There are no public `computed` and `batch`. Users who built their own computed values from SDK
+  signals will need a third-party library.
 
-### 4.5 Монтирование
+### 4.5 Mounting
 
-| | Было | Стало |
+| | Before | After |
 |---|---|---|
-| Асинхронный mount (viewport, biometry, locationManager) | `BetterPromise` / `TaskEither` | `Promise` + `safeMount()` → `Result<TimeoutError, void>` |
-| `isMounting` | не было | **новое** `Computed<boolean>` |
-| `unmount` во время асинхронного mount | не отменял mount | отменяет |
-| Восстановление из sessionStorage | при каждом mount после перезагрузки | только при первом mount после перезагрузки |
-| `miniApp.mount()` | не трогал themeParams | **автоматически монтирует `themeParams`** |
+| Async mount (viewport, biometry, locationManager) | `BetterPromise` / `TaskEither` | `Promise` + `safeMount()` → `Result<TimeoutError, void>` |
+| `isMounting` | didn't exist | **new** `Computed<boolean>` |
+| `unmount` during an async mount | didn't cancel the mount | cancels it |
+| Restoring from sessionStorage | on every mount after a reload | only on the first mount after a reload |
+| `miniApp.mount()` | didn't touch themeParams | **mounts `themeParams` automatically** |
 
-Вызов метода несмонтированного компонента бросает `NotMountedError`.
+Calling a method of an unmounted component throws `NotMountedError`.
 
-### 4.6 Изменения по компонентам
+### 4.6 Per-component changes
 
-**Кнопки (back, settings, main, secondary)**
+**Buttons (back, settings, main, secondary)**
 
 - `onClick(fn, once?)` → `onClick(fn, { once?, signal? })`, `offClick(fn, once?)` → `offClick(fn)`.
-  Обе функции больше никогда не бросают исключений.
-- `mainButton` и `secondaryButton` описываются общим типом `BottomButton<S>`.
-- `iconCustomEmojiId` теперь `string | undefined` (было `''`). Неустановленные параметры не
-  отправляются в Telegram.
-- Дефолтный `secondaryButton.bgColor`: было `bottomBarColor || '#000000'`, стало
+  Neither of them ever throws anymore.
+- `mainButton` and `secondaryButton` are described by the shared `BottomButton<S>` type.
+- `iconCustomEmojiId` is now `string | undefined` (was `''`). Unset parameters aren't sent to
+  Telegram.
+- Default `secondaryButton.bgColor`: was `bottomBarColor || '#000000'`, now
   `bottomBarColor || themeParams.secondaryBgColor || '#ffffff'`.
 
 **miniApp**
 
-- Новые методы: `safeSetBgColor`, `safeSetBottomBarColor`, `safeSetHeaderColor` и
+- New methods: `safeSetBgColor`, `safeSetBottomBarColor`, `safeSetHeaderColor` and
   `close.supports('returnBack')`.
-- Цвета разбираются через `safeToRGB`. Принимаются `#RGB`, `#RGBA`, `#RRGGBBAA`, `rgb()` и `rgba()`.
-- `bottom_bar_bg_color` откатывается на `secondary_bg_color`, как в официальном SDK.
-- `close(false)` отправляет `{}` вместо `{ return_back: false }`.
-- `isActive` изначально `true`.
-- `isDark` равен `false`, если цвет неизвестен или невалиден.
+- Colors are parsed with `safeToRGB`. `#RGB`, `#RGBA`, `#RRGGBBAA`, `rgb()` and `rgba()` are
+  accepted.
+- `bottom_bar_bg_color` falls back to `secondary_bg_color`, as in the official SDK.
+- `close(false)` sends `{}` instead of `{ return_back: false }`.
+- `isActive` is initially `true`.
+- **`mount()` no longer sets `headerColor` to `'header_bg_color'`**: the header color stays
+  `'bg_color'`, as in the official SDK. This changes `headerColorRgb`.
+- `isDark` is `false` if the color is unknown or invalid.
 
 **themeParams**
 
-- **`isDark` при отсутствии `bg_color` теперь `false`**, раньше было `true`.
-- Событие `theme_changed` **заменяет** состояние целиком. Раньше новые значения сливались со старыми.
-- Исправлен баг: при отвязке CSS-переменных они не удалялись.
+- **`isDark` is now `false` when `bg_color` is missing**, previously it was `true`.
+- The `theme_changed` event **replaces** the whole state. Previously new values were merged with the
+  old ones.
+- Fixed a bug where CSS variables weren't removed when unbinding them.
 
 **viewport**
 
-- Удалены `isStable`, а также `safeAreaInsetTop/Bottom/Left/Right` и
-  `contentSafeAreaInsetTop/Bottom/Left/Right`. Используйте `safeAreaInsets()` и
-  `contentSafeAreaInsets()`. Соответствующие CSS-переменные по-прежнему выставляются.
-- Новые методы: `safeRequestFullscreen`, `safeExitFullscreen`, `isMounting` и `safeMount`.
-- `bindCssVars` теперь требует, чтобы компонент был смонтирован.
+- Removed `isStable`, as well as `safeAreaInsetTop/Bottom/Left/Right` and
+  `contentSafeAreaInsetTop/Bottom/Left/Right`. Use `safeAreaInsets()` and `contentSafeAreaInsets()`.
+  The corresponding CSS variables are still set.
+- New methods: `safeRequestFullscreen`, `safeExitFullscreen`, `isMounting` and `safeMount`.
+- `bindCssVars` now requires the component to be mounted.
 
 **initData**
 
-- Данные берутся из строки `tgWebAppData` и парсятся через `@tma.js/init-data`.
-- Добавлен `safeRestore()`.
+- The data is taken from the `tgWebAppData` string and parsed with `@tma.js/init-data`.
+- Added `safeRestore()`.
 
 **biometry**
 
-- **`requestAccess()` возвращает `accessGranted`.** Раньше он по ошибке возвращал `accessRequested`.
-- Поле `state.token` удалено: токен только возвращается из `authenticate`.
+- **`requestAccess()` returns `accessGranted`.** Previously it mistakenly returned
+  `accessRequested`.
+- The `state.token` field is removed: the token is only returned from `authenticate`.
 - `NotAvailableError` → `BiometryUnavailableError`.
-- Параллельный второй вызов `authenticate`, `requestAccess` или `updateToken` бросает
+- A concurrent second call of `authenticate`, `requestAccess` or `updateToken` throws
   `ConcurrentCallError`.
-- `updateToken` обновляет `tokenSaved`.
+- `updateToken` updates `tokenSaved`.
 
 **locationManager**
 
-- Тип `LocationManagerRequestLocationResponse` → `LocationData`.
-- Новое: `isMounting`, `safeMount`, `safeRequestLocation`.
-- Состояние обновляется по событию `location_checked`.
+- The `LocationManagerRequestLocationResponse` type → `LocationData`.
+- New: `isMounting`, `safeMount`, `safeRequestLocation`.
+- The state is updated on the `location_checked` event.
 
 **popup**
 
-- Типы `ShowOptions` → `PopupShowOptions`, `ShowOptionsButton` → `PopupShowButton`.
-- Новые `safeShow` и хелпер `preparePopupParams`.
+- Types `ShowOptions` → `PopupShowOptions`, `ShowOptionsButton` → `PopupShowButton`.
+- New `safeShow` and the `preparePopupParams` helper.
 
 **invoice**
 
-- Новые `safeOpenSlug` и `safeOpenUrl`.
-- Невалидный URL возвращает `InvalidArgumentsError`.
+- New `safeOpenSlug` and `safeOpenUrl`.
+- An invalid URL returns `InvalidArgumentsError`.
 
 **qrScanner**
 
-- Новые `safeOpen` и `safeCapture`.
-- Опция `capture` стала необязательной: по умолчанию сканер берёт первый найденный QR-код.
-- Таймаут или отмена закрывают сканер.
+- New `safeOpen` and `safeCapture`.
+- The `capture` option is now optional: by default the scanner takes the first QR code it finds.
+- A timeout or cancellation closes the scanner.
 
 **cloudStorage**
 
-- Удалена перегрузка `getItem(keys[])`. Используйте `getItems`.
-- Опции методов: `{ signal, timeout }`.
+- The `getItem(keys[])` overload is removed. Use `getItems`.
+- Method options: `{ signal, timeout }`.
 
 **deviceStorage / secureStorage**
 
-- Появились `isSupported()` и опции `{ signal, timeout }`.
-- Ошибки теперь `XMethodError | TimeoutError`.
+- Added `isSupported()` and the `{ signal, timeout }` options.
+- Errors are now `XMethodError | TimeoutError`.
 
 **serverless**
 
 - `abortSignal` → `signal`.
-- Отсутствие init data бросает `InvalidEnvError`, а не возвращает его.
+- Missing init data throws `InvalidEnvError` instead of returning it.
 
-**Во всех компонентах** `ConcurrentCallError` (popup, invoice, qrScanner, biometry) теперь
-**бросается**, а не возвращается как ошибка.
+**In all components**, `ConcurrentCallError` (popup, invoice, qrScanner, biometry) is now **thrown**
+instead of being returned as an error.
 
-### 4.7 Функции
+### 4.7 Functions
 
-Общее правило: `xFp` → `safeX`. Бросающая `x` остаётся и получает `.isSupported()`.
+The general rule: `xFp` → `safeX`. The throwing `x` stays and gets `.isSupported()`.
 
-- Без safe-варианта: `hideKeyboard`, `shareStory`, `switchInlineQuery`, `addToHomeScreen`, `shareURL`.
-- `switchInlineQuery` вне inline-режима бросает `InvalidEnvError`, и его `isSupported()` учитывает
-  inline-режим.
+- No safe variant: `hideKeyboard`, `shareStory`, `switchInlineQuery`, `addToHomeScreen`, `shareURL`.
+- `switchInlineQuery` throws `InvalidEnvError` outside inline mode, and its `isSupported()` takes
+  inline mode into account.
 - `requestContact`:
-  - тип `RequestedContactCompleteData` → `RequestedContactComplete`;
-  - таймаут покрывает всю операцию;
-  - обрабатываются ответы macOS-клиента, где JSON приходит в кавычках.
+  - the `RequestedContactCompleteData` type → `RequestedContactComplete`;
+  - the timeout covers the whole operation;
+  - responses from the macOS client, where the JSON comes wrapped in quotes, are handled.
 - `getCurrentTime`: `ValidationError` → `InvalidResponseError`.
-- Новые экспорты: `isTelegramHostname`, `preparePopupParams`.
-- **Удалены SDK-обёртки над bridge:** `postEvent`, `request`, `request2` и `invokeCustomMethod`,
-  которые подставляли `postEvent` из `init()`. Теперь эти имена реэкспортируются напрямую из bridge и
-  **не используют** `postEvent`, переданный в `init()`. Если он нужен, передавайте `{ postEvent }`
-  явно.
+- New exports: `isTelegramHostname`, `preparePopupParams`.
+- **SDK wrappers over bridge are removed:** `postEvent`, `request`, `request2` and
+  `invokeCustomMethod`, which substituted the `postEvent` from `init()`. These names are now
+  re-exported directly from bridge and **don't use** the `postEvent` passed to `init()`. If you need
+  it, pass `{ postEvent }` explicitly.
 
-### 4.8 Цвета
+### 4.8 Colors
 
-| Было | Стало |
+| Before | After |
 |---|---|
 | `isColorDark`, `isColorDarkFp` | `isColorDark`, `safeIsColorDark` |
-| `toRGB`, `toRGBFp`, `toRGBFull`, `toRGBFullFp`, `isRGB`, `isRGBShort`, `isRGBA`, `isRGBAShort`, `isAnyRGB` | `toRGB`, `safeToRGB`, `isRGB`, ошибка `InvalidColorError` |
+| `toRGB`, `toRGBFp`, `toRGBFull`, `toRGBFullFp`, `isRGB`, `isRGBShort`, `isRGBA`, `isRGBAShort`, `isAnyRGB` | `toRGB`, `safeToRGB`, `isRGB`, `InvalidColorError` error |
 
-`toRGB` отбрасывает альфа-канал. Конвертации в `#RRGGBBAA` больше нет.
+`toRGB` still drops the alpha channel, and `toRGBFull` (conversion to `#RRGGBBAA`) is removed. The
+`InvalidColorError` error and `safeToRGB` are new.
 
-### 4.9 Ошибки
+### 4.9 Errors
 
-| Было | Стало |
+| Before | After |
 |---|---|
-| `FunctionUnavailableError` (`name = 'FunctionNotAvailableError'`) | Удалена → `NotInitializedError`, `NotMountedError`, `MethodUnsupportedError`, `MethodParameterUnsupportedError` |
+| `FunctionUnavailableError` (`name = 'FunctionNotAvailableError'`) | Removed → `NotInitializedError`, `NotMountedError`, `MethodUnsupportedError`, `MethodParameterUnsupportedError` |
 | `NotAvailableError` | `BiometryUnavailableError` |
-| `ValidationError` | `InvalidResponseError` (`.data.value`, ValiError в `cause`) |
+| `ValidationError` | `InvalidResponseError` (`.data.value`, ValiError in `cause`) |
 | `ServerlessError(message, { …, cause })` | `ServerlessError(message, { status, type?, parameters? }, cause?)` |
-| `UnknownThemeParamsKeyError` | Добавлено `.data.key` |
-| `SetEmojiStatusError`, `ShareMessageError`, `RequestChatError`, `FullscreenFailedError` | Добавлено `.data.error`, сообщения с префиксом |
-| — | Новые `NotInitializedError`, `NotMountedError`, `InvalidColorError` |
-| Объединения ошибок для каждой функции (`OpenLinkError`, `ShareURLError` и т. д.) | Удалены. Остались `CloudStorageError`, `DeviceStorageError`, `SecureStorageError`, `RequestContactError`, `ServerlessCallError` |
+| `UnknownThemeParamsKeyError` | `.data.key` added |
+| `SetEmojiStatusError`, `ShareMessageError`, `RequestChatError`, `FullscreenFailedError` | `.data.error` added, prefixed messages |
+| — | New `NotInitializedError`, `NotMountedError`, `InvalidColorError` |
+| Per-function error unions (`OpenLinkError`, `ShareURLError`, etc.) | Removed. Remaining: `CloudStorageError`, `DeviceStorageError`, `SecureStorageError`, `RequestContactError`, `ServerlessCallError` |
 
-### 4.10 Одинаковое имя, другой смысл
+### 4.10 Same name, different meaning
 
-| Имя | Было | Стало |
+| Name | Before | After |
 |---|---|---|
-| `InitData` | класс компонента | тип данных (класс → `InitDataComponent`) |
-| `ThemeParams` | класс компонента | тип записи (класс → `ThemeParamsComponent`) |
-| `TimeoutError` | из better-promises | собственный класс bridge |
-| `isSupported` | сигнал | функция |
+| `InitData` | component class | data type (class → `InitDataComponent`) |
+| `ThemeParams` | component class | record type (class → `ThemeParamsComponent`) |
+| `TimeoutError` | from better-promises | bridge's own class |
+| `isSupported` | signal | function |
 
 ---
 
 ## 5. @tma.js/init-data-node → @tma.js/init-data
 
-### 5.1 Пакет
+### 5.1 Package
 
-- Пакет переименован. Подпуть `./web` удалён, осталась одна точка входа.
-- Код использует только WebCrypto: нет `node:crypto` и `Buffer`. Работает в Node 20+, Bun, Deno и
-  Cloudflare Workers.
-- **Всё стало асинхронным.** Синхронного Node API (`validate`, `sign`, `isValid` без промиса)
-  больше нет.
+- The package is renamed. The `./web` subpath is removed, leaving a single entry point.
+- The code uses only WebCrypto: no `node:crypto` and no `Buffer`. It works in Node 20+, Bun, Deno
+  and Cloudflare Workers.
+- **Everything is async now.** There is no synchronous Node API (`validate`, `sign`, `isValid`
+  without a promise) anymore.
 
 ### 5.2 API
 
-| Было | Стало |
+| Before | After |
 |---|---|
-| `parse` (бросает `ValiError`) | `parse` (бросает `InvalidInitDataError`, ValiError в `cause`) |
+| `parse` (throws `ValiError`) | `parse` (throws `InvalidInitDataError`, ValiError in `cause`) |
 | `parseFp` | `safeParse` |
 | — | **`serialize(Partial<InitData>)`** |
-| `validate(value, token, opts)` → `void` | `validate(value, secret, opts)` → **`Promise<InitData>`**, возвращает распарсенные данные |
+| `validate(value, token, opts)` → `void` | `validate(value, secret, opts)` → **`Promise<InitData>`**, returns the parsed data |
 | `validateFp` | `safeValidate` |
-| `isValid` (синхронный в node) | `isValid` → `Promise<boolean>` |
+| `isValid` (synchronous in node) | `isValid` → `Promise<boolean>` |
 | `validate3rd` → `void` | `validate3rd` → `Promise<InitData>` |
-| `validate3rdFp`, `isValid3rdFp`, `isValidFp`, `signFp`, `signDataFp` | `safeValidate3rd`, остальные удалены |
-| `sign(data, token, authDate, options?)` | **`sign(data, secret)`**, `auth_date` передаётся внутри `data` (по умолчанию `new Date()`) |
+| `validate3rdFp`, `isValid3rdFp`, `isValidFp`, `signFp`, `signDataFp` | `safeValidate3rd`, the rest are removed |
+| `sign(data, token, authDate, options?)` | **`sign(data, secret)`**, `auth_date` is passed inside `data` (defaults to `new Date()`) |
 | `signData(data: string \| ArrayBuffer, …)` | `signData(data: string, secret)` |
 | `hashToken(token)` → `Buffer` / `ArrayBuffer` | `hashToken(token)` → `Promise<string>` (hex) |
-| Опция `tokenHashed: true` | **`createSecretKey(hash, { hashed: true })`** → `CryptoKey` |
-| — | Тип `Secret = string \| CryptoKey`: везде, где был токен, можно передать готовый ключ |
-| `deepSnakeToCamelObjKeys` | Удалён без замены |
-| Опции `timeout` / `abortSignal` из BetterPromise | Удалены |
+| `tokenHashed: true` option | **`createSecretKey(hash, { hashed: true })`** → `CryptoKey` |
+| — | `Secret = string \| CryptoKey` type: wherever a token was accepted, a ready key can be passed |
+| `deepSnakeToCamelObjKeys` | Removed without a replacement |
+| BetterPromise `timeout` / `abortSignal` options | Removed |
 
 ```ts
-// Было (Node)
+// Before (Node)
 import { validate, sign } from '@tma.js/init-data-node';
 validate(raw, token);
 const signed = sign({ user }, token, new Date());
 
-// Стало
+// After
 import { validate, sign, createSecretKey } from '@tma.js/init-data';
-const key = await createSecretKey(token); // можно один раз и переиспользовать
+const key = await createSecretKey(token); // can be created once and reused
 const initData = await validate(raw, key);
 const signed = await sign({ user, auth_date: new Date() }, key);
 ```
 
-### 5.3 Поведение
+### 5.3 Behavior
 
-- `isValid` проверяет только подпись и срок действия. Поэтому `isValid === true` не гарантирует, что
-  `validate` пройдёт: структура данных может оказаться невалидной.
-- `isValid3rd` при ошибках WebCrypto (например, когда Ed25519 не поддерживается) теперь отклоняет
-  промис, а не возвращает `false`.
-- HMAC сравнивается за постоянное время через `crypto.subtle.verify`. Раньше сравнивались строки.
-- `sign` добавляет `signature` только если оно передано. Раньше всегда отправлялось `signature=`.
-- Схема `InitData`:
-  - поле `signature` стало **необязательным**, раньше без него парсинг падал;
-  - добавлено поле `chat_join_request_query_id`;
-  - **неизвестные ключи вырезаются** (`object` вместо `looseObject`);
-  - при повторяющихся ключах в query берётся первое значение;
-  - ключи по-прежнему snake_case, `auth_date` по-прежнему `Date`.
+- `isValid` checks only the signature and expiration. So `isValid === true` doesn't guarantee that
+  `validate` passes: the data structure may still be invalid.
+- `isValid3rd` now rejects on WebCrypto errors (for example, when Ed25519 isn't supported) instead of
+  returning `false`.
+- HMAC is compared in constant time via `crypto.subtle.verify`. Previously strings were compared.
+- `sign` adds `signature` only if it's passed. Previously `signature=` was always sent.
+- The `InitData` schema:
+  - the `signature` field is now **optional**, previously parsing failed without it;
+  - the `chat_join_request_query_id` field is added;
+  - **unknown keys are stripped** (`object` instead of `looseObject`);
+  - for repeated keys in the query, the first value is taken;
+  - keys are still snake_case, and `auth_date` is still a `Date`.
 
-### 5.4 Ошибки
+### 5.4 Errors
 
-| Было | Стало |
+| Before | After |
 |---|---|
 | `SignatureMissingError(thirdParty: boolean)` | `SignatureMissingError('hash' \| 'signature')`, `.data.param` |
-| `ExpiredError` | В `.data` добавлено `now` |
-| `HexStringLengthInvalidError` | Удалена, `createSecretKey` бросает `TypeError` |
-| — | Новая `InvalidInitDataError` |
+| `ExpiredError` | `now` added to `.data` |
+| `HexStringLengthInvalidError` | Removed, `createSecretKey` throws `TypeError` |
+| — | New `InvalidInitDataError` |
 
 ---
 
-## 6. Биндинги: sdk-react, sdk-vue, sdk-solid, sdk-svelte
+## 6. Bindings: sdk-react, sdk-vue, sdk-solid, sdk-svelte
 
-Все биндинги реэкспортируют `@tma.js/sdk`, поэтому изменения SDK из раздела 4 касаются и их. Хук
-`useSignal(signal)` заменён на **`useComputed(computed)`**. Он принимает только `Computed` из нового
-SDK, а не любые объекты с `.sub`.
+All bindings re-export `@tma.js/sdk`, so the SDK changes from section 4 apply to them too. The
+`useSignal(signal)` hook is replaced with **`useComputed(computed)`**. It only accepts a `Computed`
+from the new SDK, not any object with `.sub`.
 
-| Пакет | Изменения |
+| Package | Changes |
 |---|---|
-| **React** | `useComputed` работает на `useSyncExternalStore`. У `useLaunchParams()` **убран аргумент `camelCase`**, и хук возвращает новый `LaunchParams`, где `tgWebAppData` — строка. `useRawLaunchParams`, `useRawInitData`, `useAndroidDeviceData` и `useAndroidDeviceDataFrom` не изменились. **Поддержка React 17 прекращена**: peer-зависимость `^18 \|\| ^19`. |
-| **Vue** | Возвращает `Readonly<Ref<T>>` на `shallowRef`: объекты не оборачиваются в глубокий proxy и сохраняют идентичность. Хук работает в любом effect scope, не только в компоненте. Peer-зависимость `vue ^3.2`. |
-| **Solid** | Работает вне компонентов. Значения-функции больше не принимаются ошибочно за updater. |
-| **Svelte** | Возвращает **`Readable`** вместо `Writable`, поэтому `.set` и `.update` пропали. Подписка ленивая, хук можно вызывать где угодно. Peer-зависимость расширена до `svelte ^3 \|\| ^4 \|\| ^5`. |
+| **React** | `useComputed` is built on `useSyncExternalStore`. **The `camelCase` argument is removed from `useLaunchParams()`**, and the hook returns the new `LaunchParams`, where `tgWebAppData` is a string. `useRawLaunchParams`, `useRawInitData`, `useAndroidDeviceData` and `useAndroidDeviceDataFrom` are unchanged. **React 17 support is dropped**: the peer dependency is `^18 \|\| ^19`. |
+| **Vue** | Returns a `Readonly<Ref<T>>` built on `shallowRef`: objects aren't wrapped in a deep proxy and keep their identity. The hook works in any effect scope, not only in a component. Peer dependency `vue ^3.2`. |
+| **Solid** | Works outside components. Function values are no longer mistaken for an updater. |
+| **Svelte** | Returns a **`Readable`** instead of a `Writable`, so `.set` and `.update` are gone. The subscription is lazy, and the hook can be called anywhere. The peer dependency is widened to `svelte ^3 \|\| ^4 \|\| ^5`. |
 
 ---
 
-## 7. Удалённые пакеты
+## 7. Removed packages
 
 ### @tma.js/signals
 
-- Удалено: `signal`, `computed`, `batch` и типы `Signal`, `Computed`, `SignalOptions`.
-- Замена: только тип `Computed` из `@tma.js/sdk`, без фабрик. Свои сигналы придётся строить на
-  сторонней библиотеке.
+- Removed: `signal`, `computed`, `batch` and the `Signal`, `Computed`, `SignalOptions` types.
+- Replacement: only the `Computed` type from `@tma.js/sdk`, with no factories. Custom signals will
+  have to be built on a third-party library.
 
 ### @tma.js/toolkit
 
-| Было | Стало |
+| Before | After |
 |---|---|
-| Утилиты смены регистра (`snakeToCamel`, `deepSnakeToCamelObjKeys` и др.) и их типы | Удалены без замены |
-| `createLogger` | `setLogger` / `getLogger` в bridge, без фабрики |
-| `getStorageValue` / `setStorageValue` | Удалены |
-| fp-ts-хелперы (`throwifyFpFn` и др.) | Модель `Result` в bridge |
-| Утилитарные типы (`If`, `Maybe`, `IsNever` и т. п.), `createCbCollector` | Удалены |
+| Case conversion utilities (`snakeToCamel`, `deepSnakeToCamelObjKeys`, etc.) and their types | Removed without a replacement |
+| `createLogger` | `setLogger` / `getLogger` in bridge, no factory |
+| `getStorageValue` / `setStorageValue` | Removed |
+| fp-ts helpers (`throwifyFpFn`, etc.) | The `Result` model in bridge |
+| Utility types (`If`, `Maybe`, `IsNever`, etc.), `createCbCollector` | Removed |
 
 ### @tma.js/transformers
 
-| Было | Стало |
+| Before | After |
 |---|---|
-| Valibot-схемы (`initData()`, `launchParams()`, `themeParams()` и т. д.) | **Больше не публичные** |
-| `parseInitDataQuery` / `serializeInitDataQuery` | `parse` / `serialize` из `@tma.js/init-data` |
-| `parseLaunchParamsQuery` / `serializeLaunchParamsQuery` | `parseLaunchParams` / `serializeLaunchParams` из bridge |
-| `isLaunchParamsQuery` | `safeParseLaunchParams(...).ok` или `isTMA()` |
-| `pipeJsonToSchema`, `transformQueryToSchema` и т. п. | Удалены, используйте `parseJson()` из valibot напрямую |
-| RGB-хелперы | См. раздел 4.8 |
+| Valibot schemas (`initData()`, `launchParams()`, `themeParams()`, etc.) | **No longer public** |
+| `parseInitDataQuery` / `serializeInitDataQuery` | `parse` / `serialize` from `@tma.js/init-data` |
+| `parseLaunchParamsQuery` / `serializeLaunchParamsQuery` | `parseLaunchParams` / `serializeLaunchParams` from bridge |
+| `isLaunchParamsQuery` | `safeParseLaunchParams(...).ok` or `isTMA()` |
+| `pipeJsonToSchema`, `pipeQueryToSchema` | Removed, use `parseJson()` from valibot directly |
+| RGB helpers | See section 4.8 |
 
 ### @tma.js/types
 
-| Было | Стало |
+| Before | After |
 |---|---|
-| `InitData`, `User`, `Chat`, `ChatType` | `@tma.js/init-data`, реэкспорт в SDK |
+| `InitData`, `User`, `Chat`, `ChatType` | `@tma.js/init-data`, re-exported from the SDK |
 | `LaunchParams`, `Platform`, `Version`, `RGB`, `ThemeParams` | `@tma.js/bridge` |
-| `KnownThemeParamsKey` | Удалён |
+| `KnownThemeParamsKey` | Removed |
 
 ---
 
-## 8. Что было в старых версиях и пропало без замены
+## 8. What the old versions had and is gone without a replacement
 
-Это стоит отдельно проговорить с пользователями:
+This is worth spelling out to users separately:
 
-- IIFE / CDN-сборка bridge и SDK;
-- `isAvailable()`, `ifAvailable()` и реактивный `isSupported`;
-- возможность использовать часть функций без `init()` (см. 4.2);
-- опции `init()`: `version`, `isInlineMode`, `themeParams`;
-- `viewport.isStable` и 8 отдельных computed для каждой стороны insets;
+- `isAvailable()`, `ifAvailable()` and the reactive `isSupported`;
+- the ability to use some functions without `init()` (see 4.2);
+- the `init()` options `version`, `isInlineMode`, `themeParams`;
+- `viewport.isStable` and the 8 separate computed values for each inset side;
 - `BiometryState.token`;
 - `cloudStorage.getItem(keys[])`;
-- `once`, `unsub`, `unsubAll`, публичные `computed` и `batch` у сигналов;
-- SDK-обёртки `postEvent` и `request`, которые использовали `postEvent` из `init()`;
-- `applyPolyfills`, фабрика логгеров, `force*`-методы логгера;
-- утилиты смены регистра (`deepSnakeToCamelObjKeys`) и `useLaunchParams(true)` в React;
-- публичные valibot-схемы;
-- RGBA-хелперы (`toRGBFull`, `isRGBA`, `isAnyRGB` и др.);
-- синхронный Node API для init data;
-- `CancelledError` и `.cancel()` у промисов;
-- поддержка React 17.
+- `once`, `unsub`, `unsubAll`, and the public `computed` and `batch` of signals;
+- the SDK wrappers `postEvent` and `request`, which used the `postEvent` from `init()`;
+- `applyPolyfills`, the logger factory, the logger's `force*` methods;
+- case conversion utilities (`deepSnakeToCamelObjKeys`) and `useLaunchParams(true)` in React;
+- public valibot schemas;
+- RGBA helpers (`toRGBFull`, `isRGBA`, `isAnyRGB`, etc.);
+- the synchronous Node API for init data;
+- `CancelledError` and `.cancel()` on promises;
+- React 17 support.
 
-Не было ни в старом, ни в новом SDK, хотя методы есть в bridge: акселерометр, гироскоп, ориентация
-устройства, `web_app_toggle_orientation_lock`, `web_app_request_theme`.
+Missing from both the old and the new SDK, although bridge has the methods: accelerometer,
+gyroscope, device orientation, `web_app_toggle_orientation_lock`, `web_app_request_theme`.
 
 ---
 
-## 9. Что нужно сделать до релиза
+## 9. What to do before the release
 
-Эти пункты не относятся к изменениям API, но всплыли при сравнении:
+These items aren't API changes, but they came up during the comparison:
 
-- **Поднять версии** в `packages/*/package.json`. Сейчас там старые номера.
-- **`@tma.js/init-data`.** Это имя уже занято старым устаревшим фронтенд-пакетом с версией 0.2.22, и
-  в `package.json` сейчас стоит именно она. Первый релиз должен быть выше, например 1.0.0.
-- `packages/bridge/README.md` утверждает, что у пакета нет runtime-зависимостей, хотя в нём есть
-  `error-kid` и `valibot`.
-- **Документация** в `apps/docs` целиком описывает старые версии (`isAvailable`, `Fp`, signals,
-  `init-data-node`). Её нужно обновить и добавить гайд по миграции. Сейчас на ветке `feat/v4` там
-  нет изменений.
-- `packages-old/sdk/dist` устарел: в нём нет `serverless` и `requestChat`. Сравнение делалось по
-  исходникам, а опубликованный 3.4.0 мог немного отличаться.
+- **Bump the versions** in `packages/*/package.json`. They still hold the old numbers. The CDN links
+  to the IIFE builds in the documentation already point to `@tma.js/bridge@3`, `@tma.js/sdk@4` and
+  `@tma.js/init-data@1`, so if other numbers are chosen, they need to be fixed.
+- **`@tma.js/init-data`.** This name is already taken by an old deprecated frontend package at
+  version 0.2.22, and that's the version currently in `package.json`. The first release must be
+  higher, for example 1.0.0.
+- `packages/bridge/README.md` claims the package has no runtime dependencies, although it has
+  `error-kid` and `valibot`.
+- **The documentation** in `apps/docs` describes the old versions entirely (`isAvailable`, `Fp`,
+  signals, `init-data-node`). It needs to be updated, and a migration guide added. There are no
+  changes there on the `feat/v4` branch yet.
+- `packages-old/sdk/dist` is outdated: it lacks `serverless` and `requestChat`. The comparison was
+  made against the sources, and the published 3.4.0 may differ slightly.
