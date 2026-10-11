@@ -1,11 +1,11 @@
 # What changed in the new major versions of the @tma.js packages
 
-A comparison of the previous major versions (`packages-old/*`, which is `packages/*` on the `master`
-branch) with the new ones developed in the `feat/v4` branch (`packages/*`).
+A comparison of the previous major versions (`packages/*` on the `master` branch) with the new ones
+developed in the `feat/v4` branch (`packages/*`).
 
 > The versions in `packages/*/package.json` haven't been bumped yet and still hold the old numbers
-> (bridge 2.4.0, sdk 3.4.0, etc.). Below, "old" and "new" versions mean `packages-old/*` and
-> `packages/*`.
+> (bridge 2.4.0, sdk 3.4.0, etc.). Below, "old" and "new" versions mean `packages/*` on
+> `master` and on `feat/v4`.
 
 ## Contents
 
@@ -697,5 +697,5 @@ These items aren't API changes, but they came up during the comparison:
 - **The documentation** in `apps/docs` describes the old versions entirely (`isAvailable`, `Fp`,
   signals, `init-data-node`). It needs to be updated, and a migration guide added. There are no
   changes there on the `feat/v4` branch yet.
-- `packages-old/sdk/dist` is outdated: it lacks `serverless` and `requestChat`. The comparison was
+- The old `packages/sdk/dist` was outdated: it lacked `serverless` and `requestChat`. The comparison was
   made against the sources, and the published 3.4.0 may differ slightly.

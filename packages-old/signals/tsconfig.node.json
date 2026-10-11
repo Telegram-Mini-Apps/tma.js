@@ -1,9 +1,0 @@
-{
-  "extends": "tsconfig/esnext.json",
-  "compilerOptions": {
-    "composite": true
-  },
-  "include": [
-    "build"
-  ]
-}
