@@ -1,0 +1,17 @@
+{
+  "mode": "pre",
+  "tag": "rc",
+  "initialVersions": {
+    "docs": "1.0.0",
+    "custom-playground": "0.0.0",
+    "@tma.js/bridge": "2.4.0",
+    "@tma.js/init-data": "0.2.22",
+    "@tma.js/sdk": "3.4.0",
+    "@tma.js/sdk-react": "3.0.24",
+    "@tma.js/sdk-solid": "3.0.24",
+    "@tma.js/sdk-svelte": "1.0.24",
+    "@tma.js/sdk-vue": "1.0.24",
+    "tsconfig": "0.0.2"
+  },
+  "changesets": []
+}

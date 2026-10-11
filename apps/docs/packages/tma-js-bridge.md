@@ -46,7 +46,7 @@ The package also has a self-contained IIFE build, which can be loaded via a `<sc
 exposes the package as the `tmajs.bridge` global:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/@tma.js/bridge@3/dist/index.iife.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tma.js/bridge@4/dist/index.iife.js"></script>
 <script>
   tmajs.bridge.postEvent('web_app_ready');
 </script>

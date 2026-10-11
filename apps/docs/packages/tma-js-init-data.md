@@ -60,7 +60,7 @@ The package supports Node.js 20 and later, Bun, Deno and Cloudflare Workers. If 
 third-party validation, make sure your runtime version supports Ed25519 in the Web Crypto API.
 The package is shipped as ESM and CommonJS, and as an IIFE build exposing the `tmajs.initData`
 global for loading via a `<script>` tag from a CDN
-(`https://cdn.jsdelivr.net/npm/@tma.js/init-data@1/dist/index.iife.js`).
+(`https://cdn.jsdelivr.net/npm/@tma.js/init-data@4/dist/index.iife.js`).
 
 As Web Crypto is asynchronous, all functions working with signatures (`validate`, `isValid`,
 `sign`, etc.) return promises. Only [parsing](./tma-js-init-data/parsing.md) functions are
