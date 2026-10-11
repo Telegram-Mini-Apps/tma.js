@@ -58,7 +58,7 @@ and TypeScript doesn't check thrown errors at all. Instead, functions return the
 so the compiler knows exactly how a function can fail:
 
 ```typescript
-type Result<T, E> = { ok: true; data: T } | { ok: false; error: E };
+type Result<E, T> = { ok: false; error: E } | { ok: true; data: T };
 ```
 
 However, we recognize that many developers may be more comfortable with a traditional `try-catch` approach. To
@@ -91,7 +91,7 @@ export class NotFoundError extends errorClass({ name: 'NotFoundError', message: 
 /**
  * @returns The value, or `NotFoundError` if it is missing.
  */
-export function safeGetValue(key: string): Result<string, NotFoundError> {
+export function safeGetValue(key: string): Result<NotFoundError, string> {
   const value = storage.get(key);
   return value === undefined ? err(new NotFoundError()) : ok(value);
 }
@@ -107,6 +107,28 @@ export function getValue(key: string): string {
 
 The second and final principle is **the simpler, the better**. We strive to write code that is as understandable and
 intuitive as possible. Please think twice before implementing a complex solution.
+
+## File Naming
+
+A file is named after what it exports, not counting types:
+
+- If it exports a single entity, the file is named exactly after it: `mockTelegramEnv.ts` exports `mockTelegramEnv`,
+  `NotFoundError.ts` exports `NotFoundError`. A `safeX`/`x` pair counts as a single entity `x`, and so
+  does a singleton `x` with its factory `createX`: `backButton.ts` exports `backButton` and `createBackButton`.
+- Otherwise, the file is named after what its exports have in common, in kebab-case: `launch-params.ts`
+  exports `retrieveLaunchParams` and `serializeLaunchParams`, `errors.ts` exports several error classes.
+
+Tests and type tests follow the name of the file they cover: `mockTelegramEnv.test.ts`, `types.test-d.ts`.
+Whenever possible, keep one test file per source file instead of testing several files in one.
+
+In directories holding many modules, like `components` and `functions` in `@tma.js/sdk`, each source file
+lives in its own folder named after it, together with its tests: `components/backButton/backButton.ts` and
+`components/backButton/backButton.test.ts`. Such folders have no `index.ts` files.
+
+## Valibot Schemas
+
+[Valibot](https://valibot.dev/) schema names start with a capital letter and end with `Schema`:
+`LaunchParamsSchema`, `ThemeParamsJsonSchema`.
 
 ## Trying Your Code
 
