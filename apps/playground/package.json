@@ -12,7 +12,8 @@
   },
   "dependencies": {
     "@tma.js/bridge": "workspace:*",
-    "@tma.js/init-data": "workspace:*"
+    "@tma.js/init-data": "workspace:*",
+    "@tma.js/sdk": "workspace:*"
   },
   "devDependencies": {
     "cross-env": "^7.0.3",
