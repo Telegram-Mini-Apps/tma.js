@@ -172,8 +172,22 @@ describe('fullscreen', () => {
   it('should reject with MethodUnsupportedError before v8.0', async () => {
     setup({ version: '7.10' });
     const viewport = createViewport();
-    expect(viewport.isFullscreenSupported()).toBe(false);
+    expect(viewport.requestFullscreen.isSupported()).toBe(false);
     await expect(viewport.requestFullscreen()).rejects.toThrow(MethodUnsupportedError);
+  });
+
+  it.each([
+    'requestFullscreen',
+    'safeRequestFullscreen',
+    'exitFullscreen',
+    'safeExitFullscreen',
+  ] as const)('%s should check the Mini Apps version', key => {
+    const viewport = createViewport();
+    expect(viewport[key].isSupported()).toBe(false);
+    setup({ version: '7.10' });
+    expect(viewport[key].isSupported()).toBe(false);
+    setup({ version: '8.0' });
+    expect(viewport[key].isSupported()).toBe(true);
   });
 });
 

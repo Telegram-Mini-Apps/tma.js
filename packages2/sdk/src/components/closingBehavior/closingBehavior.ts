@@ -1,5 +1,6 @@
 import { createComponentCore } from '../../component.js';
 import { isMethodSupported, requireMethod } from '../../globals.js';
+import { type Computed, computedFromStore, computedPick } from '../../store.js';
 import type { MountableComponent, StatefulComponent } from '../../types.js';
 
 export interface ClosingBehaviorState {
@@ -18,9 +19,9 @@ export interface ClosingBehavior extends StatefulComponent<ClosingBehaviorState>
    */
   isSupported: () => boolean;
   /**
-   * @returns True if the user is asked to confirm closing the mini app.
+   * True if the user is asked to confirm closing the mini app.
    */
-  isConfirmationEnabled: () => boolean;
+  isConfirmationEnabled: Computed<boolean>;
   /**
    * Makes the Telegram client ask the user to confirm closing the mini app.
    */
@@ -55,12 +56,11 @@ export function createClosingBehavior(): ClosingBehavior {
 
   return {
     isSupported: () => isMethodSupported(METHOD),
-    isConfirmationEnabled: () => core.state.get().isConfirmationEnabled,
+    isConfirmationEnabled: computedPick(core.state, 'isConfirmationEnabled'),
     enableConfirmation: set(true),
     disableConfirmation: set(false),
-    state: core.state.get,
-    subscribe: core.subscribe,
-    isMounted: core.mounted.get,
+    state: computedFromStore(core.state),
+    isMounted: computedFromStore(core.mounted),
     mount() {
       requireMethod(METHOD);
       core.mount();

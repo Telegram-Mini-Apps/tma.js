@@ -107,3 +107,19 @@ describe('isSupported', () => {
     },
   );
 });
+
+describe('supports', () => {
+  it.each([
+    { name: 'openLink', fn: openLink },
+    { name: 'safeOpenLink', fn: safeOpenLink },
+  ])('$name should check the options support', ({ fn }) => {
+    expect(fn.supports('tryInstantView')).toBe(false);
+    setup({ version: '6.3' });
+    expect(fn.supports('tryInstantView')).toBe(false);
+    setup({ version: '6.4' });
+    expect(fn.supports('tryInstantView')).toBe(true);
+    expect(fn.supports('tryBrowser')).toBe(false);
+    setup({ version: '7.6' });
+    expect(fn.supports('tryBrowser')).toBe(true);
+  });
+});

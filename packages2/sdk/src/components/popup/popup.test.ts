@@ -69,10 +69,10 @@ describe('popup', () => {
     setup();
     const popup = createPopup();
     const listener = vi.fn();
-    popup.subscribe(listener);
+    popup.isOpened.subscribe(listener);
     void popup.show({ message: 'm' });
     expect(popup.isOpened()).toBe(true);
-    expect(listener).toHaveBeenCalledOnce();
+    expect(listener).toHaveBeenCalledExactlyOnceWith(true, false);
     await expect(popup.show({ message: 'm' })).rejects.toThrow(ConcurrentCallError);
   });
 

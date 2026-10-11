@@ -28,6 +28,7 @@
   "types": "./dist/dts/index.d.ts",
   "exports": {
     ".": {
+      "@tma.js/source": "./src/index.ts",
       "types": "./dist/dts/index.d.ts",
       "import": "./dist/index.js",
       "require": "./dist/index.cjs",

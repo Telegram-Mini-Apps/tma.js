@@ -89,31 +89,65 @@ viewport.bindCssVars(); // --tg-viewport-height, --tg-viewport-safe-area-inset-t
 
 ### Reactivity
 
-Each stateful component has `state` and `subscribe`, compatible with React's
-`useSyncExternalStore` and similar APIs of other frameworks. Getters return the same value until
-it changes.
+Reactive values of components, like `backButton.isVisible`, `mainButton.state` or
+`themeParams.bgColor`, are computed values. Call one to get the current value, or subscribe to its
+changes. Listeners receive the next and the previous values and are called only if the value has
+changed:
+
+```ts
+import { backButton } from '@tma.js/sdk';
+
+backButton.isVisible(); // false
+
+const unsubscribe = backButton.isVisible.subscribe((next, prev) => {
+  console.log('isVisible changed:', prev, '->', next);
+});
+```
+
+Computed values return the same value until it changes, and their `subscribe` is compatible with
+React's `useSyncExternalStore` and similar APIs of other frameworks:
 
 ```ts
 import { useSyncExternalStore } from 'react';
 import { mainButton } from '@tma.js/sdk';
 
-const isVisible = useSyncExternalStore(mainButton.subscribe, mainButton.isVisible);
+const isVisible = useSyncExternalStore(mainButton.isVisible.subscribe, mainButton.isVisible);
 ```
+
+Framework bindings wrap this API into `useComputed`: [@tma.js/sdk-react](../sdk-react),
+[@tma.js/sdk-vue](../sdk-vue), [@tma.js/sdk-solid](../sdk-solid) and
+[@tma.js/sdk-svelte](../sdk-svelte).
 
 ### Support checks
 
-Components have `isSupported`, returning false if the SDK is not initialized or the Telegram
-client doesn't support the component. For functions, use `supports` with the method name. Calling an unsupported method throws
-`MethodUnsupportedError`. Passing an unsupported parameter, like an RGB header color before Mini
-Apps v6.9, throws `MethodParameterUnsupportedError`.
+Components, functions, and component methods supported since a later Mini Apps version than the
+component itself have `isSupported`. It returns false if the SDK is not initialized or the
+Telegram client doesn't support the component or the function. Calling an unsupported method
+throws `MethodUnsupportedError`.
 
 ```ts
-import { swipeBehavior } from '@tma.js/sdk';
+import { miniApp, shareStory, swipeBehavior } from '@tma.js/sdk';
 
 if (swipeBehavior.isSupported()) {
   swipeBehavior.mount();
   swipeBehavior.disableVertical();
 }
+
+shareStory.isSupported(); // true since Mini Apps v7.8
+miniApp.setBottomBarColor.isSupported(); // true since Mini Apps v7.10
+```
+
+Functions and methods with parameters released later than themselves also have `supports`,
+accepting the feature name. Passing some of the unsupported parameters, like an RGB header color
+before Mini Apps v6.9, throws `MethodParameterUnsupportedError`. Others are ignored by the
+Telegram client.
+
+```ts
+import { mainButton, miniApp, openLink } from '@tma.js/sdk';
+
+miniApp.setHeaderColor.supports('rgb'); // true since Mini Apps v6.9
+mainButton.setParams.supports('iconCustomEmojiId'); // true since Mini Apps v9.5
+openLink.supports('tryBrowser'); // true since Mini Apps v7.6
 ```
 
 ## Handling errors

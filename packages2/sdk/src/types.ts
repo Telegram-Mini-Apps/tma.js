@@ -1,3 +1,5 @@
+import type { Computed } from './store.js';
+
 /**
  * Options of asynchronous functions.
  */
@@ -18,16 +20,9 @@ export interface AsyncOptions {
  */
 export interface StatefulComponent<S> {
   /**
-   * @returns The current component state. The same object is returned until the state changes.
+   * The component state. The same object is returned until the state changes.
    */
-  state: () => S;
-  /**
-   * Subscribes to the component changes. It is compatible with React's `useSyncExternalStore`
-   * and similar APIs of other frameworks.
-   * @param listener - function to call whenever the component changes.
-   * @returns Function removing the listener.
-   */
-  subscribe: (listener: VoidFunction) => VoidFunction;
+  state: Computed<S>;
 }
 
 /**
@@ -35,9 +30,9 @@ export interface StatefulComponent<S> {
  */
 export interface MountableComponent {
   /**
-   * @returns True if the component is mounted.
+   * True if the component is mounted.
    */
-  isMounted: () => boolean;
+  isMounted: Computed<boolean>;
   /**
    * Unmounts the component. The component stops listening to Telegram events.
    */

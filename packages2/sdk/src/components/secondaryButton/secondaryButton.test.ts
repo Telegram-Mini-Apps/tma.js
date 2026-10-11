@@ -15,6 +15,15 @@ describe('secondaryButton', () => {
     expect(() => button.mount()).toThrow(MethodUnsupportedError);
   });
 
+  it('should support the shine effect together with the button', () => {
+    setup({ version: '7.10' });
+    const theme = createThemeParams();
+    const button = createSecondaryButton(theme, createMiniApp(theme));
+    expect(button.setParams.supports('hasShineEffect')).toBe(true);
+    expect(button.enableShineEffect.isSupported()).toBe(true);
+    expect(button.setParams.supports('iconCustomEmojiId')).toBe(false);
+  });
+
   it('should send the position', () => {
     const calls = setup();
     const theme = createThemeParams();

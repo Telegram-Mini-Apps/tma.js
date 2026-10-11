@@ -13,7 +13,8 @@ import { createAsyncMount, createComponentCore } from '../../component.js';
 import { createCSSVarsBinding, toKebab } from '../../css-vars.js';
 import { FullscreenFailedError } from '../../errors.js';
 import { getGlobals, isMethodSupported, requireMethod } from '../../globals.js';
-import { combineSubscribe } from '../../store.js';
+import { throwingWithIsSupported, type WithIsSupported, withIsSupported } from '../../is-supported.js';
+import { type Computed, computedFromStore, computedPick } from '../../store.js';
 import type { AsyncOptions, MountableComponent, StatefulComponent } from '../../types.js';
 
 export interface ViewportState {
@@ -42,18 +43,22 @@ type InsetKey = `${'safeAreaInset' | 'contentSafeAreaInset'}${'Top' | 'Bottom' |
 
 export type ViewportCSSVarKey = 'height' | 'width' | 'stableHeight' | InsetKey;
 
+type SafeFullscreenFn = (
+  options?: AsyncOptions,
+) => Promise<Result<FullscreenFailedError | TimeoutError, void>>;
+
 export interface Viewport extends StatefulComponent<ViewportState>, MountableComponent {
-  height: () => number;
-  stableHeight: () => number;
-  width: () => number;
-  isExpanded: () => boolean;
-  isFullscreen: () => boolean;
-  safeAreaInsets: () => SafeAreaInsets;
-  contentSafeAreaInsets: () => SafeAreaInsets;
+  height: Computed<number>;
+  stableHeight: Computed<number>;
+  width: Computed<number>;
+  isExpanded: Computed<boolean>;
+  isFullscreen: Computed<boolean>;
+  safeAreaInsets: Computed<SafeAreaInsets>;
+  contentSafeAreaInsets: Computed<SafeAreaInsets>;
   /**
-   * @returns True if the component is mounting.
+   * True if the component is mounting.
    */
-  isMounting: () => boolean;
+  isMounting: Computed<boolean>;
   /**
    * Mounts the component. If the page was reloaded, the state saved before the reload is
    * restored. Otherwise, the viewport is requested from the Telegram client. Each call
@@ -76,11 +81,6 @@ export interface Viewport extends StatefulComponent<ViewportState>, MountableCom
    */
   expand: () => void;
   /**
-   * @returns True if the SDK is initialized and fullscreen mode is supported.
-   * @since Mini Apps v8.0
-   */
-  isFullscreenSupported: () => boolean;
-  /**
    * Requests fullscreen mode.
    * @param options - additional options.
    * @returns `FullscreenFailedError` if the Telegram client failed to enter fullscreen mode,
@@ -89,16 +89,14 @@ export interface Viewport extends StatefulComponent<ViewportState>, MountableCom
    * @throws {MethodUnsupportedError} Fullscreen mode is unsupported.
    * @since Mini Apps v8.0
    */
-  safeRequestFullscreen: (
-    options?: AsyncOptions,
-  ) => Promise<Result<FullscreenFailedError | TimeoutError, void>>;
+  safeRequestFullscreen: WithIsSupported<SafeFullscreenFn>;
   /**
    * Throwing version of `safeRequestFullscreen`.
    * @throws {FullscreenFailedError} The Telegram client failed to enter fullscreen mode.
    * @throws {TimeoutError} The Telegram client didn't respond in time.
    * @since Mini Apps v8.0
    */
-  requestFullscreen: (options?: AsyncOptions) => Promise<void>;
+  requestFullscreen: WithIsSupported<(options?: AsyncOptions) => Promise<void>>;
   /**
    * Exits fullscreen mode.
    * @param options - additional options.
@@ -108,20 +106,18 @@ export interface Viewport extends StatefulComponent<ViewportState>, MountableCom
    * @throws {MethodUnsupportedError} Fullscreen mode is unsupported.
    * @since Mini Apps v8.0
    */
-  safeExitFullscreen: (
-    options?: AsyncOptions,
-  ) => Promise<Result<FullscreenFailedError | TimeoutError, void>>;
+  safeExitFullscreen: WithIsSupported<SafeFullscreenFn>;
   /**
    * Throwing version of `safeExitFullscreen`.
    * @throws {FullscreenFailedError} The Telegram client failed to exit fullscreen mode.
    * @throws {TimeoutError} The Telegram client didn't respond in time.
    * @since Mini Apps v8.0
    */
-  exitFullscreen: (options?: AsyncOptions) => Promise<void>;
+  exitFullscreen: WithIsSupported<(options?: AsyncOptions) => Promise<void>>;
   /**
-   * @returns True if CSS variables are bound.
+   * True if CSS variables are bound.
    */
-  isCssVarsBound: () => boolean;
+  isCssVarsBound: Computed<boolean>;
   /**
    * Creates CSS variables reflecting the viewport in pixels. By default, variables are named
    * `--tg-viewport-{key}`, where `{key}` is in kebab case, e.g. `--tg-viewport-stable-height` or
@@ -236,10 +232,9 @@ export function createViewport(): Viewport {
     return asyncMount.safeMount(options);
   };
 
-  const safeFullscreen = (enable: boolean) => async (
-    options?: AsyncOptions,
-  ): Promise<Result<FullscreenFailedError | TimeoutError, void>> => {
-    const method = enable ? 'web_app_request_fullscreen' : 'web_app_exit_fullscreen';
+  const safeFullscreen = (
+    method: 'web_app_request_fullscreen' | 'web_app_exit_fullscreen',
+  ) => withIsSupported<SafeFullscreenFn>(async options => {
     const { postEvent } = requireMethod(method);
     const response = await safeRequest(method, ['fullscreen_changed', 'fullscreen_failed'], {
       ...options,
@@ -258,9 +253,9 @@ export function createViewport(): Viewport {
       return ok(undefined);
     }
     return err(new FullscreenFailedError(data.payload.error));
-  };
-  const safeRequestFullscreen = safeFullscreen(true);
-  const safeExitFullscreen = safeFullscreen(false);
+  }, () => isMethodSupported(method));
+  const safeRequestFullscreen = safeFullscreen('web_app_request_fullscreen');
+  const safeExitFullscreen = safeFullscreen('web_app_exit_fullscreen');
 
   const px = (value: number) => `${value}px`;
   const cssVars = createCSSVarsBinding<ViewportCSSVarKey>(() => {
@@ -279,17 +274,16 @@ export function createViewport(): Viewport {
   }, state.subscribe);
 
   return {
-    height: () => state.get().height,
-    stableHeight: () => state.get().stableHeight,
-    width: () => state.get().width,
-    isExpanded: () => state.get().isExpanded,
-    isFullscreen: () => state.get().isFullscreen,
-    safeAreaInsets: () => state.get().safeAreaInsets,
-    contentSafeAreaInsets: () => state.get().contentSafeAreaInsets,
-    state: state.get,
-    subscribe: combineSubscribe(core.subscribe, mounting.subscribe, cssVars.bound.subscribe),
-    isMounted: core.mounted.get,
-    isMounting: mounting.get,
+    height: computedPick(state, 'height'),
+    stableHeight: computedPick(state, 'stableHeight'),
+    width: computedPick(state, 'width'),
+    isExpanded: computedPick(state, 'isExpanded'),
+    isFullscreen: computedPick(state, 'isFullscreen'),
+    safeAreaInsets: computedPick(state, 'safeAreaInsets'),
+    contentSafeAreaInsets: computedPick(state, 'contentSafeAreaInsets'),
+    state: computedFromStore(state),
+    isMounted: computedFromStore(core.mounted),
+    isMounting: computedFromStore(mounting),
     safeMount,
     mount: throwing(safeMount),
     unmount() {
@@ -301,12 +295,11 @@ export function createViewport(): Viewport {
     expand() {
       getGlobals().postEvent('web_app_expand');
     },
-    isFullscreenSupported: () => isMethodSupported('web_app_request_fullscreen'),
     safeRequestFullscreen,
-    requestFullscreen: throwing(safeRequestFullscreen),
+    requestFullscreen: throwingWithIsSupported(safeRequestFullscreen),
     safeExitFullscreen,
-    exitFullscreen: throwing(safeExitFullscreen),
-    isCssVarsBound: cssVars.bound.get,
+    exitFullscreen: throwingWithIsSupported(safeExitFullscreen),
+    isCssVarsBound: computedFromStore(cssVars.bound),
     bindCssVars(getName = key => `--tg-viewport-${toKebab(key)}`) {
       core.assertMounted();
       return cssVars.bind(getName);

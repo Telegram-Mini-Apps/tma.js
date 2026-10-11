@@ -117,3 +117,44 @@ describe('miniApp', () => {
     expect(calls).toHaveBeenCalledWith({ name: 'web_app_close', params: { return_back: true } });
   });
 });
+
+describe('support checks', () => {
+  it.each([
+    { key: 'setBgColor', version: '6.1' },
+    { key: 'safeSetBgColor', version: '6.1' },
+    { key: 'setHeaderColor', version: '6.1' },
+    { key: 'safeSetHeaderColor', version: '6.1' },
+    { key: 'setBottomBarColor', version: '7.10' },
+    { key: 'safeSetBottomBarColor', version: '7.10' },
+  ] as const)('$key should be supported since Mini Apps v$version', ({ key, version }) => {
+    const app = createMiniApp(createThemeParams());
+    expect(app[key].isSupported()).toBe(false);
+    setup({ version: '6.0' });
+    expect(app[key].isSupported()).toBe(false);
+    setup({ version });
+    expect(app[key].isSupported()).toBe(true);
+  });
+
+  it.each(['setHeaderColor', 'safeSetHeaderColor'] as const)(
+    '%s should support RGB since Mini Apps v6.9',
+    key => {
+      const app = createMiniApp(createThemeParams());
+      expect(app[key].supports('rgb')).toBe(false);
+      setup({ version: '6.8' });
+      expect(app[key].supports('rgb')).toBe(false);
+      setup({ version: '6.9' });
+      expect(app[key].supports('rgb')).toBe(true);
+    },
+  );
+
+  it('close should support returning back since Mini Apps v7.6', () => {
+    const app = createMiniApp(createThemeParams());
+    expect(app.close.isSupported()).toBe(false);
+    expect(app.close.supports('returnBack')).toBe(false);
+    setup({ version: '7.5' });
+    expect(app.close.isSupported()).toBe(true);
+    expect(app.close.supports('returnBack')).toBe(false);
+    setup({ version: '7.6' });
+    expect(app.close.supports('returnBack')).toBe(true);
+  });
+});

@@ -20,9 +20,9 @@ describe('themeParams', () => {
     expect(theme.isDark()).toBe(false);
 
     const listener = vi.fn();
-    theme.subscribe(listener);
+    theme.isDark.subscribe(listener);
     emitEvent('theme_changed', { theme_params: { bg_color: '#000000', text_color: '#ffffff' } });
-    expect(listener).toHaveBeenCalledOnce();
+    expect(listener).toHaveBeenCalledExactlyOnceWith(true, false);
     expect(theme.state()).toEqual({ bg_color: '#000000', text_color: '#ffffff' });
     expect(theme.isDark()).toBe(true);
 

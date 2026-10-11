@@ -40,12 +40,15 @@ describe('backButton', () => {
   it('should notify subscribers about state and mount changes', () => {
     setup();
     const button = createBackButton();
-    const listener = vi.fn();
-    button.subscribe(listener);
+    const onVisible = vi.fn();
+    const onMounted = vi.fn();
+    button.isVisible.subscribe(onVisible);
+    button.isMounted.subscribe(onMounted);
     button.mount();
     button.show();
     button.unmount();
-    expect(listener).toHaveBeenCalledTimes(3);
+    expect(onVisible.mock.calls).toEqual([[true, false]]);
+    expect(onMounted.mock.calls).toEqual([[true, false], [false, true]]);
     expect(button.state()).toEqual({ isVisible: true });
   });
 

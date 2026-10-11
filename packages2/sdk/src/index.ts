@@ -31,11 +31,22 @@ export {
 } from './errors.js';
 export { isInitialized } from './globals.js';
 export { init, safeInit, type InitOptions } from './init.js';
+export type {
+  IsSupported,
+  Supports,
+  WithIsSupported,
+  WithSupports,
+} from './is-supported.js';
+export type { Computed } from './store.js';
 export type { AsyncOptions, MountableComponent, StatefulComponent } from './types.js';
 
 //#region Components.
 export { backButton, type BackButton, type BackButtonState } from './components/backButton/backButton.js';
-export type { BottomButton, BottomButtonState } from './createBottomButton.js';
+export type {
+  BottomButton,
+  BottomButtonFeature,
+  BottomButtonState,
+} from './createBottomButton.js';
 export type { ButtonComponent } from './button.js';
 export {
   biometry,

@@ -1,7 +1,9 @@
 import type { RGB } from '@tma.js/bridge';
 
 import { type ButtonComponent, type ButtonClickEvent, createButton, removeUndefined } from './button.js';
-import type { SubscribeFn } from './store.js';
+import { isMethodSupported, isParamSupported } from './globals.js';
+import { type WithIsSupported, type WithSupports, withIsSupported } from './is-supported.js';
+import { type Computed, computed, computedPick, type SubscribeFn } from './store.js';
 
 export interface BottomButtonState {
   /**
@@ -25,50 +27,57 @@ export interface BottomButtonState {
 }
 
 /**
+ * Button parameters released later than the button itself.
+ */
+export type BottomButtonFeature = 'hasShineEffect' | 'iconCustomEmojiId';
+
+/**
  * Base API of buttons displayed at the bottom of the mini app.
  *
  * All the setters throw:
  * - `NotInitializedError` if the SDK is not initialized;
  * - `MethodUnsupportedError` if the button is unsupported;
- * - `MethodParameterUnsupportedError` if the passed parameter is unsupported;
+ * - `MethodParameterUnsupportedError` if the passed parameter is unsupported. Use
+ * `setParams.supports` to check it;
  * - `NotMountedError` if the button is not mounted.
  */
 export interface BottomButton<S extends BottomButtonState> extends ButtonComponent<S> {
   /**
-   * @returns The background color, or the default one if it was not set.
+   * The background color, or the default one if it was not set.
    */
-  bgColor: () => RGB;
+  bgColor: Computed<RGB>;
   /**
-   * @returns The text color, or the default one if it was not set.
+   * The text color, or the default one if it was not set.
    */
-  textColor: () => RGB;
-  hasShineEffect: () => boolean;
-  iconCustomEmojiId: () => string | undefined;
-  isEnabled: () => boolean;
-  isLoaderVisible: () => boolean;
-  isVisible: () => boolean;
-  text: () => string;
+  textColor: Computed<RGB>;
+  hasShineEffect: Computed<boolean>;
+  iconCustomEmojiId: Computed<string | undefined>;
+  isEnabled: Computed<boolean>;
+  isLoaderVisible: Computed<boolean>;
+  isVisible: Computed<boolean>;
+  text: Computed<string>;
   /**
    * Updates several button parameters at once. Undefined values are ignored.
    * @example
    * mainButton.setParams({ text: 'Submit', isVisible: true, isEnabled: false });
+   * mainButton.setParams.supports('iconCustomEmojiId'); // true since Mini Apps v9.5
    */
-  setParams: (params: Partial<S>) => void;
+  setParams: WithSupports<(params: Partial<S>) => void, BottomButtonFeature>;
   show: () => void;
   hide: () => void;
   enable: () => void;
   disable: () => void;
   showLoader: () => void;
   hideLoader: () => void;
-  enableShineEffect: () => void;
-  disableShineEffect: () => void;
+  enableShineEffect: WithIsSupported<() => void>;
+  disableShineEffect: WithIsSupported<() => void>;
   setText: (text: string) => void;
   setBgColor: (color: RGB) => void;
   setTextColor: (color: RGB) => void;
   /**
    * @since Mini Apps v9.5
    */
-  setIconCustomEmojiId: (id: string) => void;
+  setIconCustomEmojiId: WithIsSupported<(id: string) => void>;
 }
 
 export interface CreateBottomButtonOptions<S extends BottomButtonState> {
@@ -115,31 +124,41 @@ export function createBottomButton<S extends BottomButtonState>({
     }),
   });
   const { core, setter, setState } = button;
-  const get = <K extends keyof S>(key: K) => () => core.state.get()[key];
+  const get = <K extends keyof S>(key: K) => computedPick(core.state, key);
+  const features: Record<BottomButtonFeature, () => boolean> = {
+    hasShineEffect: () => isParamSupported(options.method, 'has_shine_effect'),
+    iconCustomEmojiId: () => isParamSupported(options.method, 'icon_custom_emoji_id'),
+  };
 
   const component: BottomButton<S> = {
     ...button.component,
-    bgColor: () => core.state.get().bgColor || defaultBgColor(),
-    textColor: () => core.state.get().textColor || defaultTextColor(),
+    bgColor: computed(() => core.state.get().bgColor || defaultBgColor(), core.subscribe),
+    textColor: computed(() => core.state.get().textColor || defaultTextColor(), core.subscribe),
     hasShineEffect: get('hasShineEffect'),
     iconCustomEmojiId: get('iconCustomEmojiId'),
     isEnabled: get('isEnabled'),
     isLoaderVisible: get('isLoaderVisible'),
     isVisible: get('isVisible'),
     text: get('text'),
-    setParams: setState,
+    setParams: withIsSupported(
+      (params: Partial<S>) => setState(params),
+      () => isMethodSupported(options.method),
+      features,
+    ),
     show: setter('isVisible', true),
     hide: setter('isVisible', false),
     enable: setter('isEnabled', true),
     disable: setter('isEnabled', false),
     showLoader: setter('isLoaderVisible', true),
     hideLoader: setter('isLoaderVisible', false),
-    enableShineEffect: setter('hasShineEffect', true),
-    disableShineEffect: setter('hasShineEffect', false),
+    enableShineEffect: withIsSupported(setter('hasShineEffect', true), features.hasShineEffect),
+    disableShineEffect: withIsSupported(setter('hasShineEffect', false), features.hasShineEffect),
     setText: text => setState({ text } as Partial<S>),
     setBgColor: bgColor => setState({ bgColor } as Partial<S>),
     setTextColor: textColor => setState({ textColor } as Partial<S>),
-    setIconCustomEmojiId: iconCustomEmojiId => setState({ iconCustomEmojiId } as Partial<S>),
+    setIconCustomEmojiId: withIsSupported((iconCustomEmojiId: string) => {
+      setState({ iconCustomEmojiId } as Partial<S>);
+    }, features.iconCustomEmojiId),
   };
   return { ...button, component };
 }

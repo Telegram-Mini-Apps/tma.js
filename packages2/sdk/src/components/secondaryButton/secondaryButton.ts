@@ -1,6 +1,7 @@
 import type { SecondaryButtonPosition } from '@tma.js/bridge';
 
 import { type BottomButton, type BottomButtonState, createBottomButton } from '../../createBottomButton.js';
+import { type Computed, computedPick } from '../../store.js';
 import { type MiniApp, miniApp as defaultMiniApp } from '../miniApp/miniApp.js';
 import { themeParams as defaultThemeParams, type ThemeParamsComponent } from '../themeParams/themeParams.js';
 
@@ -15,7 +16,7 @@ export interface SecondaryButtonState extends BottomButtonState {
  * @since Mini Apps v7.10
  */
 export interface SecondaryButton extends BottomButton<SecondaryButtonState> {
-  position: () => SecondaryButtonPosition;
+  position: Computed<SecondaryButtonPosition>;
   /**
    * Sets the button position relative to the main button.
    * @throws {NotInitializedError} The SDK is not initialized.
@@ -46,12 +47,12 @@ export function createSecondaryButton(
     },
     defaultBgColor: () => app.bottomBarColorRgb() || theme.secondaryBgColor() || '#ffffff',
     defaultTextColor: () => theme.buttonColor() || '#2481cc',
-    sources: [theme.subscribe, app.subscribe],
+    sources: [theme.state.subscribe, app.bottomBarColorRgb.subscribe],
     toParams: state => ({ position: state.position }),
   });
   return {
     ...component,
-    position: () => core.state.get().position,
+    position: computedPick(core.state, 'position'),
     setPosition: position => setState({ position }),
   };
 }

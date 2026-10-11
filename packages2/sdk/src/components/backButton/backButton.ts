@@ -1,4 +1,5 @@
 import { type ButtonComponent, createButton } from '../../button.js';
+import { type Computed, computedPick } from '../../store.js';
 
 export interface BackButtonState {
   isVisible: boolean;
@@ -9,9 +10,9 @@ export interface BackButtonState {
  */
 export interface BackButton extends ButtonComponent<BackButtonState> {
   /**
-   * @returns True if the button is visible.
+   * True if the button is visible.
    */
-  isVisible: () => boolean;
+  isVisible: Computed<boolean>;
   /**
    * Shows the button.
    * @throws {NotInitializedError} The SDK is not initialized.
@@ -41,7 +42,7 @@ export function createBackButton(): BackButton {
   });
   return {
     ...component,
-    isVisible: () => core.state.get().isVisible,
+    isVisible: computedPick(core.state, 'isVisible'),
     show: setter('isVisible', true),
     hide: setter('isVisible', false),
   };

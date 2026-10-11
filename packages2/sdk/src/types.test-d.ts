@@ -21,6 +21,7 @@ import { qrScanner } from './components/qrScanner/qrScanner.js';
 import { secureStorage } from './components/secureStorage/secureStorage.js';
 import { serverless } from './components/serverless/serverless.js';
 import { viewport } from './components/viewport/viewport.js';
+import type { BottomButtonFeature } from './createBottomButton.js';
 import type {
   AccessDeniedError,
   BiometryUnavailableError,
@@ -39,7 +40,7 @@ import type {
 import { safeDownloadFile } from './functions/downloadFile/downloadFile.js';
 import { safeSetEmojiStatus } from './functions/emoji-status/emoji-status.js';
 import { safeGetCurrentTime } from './functions/getCurrentTime/getCurrentTime.js';
-import { safeOpenLink, safeOpenTelegramLink } from './functions/links/links.js';
+import { openLink, safeOpenLink, safeOpenTelegramLink } from './functions/links/links.js';
 import { safeRequestContact } from './functions/privacy/privacy.js';
 import { safeRequestChat } from './functions/requestChat/requestChat.js';
 import { safeSendData } from './functions/sendData/sendData.js';
@@ -99,6 +100,19 @@ export function checkTypes(): void {
   // Values.
   expectTypeOf(mainButton.bgColor()).toEqualTypeOf<`#${string}`>();
   expectTypeOf(serverless.call<{ a: number }>('a')).resolves.toEqualTypeOf<{ a: number }>();
+
+  // Support checks.
+  expectTypeOf(miniApp.setHeaderColor.supports).parameter(0)
+    .toEqualTypeOf<'rgb'>();
+  expectTypeOf(miniApp.safeSetHeaderColor.supports).parameter(0)
+    .toEqualTypeOf<'rgb'>();
+  expectTypeOf(mainButton.setParams.supports).parameter(0)
+    .toEqualTypeOf<BottomButtonFeature>();
+  expectTypeOf(openLink.supports).parameter(0)
+    .toEqualTypeOf<'tryInstantView' | 'tryBrowser'>();
+  expectTypeOf(viewport.requestFullscreen.isSupported).toEqualTypeOf<() => boolean>();
+  // @ts-expect-error The setter has no features released later than the method itself.
+  void miniApp.setBgColor.supports;
 
   // Errors are matched exhaustively.
   expectTypeOf(async () => {

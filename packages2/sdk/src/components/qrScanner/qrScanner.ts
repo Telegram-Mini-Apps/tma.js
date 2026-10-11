@@ -2,7 +2,7 @@ import { err, ok, onEvent, type Result, throwing, TimeoutError } from '@tma.js/b
 
 import { ConcurrentCallError } from '../../errors.js';
 import { getGlobals, isMethodSupported, requireMethod } from '../../globals.js';
-import { createStore } from '../../store.js';
+import { type Computed, createStore, computedFromStore } from '../../store.js';
 import type { AsyncOptions } from '../../types.js';
 
 export interface QrScannerOpenOptions extends AsyncOptions {
@@ -46,15 +46,9 @@ export interface QrScanner {
    */
   isSupported: () => boolean;
   /**
-   * @returns True if the scanner is opened.
+   * True if the scanner is opened.
    */
-  isOpened: () => boolean;
-  /**
-   * Subscribes to the `isOpened` value changes.
-   * @param listener - function to call on changes.
-   * @returns Function removing the listener.
-   */
-  subscribe: (listener: VoidFunction) => VoidFunction;
+  isOpened: Computed<boolean>;
   /**
    * Opens the scanner and waits until it is closed.
    * @param options - additional options.
@@ -178,8 +172,7 @@ export function createQrScanner(): QrScanner {
 
   return {
     isSupported: () => isMethodSupported('web_app_open_scan_qr_popup'),
-    isOpened: isOpened.get,
-    subscribe: isOpened.subscribe,
+    isOpened: computedFromStore(isOpened),
     safeOpen,
     open: throwing(safeOpen),
     safeCapture,

@@ -11,7 +11,7 @@ import {
 
 import { ConcurrentCallError, InvalidArgumentsError } from '../../errors.js';
 import { isMethodSupported, requireMethod } from '../../globals.js';
-import { createStore } from '../../store.js';
+import { type Computed, createStore, computedFromStore } from '../../store.js';
 import type { AsyncOptions } from '../../types.js';
 
 /**
@@ -75,15 +75,9 @@ export interface Popup {
    */
   isSupported: () => boolean;
   /**
-   * @returns True if a popup is opened.
+   * True if a popup is opened.
    */
-  isOpened: () => boolean;
-  /**
-   * Subscribes to the `isOpened` value changes.
-   * @param listener - function to call on changes.
-   * @returns Function removing the listener.
-   */
-  subscribe: (listener: VoidFunction) => VoidFunction;
+  isOpened: Computed<boolean>;
   /**
    * Shows a native popup and waits until it is closed.
    * @param options - popup parameters and additional options.
@@ -188,8 +182,7 @@ export function createPopup(): Popup {
 
   return {
     isSupported: () => isMethodSupported(METHOD),
-    isOpened: isOpened.get,
-    subscribe: isOpened.subscribe,
+    isOpened: computedFromStore(isOpened),
     safeShow,
     show: throwing(safeShow),
   };

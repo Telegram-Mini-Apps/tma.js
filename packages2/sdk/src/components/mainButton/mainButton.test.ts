@@ -59,9 +59,9 @@ describe('mainButton', () => {
     expect(button.textColor()).toBe('#ffffff');
 
     const listener = vi.fn();
-    button.subscribe(listener);
+    button.bgColor.subscribe(listener);
     theme.mount();
-    expect(listener).toHaveBeenCalled();
+    expect(listener).toHaveBeenCalledExactlyOnceWith('#111111', '#2481cc');
     expect(button.bgColor()).toBe('#111111');
 
     button.mount();
@@ -74,5 +74,26 @@ describe('mainButton', () => {
     createMainButton(createThemeParams()).onClick(listener);
     emitEvent('main_button_pressed');
     expect(listener).toHaveBeenCalledOnce();
+  });
+});
+
+describe('support checks', () => {
+  it('should check the button parameters support', () => {
+    const button = createMainButton(createThemeParams());
+    expect(button.setParams.isSupported()).toBe(false);
+    expect(button.setParams.supports('hasShineEffect')).toBe(false);
+    setup({ version: '7.9' });
+    expect(button.setParams.isSupported()).toBe(true);
+    expect(button.setParams.supports('hasShineEffect')).toBe(false);
+    expect(button.enableShineEffect.isSupported()).toBe(false);
+    expect(button.disableShineEffect.isSupported()).toBe(false);
+    setup({ version: '7.10' });
+    expect(button.setParams.supports('hasShineEffect')).toBe(true);
+    expect(button.enableShineEffect.isSupported()).toBe(true);
+    expect(button.setParams.supports('iconCustomEmojiId')).toBe(false);
+    expect(button.setIconCustomEmojiId.isSupported()).toBe(false);
+    setup({ version: '9.5' });
+    expect(button.setParams.supports('iconCustomEmojiId')).toBe(true);
+    expect(button.setIconCustomEmojiId.isSupported()).toBe(true);
   });
 });

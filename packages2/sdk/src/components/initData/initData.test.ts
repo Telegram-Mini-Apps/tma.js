@@ -20,6 +20,7 @@ describe('initData', () => {
     expect(initData.user()).toEqual({ id: 1, first_name: 'P' });
     expect(initData.authDate()).toEqual(new Date(1000));
     expect(initData.canSendAfterDate()).toEqual(new Date(11000));
+    expect(initData.canSendAfterDate()).toBe(initData.canSendAfterDate());
     expect(initData.hash()).toBe('h');
   });
 

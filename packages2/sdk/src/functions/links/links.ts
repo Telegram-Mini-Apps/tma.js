@@ -1,7 +1,7 @@
 import { err, ok, type OpenLinkBrowser, type Result } from '@tma.js/bridge';
 
 import { InvalidArgumentsError } from '../../errors.js';
-import { getGlobals, isInitialized, isMethodSupported } from '../../globals.js';
+import { getGlobals, isInitialized, isMethodSupported, isParamSupported } from '../../globals.js';
 import { throwingWithIsSupported, withIsSupported } from '../../is-supported.js';
 
 /**
@@ -36,13 +36,15 @@ export interface OpenLinkOptions {
 /**
  * Opens a link in an external browser. The mini app is not closed.
  *
- * Call it only in response to the user interaction.
+ * Call it only in response to the user interaction. Unsupported options are ignored by the
+ * Telegram client, use `supports` to check them.
  * @param url - URL to open.
  * @param options - additional options.
  * @returns `InvalidArgumentsError` if the URL is invalid.
  * @throws {NotInitializedError} The SDK is not initialized.
  * @example
  * safeOpenLink('https://google.com', { tryInstantView: true, tryBrowser: 'chrome' });
+ * safeOpenLink.supports('tryBrowser'); // true since Mini Apps v7.6
  */
 export const safeOpenLink = /* @__PURE__ */ withIsSupported(
   function(
@@ -62,6 +64,10 @@ export const safeOpenLink = /* @__PURE__ */ withIsSupported(
     return ok(undefined);
   },
   isInitialized,
+  {
+    tryInstantView: () => isParamSupported('web_app_open_link', 'try_instant_view'),
+    tryBrowser: () => isParamSupported('web_app_open_link', 'try_browser'),
+  },
 );
 
 /**

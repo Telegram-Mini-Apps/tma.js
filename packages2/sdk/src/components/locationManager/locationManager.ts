@@ -10,7 +10,7 @@ import {
 
 import { createAsyncMount, createComponentCore } from '../../component.js';
 import { getGlobals, isMethodSupported, requireMethod } from '../../globals.js';
-import { combineSubscribe } from '../../store.js';
+import { type Computed, computedFromStore, computedPick } from '../../store.js';
 import type { AsyncOptions, MountableComponent, StatefulComponent } from '../../types.js';
 
 export interface LocationManagerState {
@@ -76,13 +76,13 @@ export interface LocationManager extends StatefulComponent<LocationManagerState>
    * @returns True if the SDK is initialized and the location manager is supported.
    */
   isSupported: () => boolean;
-  isAvailable: () => boolean;
-  isAccessRequested: () => boolean;
-  isAccessGranted: () => boolean;
+  isAvailable: Computed<boolean>;
+  isAccessRequested: Computed<boolean>;
+  isAccessGranted: Computed<boolean>;
   /**
-   * @returns True if the component is mounting.
+   * True if the component is mounting.
    */
-  isMounting: () => boolean;
+  isMounting: Computed<boolean>;
   /**
    * Mounts the component. If the page was reloaded, the state saved before the reload is
    * restored. Otherwise, it is requested from the Telegram client. Each call
@@ -178,13 +178,12 @@ export function createLocationManager(): LocationManager {
 
   return {
     isSupported: () => isMethodSupported(METHOD),
-    isAvailable: () => state.get().available,
-    isAccessRequested: () => state.get().accessRequested,
-    isAccessGranted: () => state.get().accessGranted,
-    state: state.get,
-    subscribe: combineSubscribe(core.subscribe, asyncMount.mounting.subscribe),
-    isMounted: core.mounted.get,
-    isMounting: asyncMount.mounting.get,
+    isAvailable: computedPick(state, 'available'),
+    isAccessRequested: computedPick(state, 'accessRequested'),
+    isAccessGranted: computedPick(state, 'accessGranted'),
+    state: computedFromStore(state),
+    isMounted: computedFromStore(core.mounted),
+    isMounting: computedFromStore(asyncMount.mounting),
     safeMount,
     mount: throwing(safeMount),
     unmount() {

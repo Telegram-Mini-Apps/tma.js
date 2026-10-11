@@ -8,6 +8,31 @@ import { getLogger } from '@tma.js/bridge';
  */
 export type SubscribeFn = (listener: VoidFunction) => VoidFunction;
 
+/**
+ * Value computed from other values. Call it to get the current value, or subscribe to its
+ * changes.
+ * @example
+ * backButton.isVisible(); // false
+ * const unsubscribe = backButton.isVisible.subscribe((next, prev) => {
+ *   console.log('isVisible changed:', prev, '->', next);
+ * });
+ */
+export interface Computed<T> {
+  /**
+   * @returns The current value.
+   */
+  (): T;
+  /**
+   * Subscribes to the value changes. Listeners are called only if the value has changed, which
+   * is checked using `Object.is`. Unlike Svelte stores, the listener is not called on subscribe.
+   * The function is compatible with React's `useSyncExternalStore` and similar APIs of other
+   * frameworks.
+   * @param listener - function to call with the next and the previous values.
+   * @returns Function removing the listener.
+   */
+  subscribe: (listener: (next: T, prev: T) => void) => VoidFunction;
+}
+
 export interface Store<T> {
   /**
    * @returns The current value. The same reference is returned until the value changes.
@@ -17,6 +42,11 @@ export interface Store<T> {
    * Updates the value. Listeners are called only if the value has changed.
    */
   set: (value: T) => void;
+  /**
+   * Subscribes to the value changes. The listener is called after `set` changes the value, and
+   * receives no arguments, so read the value using `get`. To track the next and the previous
+   * values, use `computedFromStore` or `computedPick`.
+   */
   subscribe: SubscribeFn;
 }
 
@@ -31,6 +61,21 @@ export function shallowEqual(a: object, b: object): boolean {
       return Object.prototype.hasOwnProperty.call(b, key)
         && Object.is((a as any)[key], (b as any)[key]);
     });
+}
+
+/**
+ * Calls the listeners with the arguments. Errors thrown by listeners are logged, so they don't
+ * prevent other listeners from being called.
+ */
+function notify<A extends unknown[]>(listeners: Set<(...args: A) => void>, ...args: A): void {
+  // Copying listeners, so the ones added or removed during the call don't affect it.
+  [...listeners].forEach(listener => {
+    try {
+      listener(...args);
+    } catch (e) {
+      getLogger().error('A listener threw an error:', e);
+    }
+  });
 }
 
 /**
@@ -53,14 +98,7 @@ export function createStore<T>(
         return;
       }
       value = next;
-      // Copying listeners, so the ones added or removed during the call don't affect it.
-      [...listeners].forEach(listener => {
-        try {
-          listener();
-        } catch (e) {
-          getLogger().error('A store listener threw an error:', e);
-        }
-      });
+      notify(listeners);
     },
     subscribe(listener) {
       // Wrapping the listener, so subscribing the same function twice creates two subscriptions,
@@ -101,4 +139,64 @@ export function combineSubscribe(...sources: SubscribeFn[]): SubscribeFn {
     const unsubscribes = sources.map(subscribe => subscribe(listener));
     return () => unsubscribes.forEach(unsubscribe => unsubscribe());
   };
+}
+
+/**
+ * Creates a computed value. It is subscribed to the sources only while it has listeners.
+ * @param get - function computing the value. It must return the same value until it changes.
+ * @param sources - functions subscribing to changes of values the computed value depends on.
+ * @internal
+ */
+export function computed<T>(get: () => T, ...sources: SubscribeFn[]): Computed<T> {
+  const subscribe = combineSubscribe(...sources);
+  const listeners = new Set<(next: T, prev: T) => void>();
+  let value: T;
+  let unsubscribe: VoidFunction | undefined;
+
+  const update = () => {
+    const prev = value;
+    value = get();
+    Object.is(prev, value) || notify(listeners, value, prev);
+  };
+
+  return Object.assign(() => get(), {
+    subscribe(listener: (next: T, prev: T) => void) {
+      if (!unsubscribe) {
+        value = get();
+        unsubscribe = subscribe(update);
+      }
+      // Wrapping the listener, so subscribing the same function twice creates two subscriptions,
+      // and each of them is removed independently.
+      const wrapped = (next: T, prev: T) => listener(next, prev);
+      listeners.add(wrapped);
+      return () => {
+        if (listeners.delete(wrapped) && !listeners.size && unsubscribe) {
+          unsubscribe();
+          unsubscribe = undefined;
+        }
+      };
+    },
+  });
+}
+
+/**
+ * @returns Computed value reflecting the store value.
+ * @param store - store to reflect.
+ * @internal
+ */
+export function computedFromStore<T>(store: Store<T>): Computed<T> {
+  return computed(store.get, store.subscribe);
+}
+
+/**
+ * @returns Computed value reflecting the store value property.
+ * @param store - store holding an object.
+ * @param key - property key.
+ * @internal
+ */
+export function computedPick<T extends object, K extends keyof T>(
+  store: Store<T>,
+  key: K,
+): Computed<T[K]> {
+  return computed(() => store.get()[key], store.subscribe);
 }

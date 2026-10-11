@@ -22,7 +22,7 @@ export function createMainButton(theme: ThemeParamsComponent = defaultThemeParam
     },
     defaultBgColor: () => theme.buttonColor() || '#2481cc',
     defaultTextColor: () => theme.buttonTextColor() || '#ffffff',
-    sources: [theme.subscribe],
+    sources: [theme.state.subscribe],
   }).component;
 }
 

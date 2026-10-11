@@ -8,7 +8,7 @@ import {
 
 import { type ComponentCore, createComponentCore } from './component.js';
 import { isMethodSupported, requireMethod } from './globals.js';
-import { shallowEqual, type SubscribeFn } from './store.js';
+import { computedFromStore, shallowEqual, type SubscribeFn } from './store.js';
 import type { MountableComponent, StatefulComponent } from './types.js';
 
 export type ButtonClickEvent =
@@ -126,9 +126,8 @@ export function createButton<S extends object, M extends MethodName>({
     setter: (key, value) => () => setState({ [key]: value } as unknown as Partial<S>),
     component: {
       isSupported: () => isMethodSupported(method),
-      isMounted: core.mounted.get,
-      state: core.state.get,
-      subscribe: core.subscribe,
+      isMounted: computedFromStore(core.mounted),
+      state: computedFromStore(core.state),
       mount() {
         requireMethod(method);
         core.mount();

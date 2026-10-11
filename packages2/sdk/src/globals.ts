@@ -1,4 +1,6 @@
 import {
+  compareVersions,
+  getReleaseVersion,
   type LaunchParams,
   type MethodName,
   MethodUnsupportedError,
@@ -62,6 +64,24 @@ export function getGlobals(): Globals {
  */
 export function isMethodSupported(method: MethodName): boolean {
   return !!globals && supports(method, globals.version);
+}
+
+/**
+ * @returns True if the SDK is initialized and the method parameter is supported by the Telegram
+ * client. If the parameter was released together with the method, the method support is checked.
+ * @param method - method name.
+ * @param param - method parameter.
+ * @internal
+ */
+export function isParamSupported(method: MethodName, param: string): boolean {
+  // Bridge types accept only known versioned parameters, while this function accepts any.
+  const released = (getReleaseVersion as (method: string, param: string) => Version | undefined)(
+    method,
+    param,
+  );
+  return released
+    ? !!globals && compareVersions(released, globals.version) <= 0
+    : isMethodSupported(method);
 }
 
 /**

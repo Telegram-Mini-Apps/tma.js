@@ -11,7 +11,7 @@ import {
 import { ConcurrentCallError, InvalidArgumentsError } from '../../errors.js';
 import { isTelegramHostname } from '../../functions/links/links.js';
 import { isMethodSupported, requireMethod } from '../../globals.js';
-import { createStore } from '../../store.js';
+import { type Computed, createStore, computedFromStore } from '../../store.js';
 import type { AsyncOptions } from '../../types.js';
 
 /**
@@ -23,15 +23,9 @@ export interface Invoice {
    */
   isSupported: () => boolean;
   /**
-   * @returns True if an invoice is opened.
+   * True if an invoice is opened.
    */
-  isOpened: () => boolean;
-  /**
-   * Subscribes to the `isOpened` value changes.
-   * @param listener - function to call on changes.
-   * @returns Function removing the listener.
-   */
-  subscribe: (listener: VoidFunction) => VoidFunction;
+  isOpened: Computed<boolean>;
   /**
    * Opens an invoice by its slug and waits until it is closed.
    * @param slug - invoice slug.
@@ -123,8 +117,7 @@ export function createInvoice(): Invoice {
 
   return {
     isSupported: () => isMethodSupported(METHOD),
-    isOpened: isOpened.get,
-    subscribe: isOpened.subscribe,
+    isOpened: computedFromStore(isOpened),
     safeOpenSlug,
     openSlug: throwing(safeOpenSlug),
     safeOpenUrl,

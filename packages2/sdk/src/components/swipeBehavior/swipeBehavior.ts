@@ -1,5 +1,6 @@
 import { createComponentCore } from '../../component.js';
 import { isMethodSupported, requireMethod } from '../../globals.js';
+import { type Computed, computedFromStore, computedPick } from '../../store.js';
 import type { MountableComponent, StatefulComponent } from '../../types.js';
 
 export interface SwipeBehaviorState {
@@ -20,9 +21,9 @@ export interface SwipeBehavior extends StatefulComponent<SwipeBehaviorState>, Mo
    */
   isSupported: () => boolean;
   /**
-   * @returns True if the user can minimize or close the mini app with a vertical swipe.
+   * True if the user can minimize or close the mini app with a vertical swipe.
    */
-  isVerticalEnabled: () => boolean;
+  isVerticalEnabled: Computed<boolean>;
   /**
    * Allows the user to minimize or close the mini app with a vertical swipe.
    */
@@ -58,12 +59,11 @@ export function createSwipeBehavior(): SwipeBehavior {
 
   return {
     isSupported: () => isMethodSupported(METHOD),
-    isVerticalEnabled: () => core.state.get().isVerticalEnabled,
+    isVerticalEnabled: computedPick(core.state, 'isVerticalEnabled'),
     enableVertical: set(true),
     disableVertical: set(false),
-    state: core.state.get,
-    subscribe: core.subscribe,
-    isMounted: core.mounted.get,
+    state: computedFromStore(core.state),
+    isMounted: computedFromStore(core.mounted),
     mount() {
       requireMethod(METHOD);
       core.mount();

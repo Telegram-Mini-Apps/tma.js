@@ -4,57 +4,57 @@ import { safeIsColorDark } from '../../colors.js';
 import { createComponentCore } from '../../component.js';
 import { createCSSVarsBinding, toKebab } from '../../css-vars.js';
 import { getGlobals } from '../../globals.js';
-import { combineSubscribe } from '../../store.js';
+import { type Computed, computed, computedFromStore } from '../../store.js';
 import type { MountableComponent, StatefulComponent } from '../../types.js';
 
 export interface ThemeParamsComponent extends StatefulComponent<ThemeParams>, MountableComponent {
   /**
    * @since Mini Apps v6.10
    */
-  accentTextColor: () => RGB | undefined;
-  bgColor: () => RGB | undefined;
+  accentTextColor: Computed<RGB | undefined>;
+  bgColor: Computed<RGB | undefined>;
   /**
    * @since Mini Apps v7.10
    */
-  bottomBarBgColor: () => RGB | undefined;
-  buttonColor: () => RGB | undefined;
-  buttonTextColor: () => RGB | undefined;
+  bottomBarBgColor: Computed<RGB | undefined>;
+  buttonColor: Computed<RGB | undefined>;
+  buttonTextColor: Computed<RGB | undefined>;
   /**
    * @since Mini Apps v6.10
    */
-  destructiveTextColor: () => RGB | undefined;
+  destructiveTextColor: Computed<RGB | undefined>;
   /**
    * @since Mini Apps v6.10
    */
-  headerBgColor: () => RGB | undefined;
-  hintColor: () => RGB | undefined;
-  linkColor: () => RGB | undefined;
-  secondaryBgColor: () => RGB | undefined;
+  headerBgColor: Computed<RGB | undefined>;
+  hintColor: Computed<RGB | undefined>;
+  linkColor: Computed<RGB | undefined>;
+  secondaryBgColor: Computed<RGB | undefined>;
   /**
    * @since Mini Apps v6.10
    */
-  sectionBgColor: () => RGB | undefined;
+  sectionBgColor: Computed<RGB | undefined>;
   /**
    * @since Mini Apps v6.10
    */
-  sectionHeaderTextColor: () => RGB | undefined;
+  sectionHeaderTextColor: Computed<RGB | undefined>;
   /**
    * @since Mini Apps v7.6
    */
-  sectionSeparatorColor: () => RGB | undefined;
+  sectionSeparatorColor: Computed<RGB | undefined>;
   /**
    * @since Mini Apps v6.10
    */
-  subtitleTextColor: () => RGB | undefined;
-  textColor: () => RGB | undefined;
+  subtitleTextColor: Computed<RGB | undefined>;
+  textColor: Computed<RGB | undefined>;
   /**
-   * @returns True if the background color is dark.
+   * True if the background color is dark.
    */
-  isDark: () => boolean;
+  isDark: Computed<boolean>;
   /**
-   * @returns True if CSS variables are bound.
+   * True if CSS variables are bound.
    */
-  isCssVarsBound: () => boolean;
+  isCssVarsBound: Computed<boolean>;
   /**
    * Creates CSS variables reflecting the theme parameters and updates them whenever the theme
    * changes. By default, variables are named `--tg-theme-{key}`, where `{key}` is a theme
@@ -83,7 +83,7 @@ export interface ThemeParamsComponent extends StatefulComponent<ThemeParams>, Mo
 export function createThemeParams(): ThemeParamsComponent {
   const core = createComponentCore<ThemeParams>('themeParams', {});
   const { state } = core;
-  const color = (key: string) => () => state.get()[key];
+  const color = (key: string) => computed(() => state.get()[key], state.subscribe);
   const cssVars = createCSSVarsBinding(state.get, state.subscribe);
   let stopListening: VoidFunction | undefined;
 
@@ -103,22 +103,21 @@ export function createThemeParams(): ThemeParamsComponent {
     sectionSeparatorColor: color('section_separator_color'),
     subtitleTextColor: color('subtitle_text_color'),
     textColor: color('text_color'),
-    isDark() {
+    isDark: computed(() => {
       const bgColor = state.get().bg_color;
       if (!bgColor) {
         return false;
       }
       const result = safeIsColorDark(bgColor);
       return result.ok && result.data;
-    },
-    isCssVarsBound: cssVars.bound.get,
+    }, state.subscribe),
+    isCssVarsBound: computedFromStore(cssVars.bound),
     bindCssVars(getName = key => `--tg-theme-${toKebab(key)}`) {
       core.assertMounted();
       return cssVars.bind(getName);
     },
-    state: state.get,
-    subscribe: combineSubscribe(core.subscribe, cssVars.bound.subscribe),
-    isMounted: core.mounted.get,
+    state: computedFromStore(state),
+    isMounted: computedFromStore(core.mounted),
     mount() {
       const { launchParams } = getGlobals();
       if (core.mount(launchParams.tgWebAppThemeParams)) {

@@ -15,7 +15,7 @@ import {
 import { createAsyncMount, createComponentCore } from '../../component.js';
 import { BiometryUnavailableError, ConcurrentCallError } from '../../errors.js';
 import { getGlobals, isMethodSupported, requireMethod } from '../../globals.js';
-import { combineSubscribe } from '../../store.js';
+import { type Computed, computedFromStore, computedPick } from '../../store.js';
 import type { AsyncOptions, MountableComponent, StatefulComponent } from '../../types.js';
 
 export interface BiometryState {
@@ -84,13 +84,13 @@ export interface Biometry extends StatefulComponent<BiometryState>, MountableCom
    */
   isSupported: () => boolean;
   /**
-   * @returns True if biometry is available on the current device.
+   * True if biometry is available on the current device.
    */
-  isAvailable: () => boolean;
+  isAvailable: Computed<boolean>;
   /**
-   * @returns True if the component is mounting.
+   * True if the component is mounting.
    */
-  isMounting: () => boolean;
+  isMounting: Computed<boolean>;
   /**
    * Mounts the component. If the page was reloaded, the state saved before the reload is
    * restored. Otherwise, it is requested from the Telegram client. Each call
@@ -273,11 +273,10 @@ export function createBiometry(): Biometry {
 
   return {
     isSupported: () => isMethodSupported('web_app_biometry_request_auth'),
-    isAvailable: () => state.get().available,
-    state: state.get,
-    subscribe: combineSubscribe(core.subscribe, asyncMount.mounting.subscribe),
-    isMounted: core.mounted.get,
-    isMounting: asyncMount.mounting.get,
+    isAvailable: computedPick(state, 'available'),
+    state: computedFromStore(state),
+    isMounted: computedFromStore(core.mounted),
+    isMounting: computedFromStore(asyncMount.mounting),
     safeMount,
     mount: throwing(safeMount),
     unmount() {
