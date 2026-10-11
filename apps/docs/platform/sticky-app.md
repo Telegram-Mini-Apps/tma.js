@@ -74,24 +74,20 @@ Here is the HTML and CSS you can use:
       My application goes here.
     </div>
   </div>
-  <script src="https://unpkg.com/@tma.js/sdk@3.1.0/dist/index.iife.js"></script>
-  <script>
-    (function() {
-      var { retrieveLaunchParams, postEvent } = window.telegramApps.sdk;
-      var lp = retrieveLaunchParams();
+  <script type="module">
+    import { retrieveLaunchParams, postEvent } from 'https://esm.sh/@tma.js/bridge';
 
-      // Some versions of Telegram don't need the classes above.
-      if (['macos', 'tdesktop', 'weba', 'web', 'webk'].includes(lp.platform)) {
-        return;
-      }
+    const { tgWebAppPlatform } = retrieveLaunchParams();
 
+    // Some versions of Telegram don't need the classes above.
+    if (!['macos', 'tdesktop', 'weba', 'web', 'webk'].includes(tgWebAppPlatform)) {
       // Expand the application.
       postEvent('web_app_expand');
 
       document.body.classList.add('mobile-body');
       document.getElementById('wrap').classList.add('mobile-wrap');
       document.getElementById('content').classList.add('mobile-content');
-    })();
+    }
   </script>
 </body>
 </html>

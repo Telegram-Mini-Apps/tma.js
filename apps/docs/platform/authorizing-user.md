@@ -34,15 +34,21 @@ authorizes the user.
 
 ### Node.js
 
-The Node.js example uses [express](https://www.npmjs.com/package/express) to process HTTP requests.
+The Node.js example uses [express](https://www.npmjs.com/package/express) to process HTTP requests
+and [@tma.js/init-data](../packages/tma-js-init-data.md) to validate init data. The same package
+works in Bun, Deno and Cloudflare Workers.
 
 ```typescript
-import { validate, parse, type InitData } from '@tma.js/init-data-node';
+import { createSecretKey, validate, type InitData } from '@tma.js/init-data';
 import express, {
   type ErrorRequestHandler,
   type RequestHandler,
   type Response,
 } from 'express';
+
+// Your secret bot token. The secret key is created once to avoid hashing the token on each
+// request.
+const secretKey = await createSecretKey('1234567890:ABC');
 
 /**
  * Sets init data in the specified Response object.
@@ -69,7 +75,7 @@ function getInitData(res: Response): InitData | undefined {
  * @param res - Response object.
  * @param next - function to call the next middleware.
  */
-const authMiddleware: RequestHandler = (req, res, next) => {
+const authMiddleware: RequestHandler = async (req, res, next) => {
   // We expect passing init data in the Authorization header in the following format:
   // <auth-type> <auth-data>
   // <auth-type> must be "tma", and <auth-data> is Telegram Mini Apps init data.
@@ -78,14 +84,11 @@ const authMiddleware: RequestHandler = (req, res, next) => {
   switch (authType) {
     case 'tma':
       try {
-        // Validate init data.
-        validate(authData, token, {
+        // Validate init data and get it parsed. We will surely need it in the future.
+        setInitData(res, await validate(authData, secretKey, {
           // We consider init data sign valid for 1 hour from their creation moment.
           expiresIn: 3600,
-        });
-
-        // Parse init data. We will surely need it in the future.
-        setInitData(res, parse(authData));
+        }));
         return next();
       } catch (e) {
         return next(e);
@@ -115,15 +118,13 @@ const showInitDataMiddleware: RequestHandler = (_req, res, next) => {
  * @param err - handled error.
  * @param _req
  * @param res - Response object.
+ * @param _next
  */
-const defaultErrorMiddleware: ErrorRequestHandler = (err, _req, res) => {
+const defaultErrorMiddleware: ErrorRequestHandler = (err, _req, res, _next) => {
   res.status(500).json({
     error: err.message,
   });
 };
-
-// Your secret bot token.
-const token = '1234567890:ABC';
 
 // Create an Express applet and start listening to port 3000.
 const app = express();

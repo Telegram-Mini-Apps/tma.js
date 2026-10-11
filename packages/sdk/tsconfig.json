@@ -1,11 +1,12 @@
 {
-  "extends": "./tsconfig.build.json",
-  "references": [
-    {
-      "path": "./tsconfig.node.json"
-    },
-    {
-      "path": "./tsconfig.test.json"
-    }
+  "extends": "tsconfig/esnext-dom.json",
+  "compilerOptions": {
+    // Resolves workspace packages to their source code, so they don't have to be built.
+    "customConditions": ["@tma.js/source"]
+  },
+  "include": [
+    "src",
+    "test",
+    "vite.config.ts"
   ]
 }

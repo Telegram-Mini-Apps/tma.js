@@ -1,12 +1,12 @@
 {
   "name": "@tma.js/bridge",
   "version": "2.4.0",
-  "description": "TypeScript package to provide communication layer between Mini App and Telegram application.",
+  "description": "Communication layer between a Telegram Mini App and the Telegram client.",
   "author": "Vladislav Kibenko <wolfram.deus@gmail.com>",
   "homepage": "https://github.com/Telegram-Mini-Apps/tma.js#readme",
   "repository": {
     "type": "git",
-    "url": "git@github.com:Telegram-Mini-Apps/tma.js.git",
+    "url": "git+https://github.com/Telegram-Mini-Apps/tma.js.git",
     "directory": "packages/bridge"
   },
   "bugs": {
@@ -28,6 +28,7 @@
   "types": "./dist/dts/index.d.ts",
   "exports": {
     ".": {
+      "@tma.js/source": "./src/index.ts",
       "types": "./dist/dts/index.d.ts",
       "import": "./dist/index.js",
       "require": "./dist/index.cjs",
@@ -38,27 +39,18 @@
     "test": "vitest --run",
     "lint": "eslint src",
     "lint:fix": "pnpm run lint --fix",
-    "typecheck": "tsc --noEmit -p tsconfig.build.json",
-    "build": "rimraf dist && pnpm run build:default && pnpm run build:iife",
-    "build:default": "vite build -c vite.config.ts",
-    "build:iife": "vite build -c vite.iife.config.ts"
-  },
-  "dependencies": {
-    "@tma.js/signals": "workspace:^",
-    "@tma.js/toolkit": "workspace:^",
-    "@tma.js/transformers": "workspace:^",
-    "@tma.js/types": "workspace:^",
-    "better-promises": "^1.0.0",
-    "error-kid": "^2.0.0",
-    "fp-ts": "^2.16.11",
-    "mitt": "^3.0.1",
-    "valibot": "^1.1.0"
+    "typecheck": "tsc --noEmit",
+    "build": "rimraf dist && vite build && vite build --mode iife"
   },
   "devDependencies": {
-    "test-utils": "workspace:*",
+    "happy-dom": "^20.0.5",
     "tsconfig": "workspace:*"
   },
   "publishConfig": {
     "access": "public"
+  },
+  "dependencies": {
+    "error-kid": "^3.1.0",
+    "valibot": "^1.5.0"
   }
 }

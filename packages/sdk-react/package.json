@@ -1,12 +1,12 @@
 {
   "name": "@tma.js/sdk-react",
   "version": "3.0.24",
-  "description": "React bindings for Mini Apps client SDK. Contains hooks, components and other useful tools which allow usage of React along with Mini Apps client SDK.",
+  "description": "React bindings for the Telegram Mini Apps SDK.",
   "author": "Vladislav Kibenko <wolfram.deus@gmail.com>",
   "homepage": "https://github.com/Telegram-Mini-Apps/tma.js#readme",
   "repository": {
     "type": "git",
-    "url": "git@github.com:Telegram-Mini-Apps/tma.js.git",
+    "url": "git+https://github.com/Telegram-Mini-Apps/tma.js.git",
     "directory": "packages/sdk-react"
   },
   "bugs": {
@@ -29,6 +29,7 @@
   "types": "./dist/dts/index.d.ts",
   "exports": {
     ".": {
+      "@tma.js/source": "./src/index.ts",
       "types": "./dist/dts/index.d.ts",
       "import": "./dist/index.js",
       "require": "./dist/index.cjs",
@@ -36,15 +37,16 @@
     }
   },
   "scripts": {
+    "test": "vitest --run",
+    "lint": "eslint src",
+    "lint:fix": "pnpm run lint --fix",
     "typecheck": "tsc --noEmit",
-    "build": "vite build"
-  },
-  "dependencies": {
-    "@tma.js/sdk": "workspace:^"
+    "build": "rimraf dist && vite build"
   },
   "peerDependencies": {
-    "@types/react": "^17.0.0 || ^18.0.0 || ^19.0.0",
-    "react": "^17.0.0 || ^18.0.0 || ^19.0.0"
+    "@tma.js/sdk": "workspace:^",
+    "@types/react": "^18.0.0 || ^19.0.0",
+    "react": "^18.0.0 || ^19.0.0"
   },
   "peerDependenciesMeta": {
     "@types/react": {
@@ -52,8 +54,12 @@
     }
   },
   "devDependencies": {
-    "@types/react": "^19.0.0",
-    "react": "^19.0.0",
+    "@tma.js/sdk": "workspace:^",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "happy-dom": "^20.0.5",
     "tsconfig": "workspace:*"
   },
   "publishConfig": {

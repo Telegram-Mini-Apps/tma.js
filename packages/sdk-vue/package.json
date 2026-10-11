@@ -1,12 +1,12 @@
 {
   "name": "@tma.js/sdk-vue",
   "version": "1.0.24",
-  "description": "Vue.js bindings for Mini Apps client SDK.",
+  "description": "Vue bindings for the Telegram Mini Apps SDK.",
   "author": "Dmitry Nischeta <nish.dima@gmail.com>",
   "homepage": "https://github.com/Telegram-Mini-Apps/tma.js#readme",
   "repository": {
     "type": "git",
-    "url": "git@github.com:Telegram-Mini-Apps/tma.js.git",
+    "url": "git+https://github.com/Telegram-Mini-Apps/tma.js.git",
     "directory": "packages/sdk-vue"
   },
   "bugs": {
@@ -30,6 +30,7 @@
   "types": "./dist/dts/index.d.ts",
   "exports": {
     ".": {
+      "@tma.js/source": "./src/index.ts",
       "types": "./dist/dts/index.d.ts",
       "import": "./dist/index.js",
       "require": "./dist/index.cjs",
@@ -37,16 +38,20 @@
     }
   },
   "scripts": {
+    "test": "vitest --run",
+    "lint": "eslint src",
+    "lint:fix": "pnpm run lint --fix",
     "typecheck": "tsc --noEmit",
-    "build": "vite build"
-  },
-  "dependencies": {
-    "@tma.js/sdk": "workspace:^"
+    "build": "rimraf dist && vite build"
   },
   "peerDependencies": {
-    "vue": "^3.0.0"
+    "@tma.js/sdk": "workspace:^",
+    "vue": "^3.2.0"
   },
   "devDependencies": {
+    "@tma.js/sdk": "workspace:^",
+    "vue": "^3.5.13",
+    "happy-dom": "^20.0.5",
     "tsconfig": "workspace:*"
   },
   "publishConfig": {

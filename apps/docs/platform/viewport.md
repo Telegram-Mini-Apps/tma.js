@@ -48,8 +48,8 @@ device screen, removing both the top and bottom bars of Telegram.
 This mode is particularly suitable for games and media-focused applications.
 
 To control fullscreen mode, Telegram Mini Apps provides such methods
-as [web_app_request_fullscreen](methods.md#web_app_request_fullscreen)
-and [web_app_exit_fullscreen](methods.md#web_app_exit_fullscreen).
+as [web_app_request_fullscreen](methods.md#web-app-request-fullscreen)
+and [web_app_exit_fullscreen](methods.md#web-app-exit-fullscreen).
 
 [//]: # (TODO: Learn more and write this section)
 [//]: # (## Safe Area)

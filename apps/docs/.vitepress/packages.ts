@@ -3,7 +3,7 @@ import type { DefaultTheme } from 'vitepress';
 import { sectionGen } from './utils';
 
 type Sidebar = DefaultTheme.Sidebar;
-type NavItemWithLink = DefaultTheme.NavItemWithLink;
+type NavItemWithChildren = DefaultTheme.NavItemWithChildren;
 
 function feature(prefix: string, path: string, title?: string): [string, string] {
   title ||=
@@ -23,17 +23,96 @@ function utils(path: string, title?: string): [string, string] {
 
 export const packagesLinksGenerator = (prefix: string = '') => {
   const BASE = prefix + '/packages';
+  const LEGACY_BASE = `${BASE}/legacy`;
 
   const section = sectionGen(BASE);
+  const legacySection = sectionGen(LEGACY_BASE);
 
-  const packagesNavItem: NavItemWithLink = {
+  const packagesNavItem: NavItemWithChildren = {
     text: 'Packages',
-    link: `${BASE}/tma-js-signals`,
+    items: [
+      { text: 'Latest', link: `${BASE}/tma-js-sdk` },
+      { text: 'Legacy', link: `${LEGACY_BASE}/tma-js-sdk` },
+    ],
   };
 
   const packagesSidebar: Sidebar = {
     [BASE]: [
+      section('Upgrading', { 'Upgrading Packages': 'upgrading' }),
       section('TypeScript', {
+        '@tma.js/bridge': ['tma-js-bridge', {
+          'Methods': 'methods',
+          'Events': 'events',
+          'Launch Parameters': 'launch-parameters',
+          'Environment': 'environment',
+          'Globals': 'globals',
+          'Advanced': 'advanced',
+          'Handling Errors': 'errors',
+          'Migrating from 2.x': 'migrate-from-v2',
+          'Migrating from telegram-apps': 'migrate-from-telegram-apps',
+        }],
+        '@tma.js/sdk': ['tma-js-sdk', {
+          'Initializing': 'initializing',
+          'Usage Tips': 'usage-tips',
+          'Features': ['features', {
+            ...Object.fromEntries([
+              component('back-button'),
+              component('biometry'),
+              component('closing-behavior'),
+              component('cloud-storage'),
+              component('device-storage'),
+              utils('emoji-status'),
+              component('haptic-feedback'),
+              utils('home-screen'),
+              component('init-data'),
+              component('invoice'),
+              utils('links'),
+              component('location-manager'),
+              component('main-button'),
+              component('mini-app'),
+              component('popup'),
+              utils('privacy'),
+              component('qr-scanner', 'QR Scanner'),
+              component('secondary-button'),
+              component('secure-storage'),
+              component('serverless'),
+              component('settings-button'),
+              component('swipe-behavior'),
+              component('theme-params'),
+              utils('uncategorized'),
+              component('viewport'),
+            ]),
+          }],
+          'Migrating from 3.x': 'migrate-from-v3',
+          'Migrating from telegram-apps': 'migrate-from-telegram-apps',
+        }],
+        '@tma.js/sdk-react': ['tma-js-sdk-react', {
+          'Migrating from 3.x': 'migrate-from-v3',
+        }],
+        '@tma.js/sdk-svelte': ['tma-js-sdk-svelte', {
+          'Migrating from 1.x': 'migrate-from-v1',
+        }],
+        '@tma.js/sdk-vue': ['tma-js-sdk-vue', {
+          'Migrating from 1.x': 'migrate-from-v1',
+        }],
+        '@tma.js/sdk-solid': ['tma-js-sdk-solid', {
+          'Migrating from 3.x': 'migrate-from-v3',
+        }],
+      }),
+      section('Server', {
+        '@tma.js/init-data': ['tma-js-init-data', {
+          'Parsing': 'parsing',
+          'Validating': 'validating',
+          'Signing': 'signing',
+          'Migrating from @tma.js/init-data-node': 'migrate-from-init-data-node',
+        }],
+      }),
+      section('GoLang', { 'init-data-golang': 'init-data-golang' }),
+      section('Legacy', { 'Previous Versions': 'legacy/tma-js-sdk' }),
+    ],
+    // Documentation for the previous majors: @tma.js/sdk 3.x, @tma.js/bridge 2.x and others.
+    [LEGACY_BASE]: [
+      legacySection('TypeScript', {
         '@tma.js/signals': 'tma-js-signals',
         '@tma.js/bridge': ['tma-js-bridge', {
           'Methods': 'methods',
@@ -82,7 +161,7 @@ export const packagesLinksGenerator = (prefix: string = '') => {
         '@tma.js/sdk-vue': 'tma-js-sdk-vue',
         '@tma.js/sdk-solid': 'tma-js-sdk-solid',
       }),
-      section('Node', {
+      legacySection('Node', {
         '@tma.js/init-data-node': ['tma-js-init-data-node', {
           'Parsing': 'parsing',
           'Validating': 'validating',
@@ -91,7 +170,6 @@ export const packagesLinksGenerator = (prefix: string = '') => {
           'Migrating from telegram-apps': 'migrate-from-telegram-apps',
         }],
       }),
-      section('GoLang', { 'init-data-golang': 'init-data-golang' }),
     ],
   };
 

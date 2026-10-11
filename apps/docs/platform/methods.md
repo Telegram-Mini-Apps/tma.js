@@ -91,7 +91,7 @@ postEvent('web_app_set_header_color', { color_key: 'bg_color' });
 ```
 
 You can learn more about calling methods in the
-package's [documentation](../packages/tma-js-bridge/events.md#calling-methods).
+package's [documentation](../packages/tma-js-bridge/methods.md#calling-methods).
 
 ## Available Methods
 
@@ -487,7 +487,7 @@ Available since: **v8.0**
 
 Displays a native popup prompting the user to download a file.
 
-In turn, the Telegram client emits the [file_download_requested](./events.md#file_download_requested) event.
+In turn, the Telegram client emits the [file_download_requested](./events.md#file-download-requested) event.
 
 | Field     | Type     | Description                                 |
 |-----------|----------|---------------------------------------------|

@@ -1,131 +1,108 @@
 import {
-  on,
-  logger,
-  retrieveLaunchParamsFp,
-  type RetrieveLaunchParamsError,
-  type PostEventError,
-  type PostEventFpFn,
+  createPostEvent,
+  getLogger,
+  isIframe,
+  type LaunchParams,
+  type LaunchParamsRetrieveError,
+  ok,
+  onEvent,
+  type PostEventFn,
+  type Result,
+  safeRetrieveLaunchParams,
+  throwing,
 } from '@tma.js/bridge';
-import { createCbCollector, throwifyFpFn } from '@tma.js/toolkit';
-import type { Version, ThemeParams } from '@tma.js/types';
-import { either as E, function as fn } from 'fp-ts';
 
-import { isInlineMode } from '@/globals/isInlineMode.js';
-import { postEventFpSignal, postEventFp, postEvent } from '@/globals/postEvent.js';
-import { themeParams } from '@/globals/themeParams.js';
-import { version } from '@/globals/version.js';
+import { setGlobals } from './globals.js';
+
+/**
+ * Cleanup of the previous `init` call.
+ */
+let cleanupPrevious: VoidFunction | undefined;
 
 export interface InitOptions {
   /**
-   * True if SDK should accept styles sent from the Telegram application.
+   * Apply styles sent by Telegram Web clients.
    * @default true
    */
   acceptCustomStyles?: boolean;
   /**
-   * True if the application is launched in inline mode.
-   * @default Will be calculated based on the launch parameters' tgWebAppBotInline field.
+   * Launch parameters to use.
+   * @default Launch parameters retrieved with the `retrieveLaunchParams` function.
    */
-  isInlineMode?: boolean;
+  launchParams?: LaunchParams;
   /**
-   * A custom `postEvent` function to use across the package.
-   * @default tma.js/bridge's postEventFp function will be used.
+   * Function calling Mini Apps methods.
+   * @default A function created with `createPostEvent` for the current Mini Apps version. It
+   * throws `MethodUnsupportedError` and `MethodParameterUnsupportedError` on unsupported calls.
    */
-  postEvent?: PostEventFpFn;
-  /**
-   * Mini application theme parameters.
-   * @default Will be calculated based on the launch parameters' tgWebAppThemeParams field.
-   */
-  themeParams?: ThemeParams;
-  /**
-   * Telegram Mini Apps version supported by the Telegram client.
-   * @default Will be calculated based on the launch parameters' tgWebAppVersion field.
-   */
-  version?: Version;
+  postEvent?: PostEventFn;
 }
 
 /**
- * Initializes the SDK allowing it to properly handle events, sent from the native Telegram
- * application. This function also configure the package's global dependencies (functions,
- * variables used across the package).
- * @param options - function options.
- * @returns A function, to perform a cleanup.
+ * Initializes the SDK. It saves launch parameters and the `postEvent` function to use across
+ * the package, and starts handling Telegram Web clients' events.
+ * @param options - additional options.
+ * @returns Function removing the added event listeners and styles, or
+ * `LaunchParamsRetrieveError` if launch parameters were not passed and not found.
  */
-export function initFp(
+export function safeInit(
   options: InitOptions = {},
-): E.Either<RetrieveLaunchParamsError | PostEventError, VoidFunction> {
-  const {
-    version: optionsVersion,
-    isInlineMode: optionsInlineMode,
-    themeParams: optionsThemeParams,
-  } = options;
-
-  if (optionsVersion && typeof optionsInlineMode === 'boolean' && optionsThemeParams) {
-    version.set(optionsVersion);
-    isInlineMode.set(optionsInlineMode);
-    themeParams.set(optionsThemeParams);
-  } else {
-    const error = fn.pipe(retrieveLaunchParamsFp(), E.matchW(
-      err => err,
-      lp => {
-        version.set(optionsVersion || lp.tgWebAppVersion);
-        isInlineMode.set(typeof optionsInlineMode === 'boolean'
-          ? optionsInlineMode
-          : !!lp.tgWebAppBotInline);
-        themeParams.set(optionsThemeParams || lp.tgWebAppThemeParams);
-      },
-    ));
-    if (error) {
-      return E.left(error);
+): Result<LaunchParamsRetrieveError, VoidFunction> {
+  let { launchParams } = options;
+  if (!launchParams) {
+    const retrieved = safeRetrieveLaunchParams();
+    if (!retrieved.ok) {
+      return retrieved;
     }
+    launchParams = retrieved.data;
   }
-  if (options.postEvent) {
-    postEventFpSignal.set(options.postEvent);
-  }
+  const version = launchParams.tgWebAppVersion;
+  const postEvent = options.postEvent || createPostEvent(version);
+  setGlobals({ launchParams, postEvent, version });
+  cleanupPrevious && cleanupPrevious();
 
-  const [addCleanup, cleanup] = createCbCollector(
-    on('reload_iframe', () => {
-      logger().log('Received a request to reload the page');
+  const cleanups: VoidFunction[] = [];
+  // Telegram Web clients run mini apps in an iframe and communicate with them using these
+  // events. Native clients never send them.
+  if (isIframe()) {
+    cleanups.push(onEvent('reload_iframe', () => {
+      getLogger().log('Received a request to reload the page');
       postEvent('iframe_will_reload');
       window.location.reload();
-    }),
-  );
+    }));
 
-  const { acceptCustomStyles = true } = options;
-  if (acceptCustomStyles) {
-    const style = document.createElement('style');
-    style.id = 'telegram-custom-styles';
-    document.head.appendChild(style);
-
-    addCleanup(
-      on('set_custom_style', html => {
-        // It is safe to use innerHTML here as long as style tag has a special behavior related
-        // to the specified content.
-        // In case any script will be passed here, it will not be executed, so XSS is not possible.
-        style.innerHTML = html;
-      }),
-      () => {
-        document.head.removeChild(style);
-      },
-    );
+    if (options.acceptCustomStyles !== false) {
+      const style = document.createElement('style');
+      style.id = 'telegram-custom-styles';
+      document.head.appendChild(style);
+      cleanups.push(
+        onEvent('set_custom_style', html => {
+          // Style elements don't execute scripts, so assigning the content sent by Telegram is
+          // safe.
+          style.textContent = html;
+        }),
+        () => style.remove(),
+      );
+    }
+    // Asks the Telegram Web client to send custom styles and the "reload_iframe" event.
+    postEvent('iframe_ready', { reload_supported: true });
   }
 
-  // Notify Telegram that the application is ready.
-  //
-  // This will result in sending style tag html content from the Telegram web application.
-  // We should call this method also to start receiving "reload_iframe" events from the Telegram
-  // application.
-  //
-  // It really has no effect outside non-Telegram web environment.
-  return fn.pipe(
-    postEventFp('iframe_ready', { reload_supported: true }),
-    E.map(() => {
-      logger().log('The package was initialized');
-      return cleanup;
-    }),
-  );
+  const cleanup = () => {
+    cleanups.splice(0).forEach(fn => fn());
+    cleanupPrevious === cleanup && (cleanupPrevious = undefined);
+  };
+  cleanupPrevious = cleanup;
+  return ok(cleanup);
 }
 
 /**
- * @see initFp
+ * Initializes the SDK. It saves launch parameters and the `postEvent` function to use across
+ * the package, and starts handling Telegram Web clients' events.
+ *
+ * Throwing version of `safeInit`.
+ * @param options - additional options.
+ * @returns Function removing the added event listeners and styles.
+ * @throws {LaunchParamsRetrieveError} Launch parameters were not passed and not found.
  */
-export const init = throwifyFpFn(initFp);
+export const init = /* @__PURE__ */ throwing(safeInit);

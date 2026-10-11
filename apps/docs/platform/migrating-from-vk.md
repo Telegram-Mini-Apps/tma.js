@@ -80,31 +80,25 @@ Use `vk-bridge` to get sign and sign params data.
 
 #### Backend
 
-Telegram has similar mechanism. But instead of manual validation you can use package `@tma.js/init-data-node` to validate `initData`,
-using secret key, provided `@BotFather`.
+Telegram has similar mechanism. But instead of manual validation you can use
+the [@tma.js/init-data](../packages/tma-js-init-data.md) package to validate `initData`, using the
+bot token provided by `@BotFather`. If init data is valid, the `validate` function returns it
+parsed, so you can extract user information right away.
 
 ```ts
-import { validate } from '@tma.js/init-data-node';
+import { validate } from '@tma.js/init-data';
 
 const TG_BOT_SECRET = 'TG_BOT_SECRET';
 
-function isInitDataValid(initDataRaw: string): boolean {
+async function getTgUserId(initDataRaw: string): Promise<string | undefined> {
   try {
-    validate(initDataRaw, TG_BOT_SECRET);
-    return true;
+    const initData = await validate(initDataRaw, TG_BOT_SECRET);
+    return initData.user?.id.toString();
   } catch (err) {
-    return false;
+    // Init data is invalid.
+    return;
   }
 }
-```
-
-After validating init data you can extract user information using `@tms.js/init-data-node`.
-
-```ts
-import { parse } from '@tma.js/init-data-node';
-
-const initData = parse(initDataRaw);
-const tgUserId = initData.user.id.toString();
 ```
 
 After this just place `tgUserId` in database or anywhere.
@@ -114,9 +108,9 @@ After this just place `tgUserId` in database or anywhere.
 Use `@tma.js/sdk` to get `initDataRaw`.
 
 ```ts
-  import { retrieveLaunchParams } from '@tma.js/sdk';
+import { retrieveRawInitData } from '@tma.js/sdk';
 
-  const { initDataRaw } = retrieveLaunchParams();
+const initDataRaw = retrieveRawInitData();
 ```
 
 ### Auth with Ton wallet (optional)
@@ -215,7 +209,7 @@ import {
 import {
   useIsConnectionRestored, useTonAddress, useTonConnectModal, useTonConnectUI, useTonWallet,
 } from '@tonconnect/ui-react';
-import { retrieveLaunchParams } from '@tma.js/sdk-react';
+import { retrieveRawInitData } from '@tma.js/sdk-react';
 import {
   apiGetSelf, apiGetTonProof, apiLogout, apiPostTgAuthorize, apiPostTonProofAuth,
 } from 'services/auth.api';
@@ -242,7 +236,7 @@ export const AuthTonProvider = ({ children }: TAuthProvider) => {
   const fetchUser = useCallback(async () => {
     const userResponse = await apiGetSelf();
     setUser(userResponse);
-    const { initDataRaw } = retrieveLaunchParams();
+    const initDataRaw = retrieveRawInitData();
     if (!userResponse.tgUserId) {
       await apiPostTgAuthorize(initDataRaw || '');
     }

@@ -1,16 +1,12 @@
 {
   "extends": "tsconfig/esnext-dom.json",
   "compilerOptions": {
-    "allowSyntheticDefaultImports": true,
-    "jsx": "preserve",
-    "jsxImportSource": "solid-js"
+    // Resolves workspace packages to their source code, so they don't have to be built.
+    "customConditions": ["@tma.js/source"]
   },
   "include": [
-    "src"
-  ],
-  "references": [
-    {
-      "path": "./tsconfig.node.json"
-    }
+    "src",
+    "test",
+    "vite.config.ts"
   ]
 }

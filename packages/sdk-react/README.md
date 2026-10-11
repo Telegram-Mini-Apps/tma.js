@@ -1,25 +1,40 @@
 # @tma.js/sdk-react
 
-[code-badge]: https://img.shields.io/badge/source-black?logo=github
+React bindings for [@tma.js/sdk](../sdk). The package re-exports the SDK, which is a peer
+dependency and has to be installed too.
 
-[docs-badge]: https://img.shields.io/badge/documentation-blue?logo=gitbook&logoColor=white
+```bash
+pnpm i @tma.js/sdk @tma.js/sdk-react
+```
 
-[code-link]: https://github.com/Telegram-Mini-Apps/tma.js/tree/master/tma.js/sdk-react
+## Components state
 
-[docs-link]: https://docs.telegram-mini-apps.com/packages/tma-js-sdk-react
+Reactive values of SDK components, like `backButton.isVisible` or `mainButton.state`, are
+computed values. Use `useComputed` to re-render a React component whenever such a value changes:
 
-[npm-link]: https://npmjs.com/package/@tma.js/sdk-react
+```tsx
+import { backButton, mainButton, useComputed } from '@tma.js/sdk-react';
 
-[npm-badge]: https://img.shields.io/npm/v/@tma.js/sdk-react?logo=npm
+function BackButtonStatus() {
+  const isVisible = useComputed(backButton.isVisible);
+  return <p>Back button is {isVisible ? 'visible' : 'hidden'}</p>;
+}
 
-[size-badge]: https://img.shields.io/bundlephobia/minzip/@tma.js/sdk-react
+function MainButtonText() {
+  const { text } = useComputed(mainButton.state);
+  return <p>Main button text: {text}</p>;
+}
+```
 
-[![NPM][npm-badge]][npm-link]
-![Size][size-badge]
-[![docs-badge]][docs-link]
-[![code-badge]][code-link]
+`useComputed` is based on `useSyncExternalStore`. Pass the second argument to provide the value
+used during server rendering and hydration.
 
-React JS bindings
-for [client SDK](https://docs.telegram-mini-apps.com/packages/tma-js-sdk). Includes
-hooks, components and utilities for comfortable usage of React JS on the Telegram Mini Apps
-platform.
+## Launch parameters
+
+The following hooks compute their value once per component:
+
+- `useLaunchParams` returns launch parameters.
+- `useRawLaunchParams` returns launch parameters in the raw format.
+- `useRawInitData` returns init data in the raw format.
+- `useAndroidDeviceData` and `useAndroidDeviceDataFrom` return Android device data from the user
+  agent.

@@ -4,6 +4,36 @@
       "source": "/packages/tma-js-create-mini-app",
       "destination": "/packages/tma-js-sdk",
       "permanent": true
+    },
+    {
+      "source": "/packages/tma-js-signals",
+      "destination": "/packages/upgrading#tma-js-signals",
+      "permanent": true
+    },
+    {
+      "source": "/packages/tma-js-bridge/functional-approach",
+      "destination": "/packages/tma-js-bridge/errors",
+      "permanent": true
+    },
+    {
+      "source": "/packages/tma-js-init-data-node",
+      "destination": "/packages/tma-js-init-data",
+      "permanent": true
+    },
+    {
+      "source": "/packages/tma-js-init-data-node/functional-approach",
+      "destination": "/packages/tma-js-init-data#error-handling",
+      "permanent": true
+    },
+    {
+      "source": "/packages/tma-js-init-data-node/migrate-from-telegram-apps",
+      "destination": "/packages/tma-js-init-data/migrate-from-init-data-node",
+      "permanent": true
+    },
+    {
+      "source": "/packages/tma-js-init-data-node/:path*",
+      "destination": "/packages/tma-js-init-data/:path*",
+      "permanent": true
     }
   ],
   "rewrites": [

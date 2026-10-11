@@ -14,13 +14,26 @@ and init data specifically.
 
 ## Retrieving
 
-To extract init data, a developer can use the `retrieveLaunchParams` function
-from [@tma.js/sdk](../packages/tma-js-sdk).
+To extract init data in the raw format, a developer can use the `retrieveRawInitData` function
+from [@tma.js/bridge](../packages/tma-js-bridge.md) (it is also re-exported
+by [@tma.js/sdk](../packages/tma-js-sdk.md)). It returns `undefined` if init data is missing in
+launch parameters.
 
 ```typescript
-import { retrieveLaunchParams } from '@tma.js/sdk';
+import { retrieveRawInitData } from '@tma.js/bridge';
 
-const { tgWebAppData: initData } = retrieveLaunchParams();
+const initDataRaw = retrieveRawInitData();
+```
+
+To get parsed init data on the client, use the [initData](../packages/tma-js-sdk/features/init-data.md)
+component of `@tma.js/sdk`:
+
+```typescript
+import { init, initData } from '@tma.js/sdk';
+
+init();
+initData.restore();
+initData.user(); // { id: 99281932, first_name: 'Andrew', ... }
 ```
 
 ## Authorization and Authentication
@@ -82,7 +95,7 @@ and used in the future code execution.
 > [!TIP]
 > To avoid possible problems related to the init data validation process, we recommend utilizing
 > well-established and tested packages:
-> - For Node: [@tma.js/init-data-node](../packages/tma-js-init-data-node)
+> - For JavaScript (Node.js, Bun, Deno, Cloudflare Workers): [@tma.js/init-data](../packages/tma-js-init-data.md)
 > - For GoLang: [init-data-golang](../packages/init-data-golang.md)
 
 ### Using Telegram Bot Token

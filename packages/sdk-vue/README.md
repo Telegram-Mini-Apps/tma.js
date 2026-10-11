@@ -1,25 +1,30 @@
 # @tma.js/sdk-vue
 
-[code-badge]: https://img.shields.io/badge/source-black?logo=github
+Vue bindings for [@tma.js/sdk](../sdk). The package re-exports the SDK, which is a peer
+dependency and has to be installed too.
 
-[docs-badge]: https://img.shields.io/badge/documentation-blue?logo=gitbook&logoColor=white
+```bash
+pnpm i @tma.js/sdk @tma.js/sdk-vue
+```
 
-[code-link]: https://github.com/Telegram-Mini-Apps/tma.js/tree/master/tma.js/sdk-vue
+## Components state
 
-[docs-link]: https://docs.telegram-mini-apps.com/packages/tma-js-sdk-vue
+Reactive values of SDK components, like `backButton.isVisible` or `mainButton.state`, are
+computed values. Use `useComputed` to get a readonly ref updated whenever such a value changes:
 
-[npm-link]: https://npmjs.com/package/@tma.js/sdk-vue
+```vue
+<script setup lang="ts">
+import { backButton, mainButton, useComputed } from '@tma.js/sdk-vue';
 
-[npm-badge]: https://img.shields.io/npm/v/@tma.js/sdk-vue?logo=npm
+const isVisible = useComputed(backButton.isVisible);
+const mainButtonState = useComputed(mainButton.state);
+</script>
 
-[size-badge]: https://img.shields.io/bundlephobia/minzip/@tma.js/sdk-vue
+<template>
+  <p>Back button is {{ isVisible ? 'visible' : 'hidden' }}</p>
+  <p>Main button text: {{ mainButtonState.text }}</p>
+</template>
+```
 
-[![NPM][npm-badge]][npm-link]
-![Size][size-badge]
-[![docs-badge]][docs-link]
-[![code-badge]][code-link]
-
-Vue.js bindings
-for [client SDK](https://docs.telegram-mini-apps.com/packages/tma-js-sdk). Includes
-composables, components and utilities
-for comfortable usage of Vue.js on the Telegram Mini Apps platform.
+Inside an effect scope, e.g. a component setup, the subscription is removed when the scope is
+disposed.
