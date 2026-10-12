@@ -54,10 +54,6 @@ yarn add @tma.js/sdk
 
 :::
 
-> [!DANGER] Avoid installing both packages
-> Installing both `@tma.js/sdk` and `@tma.js/sdk-react` (for example) may lead to bugs
-> due to SDK package duplication, resulting in incorrect application behavior.
-
 ## Initialize the SDK
 
 The SDK provides a list of components and functions that might seem ready to use once imported,
