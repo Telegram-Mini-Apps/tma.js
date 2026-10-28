@@ -1,5 +1,9 @@
 # @tma.js/bridge
 
+## 4.0.0-rc.1
+
+No changes in this release.
+
 ## 4.0.0-rc.0
 
 ### Major Changes
