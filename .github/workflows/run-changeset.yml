@@ -36,6 +36,6 @@ jobs:
       - name: Run changeset
         uses: changesets/action@v2
         with:
-          publish: pnpm changeset publish
-          commit: 'chore(packages): version packages'
-          title: 'chore(packages): version packages'
+          publish-script: pnpm changeset publish
+          commit-message: 'chore(packages): version packages'
+          pr-title: 'chore(packages): version packages'
