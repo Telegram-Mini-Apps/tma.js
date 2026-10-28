@@ -15,10 +15,6 @@ export function toKebab(value: string): string {
  */
 export interface CSSVarsBinding<K extends string> {
   /**
-   * True if CSS variables are bound.
-   */
-  bound: Store<boolean>;
-  /**
    * Binds CSS variables to the values.
    * @param getName - function returning a CSS variable name. If it returns a falsy value, the
    * variable is not created.
@@ -26,6 +22,10 @@ export interface CSSVarsBinding<K extends string> {
    * @throws {CSSVarsBoundError} CSS variables are already bound.
    */
   bind: (getName: (key: K) => string | null | undefined | false) => VoidFunction;
+  /**
+   * True if CSS variables are bound.
+   */
+  bound: Store<boolean>;
 }
 
 /**
@@ -42,7 +42,6 @@ export function createCSSVarsBinding<K extends string>(
   const bound = createStore(false);
 
   return {
-    bound,
     bind(getName) {
       if (bound.get()) {
         throw new CSSVarsBoundError();
@@ -83,5 +82,6 @@ export function createCSSVarsBinding<K extends string>(
         bound.set(false);
       };
     },
+    bound,
   };
 }

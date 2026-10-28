@@ -31,10 +31,10 @@ export type FullScreenErrorStatus =
   | string;
 
 export interface SafeAreaInsets {
-  top: number;
   bottom: number;
   left: number;
   right: number;
+  top: number;
 }
 
 export type HomeScreenStatus = 'unsupported' | 'unknown' | 'added' | 'missed' | string;
@@ -129,16 +129,6 @@ export interface Events {
     }
     | {
     /**
-     * If true, indicates that biometric authentication is available on the
-     * current device.
-     */
-      available: true;
-      /**
-     * Indicates whether the app has previously requested permission to use
-     * biometrics.
-     */
-      access_requested: boolean;
-      /**
      * Indicates whether the user has granted the app permission to use
      * biometrics.
      *
@@ -153,6 +143,16 @@ export interface Events {
      * settings must be changed to use biometrics.
      */
       access_granted: boolean;
+      /**
+     * Indicates whether the app has previously requested permission to use
+     * biometrics.
+     */
+      access_requested: boolean;
+      /**
+     * If true, indicates that biometric authentication is available on the
+     * current device.
+     */
+      available: true;
       /**
      * A unique device identifier that can be used to match the token to the
      * device.
@@ -210,13 +210,13 @@ export interface Events {
    */
   custom_method_invoked: WithReqId<{
     /**
-     * Method invocation successful result.
-     */
-    result?: unknown;
-    /**
      * Method invocation error code.
      */
     error?: string;
+    /**
+     * Method invocation successful result.
+     */
+    result?: unknown;
   }>;
   /**
    * Device orientation data changed.
@@ -449,9 +449,9 @@ export interface Events {
   location_checked:
     | { available: false }
     | {
-      available: true;
-      access_requested?: boolean | null;
       access_granted?: boolean | null;
+      access_requested?: boolean | null;
+      available: true;
     };
   /**
    * Location-related functionality availability status was retrieved.
@@ -461,7 +461,23 @@ export interface Events {
   location_requested:
     | { available: false }
     | {
+      /**
+     * Altitude above sea level in meters.
+     */
+      altitude?: number | null;
       available: true;
+      /**
+     * The direction the device is moving in degrees.
+     */
+      course?: number | null;
+      /**
+     * Accuracy of the course value in degrees.
+     */
+      course_accuracy?: number | null;
+      /**
+     * Accuracy of the latitude and longitude values in meters.
+     */
+      horizontal_accuracy?: number | null;
       /**
      * Latitude in degrees.
      */
@@ -471,33 +487,17 @@ export interface Events {
      */
       longitude: number;
       /**
-     * Altitude above sea level in meters.
-     */
-      altitude?: number | null;
-      /**
-     * The direction the device is moving in degrees.
-     */
-      course?: number | null;
-      /**
      * The speed of the device in m/s.
      */
       speed?: number | null;
       /**
-     * Accuracy of the latitude and longitude values in meters.
+     * Accuracy of the speed value in m/s.
      */
-      horizontal_accuracy?: number | null;
+      speed_accuracy?: number | null;
       /**
      * Accuracy of the altitude value in meters.
      */
       vertical_accuracy?: number | null;
-      /**
-     * Accuracy of the course value in degrees.
-     */
-      course_accuracy?: number | null;
-      /**
-     * Accuracy of the speed value in m/s.
-     */
-      speed_accuracy?: number | null;
     };
   /**
    * A user clicked the Main Button.
@@ -620,13 +620,13 @@ export interface Events {
    */
   secure_storage_key_received: WithReqId<{
     /**
-     * A retrieved value.
-     */
-    value: string | null;
-    /**
      * True if this value can be restored.
      */
     can_restore?: boolean;
+    /**
+     * A retrieved value.
+     */
+    value: string | null;
   }>;
   /**
    * A value from the device's secure storage was restored.
@@ -684,10 +684,6 @@ export interface Events {
      */
     height: number;
     /**
-     * The viewport width.
-     */
-    width: number;
-    /**
      * Is the viewport currently expanded.
      */
     is_expanded: boolean;
@@ -696,6 +692,10 @@ export interface Events {
      * moment.
      */
     is_state_stable: boolean;
+    /**
+     * The viewport width.
+     */
+    width: number;
   };
   /**
    * Occurs whenever the mini app becomes active or inactive.

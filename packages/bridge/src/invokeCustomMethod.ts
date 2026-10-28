@@ -40,14 +40,14 @@ export async function safeInvokeCustomMethod(
     'custom_method_invoked',
     {
       ...options,
-      params: { method, params, req_id: requestId },
       capture: captureSameReq(requestId),
+      params: { method, params, req_id: requestId },
     },
   );
   if (!response.ok) {
     return response;
   }
-  const { result, error } = response.data;
+  const { error, result } = response.data;
   return error ? err(new InvokeCustomMethodFailedError(error)) : ok(result);
 }
 

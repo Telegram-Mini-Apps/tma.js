@@ -1,5 +1,6 @@
-import { err, ok, onEvent, type Result, type RGB } from '@tma.js/bridge';
+import { err, ok, onEvent, type RGB } from '@tma.js/bridge';
 
+import type { AnyColor, ColorKey, MiniApp, MiniAppState } from './types.js';
 import { safeIsColorDark, safeToRGB } from '../../colors.js';
 import { createComponentCore } from '../../component.js';
 import { createCSSVarsBinding, toKebab } from '../../css-vars.js';
@@ -11,159 +12,10 @@ import {
   isParamSupported,
   requireMethod,
 } from '../../globals.js';
-import {
-  throwingWithIsSupported,
-  type WithIsSupported,
-  type WithSupports,
-  withIsSupported,
-} from '../../is-supported.js';
-import { type Computed, computed, computedFromStore, computedPick } from '../../store.js';
-import type { MountableComponent, StatefulComponent } from '../../types.js';
+import { throwingWithIsSupported, withIsSupported } from '../../is-supported.js';
+import { computed, computedFromStore, computedPick } from '../../store.js';
 
 import { themeParams as defaultThemeParams, type ThemeParamsComponent } from '../themeParams/themeParams.js';
-
-/**
- * Color in any format supported by `toRGB`, or a theme parameters key, e.g. `bg_color`.
- */
-export type AnyColor = RGB | string;
-
-export interface MiniAppState {
-  bgColor: AnyColor;
-  bottomBarColor: AnyColor;
-  headerColor: AnyColor;
-  isActive: boolean;
-}
-
-type ColorKey = 'bgColor' | 'bottomBarColor' | 'headerColor';
-
-type SafeColorSetter = (color: AnyColor) => Result<UnknownThemeParamsKeyError, void>;
-
-type ColorSetter = (color: AnyColor) => void;
-
-/**
- * Color setters throw:
- * - `NotInitializedError` if the SDK is not initialized;
- * - `MethodUnsupportedError` if the method is unsupported. Use the setter `isSupported` method to
- * check it;
- * - `MethodParameterUnsupportedError` if the color format is unsupported. Header color in RGB
- * format is supported since Mini Apps v6.9, use `setHeaderColor.supports('rgb')` to check it;
- * - `NotMountedError` if the component is not mounted.
- */
-export interface MiniApp extends StatefulComponent<MiniAppState>, MountableComponent {
-  /**
-   * @returns True if the SDK is initialized and the Telegram client supports changing any of the
-   * mini app colors.
-   */
-  isSupported: () => boolean;
-  /**
-   * True if the mini app is active, i.e. it is currently selected among other opened mini apps.
-   * @since Mini Apps v8.0
-   */
-  isActive: Computed<boolean>;
-  /**
-   * True if the background color is dark.
-   */
-  isDark: Computed<boolean>;
-  /**
-   * The background color as it was set: RGB or a theme parameters key.
-   */
-  bgColor: Computed<AnyColor>;
-  /**
-   * The background color in the `#RRGGBB` format, if it is known.
-   */
-  bgColorRgb: Computed<RGB | undefined>;
-  /**
-   * The bottom bar color as it was set: RGB or a theme parameters key.
-   */
-  bottomBarColor: Computed<AnyColor>;
-  /**
-   * The bottom bar color in the `#RRGGBB` format, if it is known.
-   */
-  bottomBarColorRgb: Computed<RGB | undefined>;
-  /**
-   * The header color as it was set: RGB or a theme parameters key.
-   */
-  headerColor: Computed<AnyColor>;
-  /**
-   * The header color in the `#RRGGBB` format, if it is known.
-   */
-  headerColorRgb: Computed<RGB | undefined>;
-  /**
-   * Sets the background color. A theme parameters key makes the color follow the theme.
-   * @param color - color or theme parameters key.
-   * @returns `UnknownThemeParamsKeyError` if the theme has no color with the passed key.
-   * @since Mini Apps v6.1
-   */
-  safeSetBgColor: WithIsSupported<SafeColorSetter>;
-  /**
-   * Throwing version of `safeSetBgColor`.
-   * @throws {UnknownThemeParamsKeyError} The theme has no color with the passed key.
-   * @since Mini Apps v6.1
-   */
-  setBgColor: WithIsSupported<ColorSetter>;
-  /**
-   * Sets the bottom bar color. A theme parameters key makes the color follow the theme.
-   * @param color - color or theme parameters key.
-   * @returns `UnknownThemeParamsKeyError` if the theme has no color with the passed key.
-   * @since Mini Apps v7.10
-   */
-  safeSetBottomBarColor: WithIsSupported<SafeColorSetter>;
-  /**
-   * Throwing version of `safeSetBottomBarColor`.
-   * @throws {UnknownThemeParamsKeyError} The theme has no color with the passed key.
-   * @since Mini Apps v7.10
-   */
-  setBottomBarColor: WithIsSupported<ColorSetter>;
-  /**
-   * Sets the header color. The `bg_color` and `secondary_bg_color` keys are passed to the
-   * Telegram client as is. Other theme parameters keys make the color follow the theme, and are
-   * sent as RGB.
-   * @param color - color or theme parameters key.
-   * @returns `UnknownThemeParamsKeyError` if the theme has no color with the passed key.
-   * @since Mini Apps v6.1
-   * @example
-   * safeSetHeaderColor.supports('rgb'); // true since Mini Apps v6.9
-   */
-  safeSetHeaderColor: WithSupports<SafeColorSetter, 'rgb'>;
-  /**
-   * Throwing version of `safeSetHeaderColor`.
-   * @throws {UnknownThemeParamsKeyError} The theme has no color with the passed key.
-   * @since Mini Apps v6.1
-   */
-  setHeaderColor: WithSupports<ColorSetter, 'rgb'>;
-  /**
-   * True if CSS variables are bound.
-   */
-  isCssVarsBound: Computed<boolean>;
-  /**
-   * Creates CSS variables reflecting the mini app colors in the `#RRGGBB` format. By default,
-   * the variables are `--tg-bg-color`, `--tg-bottom-bar-color` and `--tg-header-color`.
-   * @param getName - function returning a CSS variable name for the color. If it returns a falsy
-   * value, the variable is not created.
-   * @returns Function removing the variables.
-   * @throws {NotMountedError} The component is not mounted.
-   * @throws {CSSVarsBoundError} CSS variables are already bound.
-   */
-  bindCssVars: (getName?: (key: ColorKey) => string | null | undefined | false) => VoidFunction;
-  /**
-   * Mounts the component. It also mounts `themeParams`, as the colors depend on the theme.
-   * @throws {NotInitializedError} The SDK is not initialized.
-   */
-  mount: () => void;
-  /**
-   * Closes the mini app.
-   * @param returnBack - return the user to the chat the mini app was opened from, if it was
-   * opened from an inline button. Use `close.supports('returnBack')` to check if it is supported.
-   * @throws {NotInitializedError} The SDK is not initialized.
-   */
-  close: WithSupports<(returnBack?: boolean) => void, 'returnBack'>;
-  /**
-   * Notifies the Telegram client that the mini app is ready to be displayed. Call it as early as
-   * possible to hide the loading placeholder.
-   * @throws {NotInitializedError} The SDK is not initialized.
-   */
-  ready: () => void;
-}
 
 const METHODS = {
   bgColor: 'web_app_set_background_color',
@@ -202,8 +54,10 @@ export function createMiniApp(theme: ThemeParamsComponent = defaultThemeParams):
     const rgb = value && safeToRGB(value);
     return rgb && rgb.ok ? rgb.data : undefined;
   };
-  const rgbOf = (key: ColorKey) => () => toRgb(state.get()[key]);
-  const bgColorRgb = computed(rgbOf('bgColor'), core.subscribe);
+  const createRgbGetter = (key: ColorKey) => {
+    return () => toRgb(state.get()[key]);
+  };
+  const bgColorRgb = computed(createRgbGetter('bgColor'), core.subscribe);
 
   /**
    * Posts the color to the Telegram client.
@@ -253,9 +107,9 @@ export function createMiniApp(theme: ThemeParamsComponent = defaultThemeParams):
   };
 
   const getCssValues = () => ({
-    bgColor: rgbOf('bgColor')(),
-    bottomBarColor: rgbOf('bottomBarColor')(),
-    headerColor: rgbOf('headerColor')(),
+    bgColor: createRgbGetter('bgColor')(),
+    bottomBarColor: createRgbGetter('bottomBarColor')(),
+    headerColor: createRgbGetter('headerColor')(),
   });
   const cssVars = createCSSVarsBinding<ColorKey>(getCssValues, core.subscribe);
   let cleanups: VoidFunction[] = [];
@@ -272,32 +126,32 @@ export function createMiniApp(theme: ThemeParamsComponent = defaultThemeParams):
   );
 
   return {
-    isSupported: () => Object.values(METHODS).some(isMethodSupported),
+    bgColor: computedPick(state, 'bgColor'),
+    bgColorRgb,
+    bindCssVars(getName = key => `--tg-${toKebab(key)}`) {
+      core.assertMounted();
+      return cssVars.bind(getName);
+    },
+    bottomBarColor: computedPick(state, 'bottomBarColor'),
+    bottomBarColorRgb: computed(createRgbGetter('bottomBarColor'), core.subscribe),
+    close: withIsSupported(
+      (returnBack?: boolean) => {
+        getGlobals().postEvent('web_app_close', returnBack ? { return_back: true } : {});
+      },
+      isInitialized,
+      { returnBack: () => isParamSupported('web_app_close', 'return_back') },
+    ),
+    headerColor: computedPick(state, 'headerColor'),
+    headerColorRgb: computed(createRgbGetter('headerColor'), core.subscribe),
     isActive: computedPick(state, 'isActive'),
+    isCssVarsBound: computedFromStore(cssVars.bound),
     isDark: computed(() => {
       const color = bgColorRgb();
       const isDark = color && safeIsColorDark(color);
       return !!isDark && isDark.ok && isDark.data;
     }, core.subscribe),
-    bgColor: computedPick(state, 'bgColor'),
-    bgColorRgb,
-    bottomBarColor: computedPick(state, 'bottomBarColor'),
-    bottomBarColorRgb: computed(rgbOf('bottomBarColor'), core.subscribe),
-    headerColor: computedPick(state, 'headerColor'),
-    headerColorRgb: computed(rgbOf('headerColor'), core.subscribe),
-    safeSetBgColor,
-    setBgColor: throwingWithIsSupported(safeSetBgColor),
-    safeSetBottomBarColor,
-    setBottomBarColor: throwingWithIsSupported(safeSetBottomBarColor),
-    safeSetHeaderColor,
-    setHeaderColor: throwingWithIsSupported(safeSetHeaderColor),
-    isCssVarsBound: computedFromStore(cssVars.bound),
-    bindCssVars(getName = key => `--tg-${toKebab(key)}`) {
-      core.assertMounted();
-      return cssVars.bind(getName);
-    },
-    state: computedFromStore(state),
     isMounted: computedFromStore(core.mounted),
+    isSupported: () => Object.values(METHODS).some(isMethodSupported),
     mount() {
       getGlobals();
       theme.isMounted() || theme.mount();
@@ -305,7 +159,7 @@ export function createMiniApp(theme: ThemeParamsComponent = defaultThemeParams):
         return;
       }
       sentColors = Object.fromEntries(
-        (Object.keys(METHODS) as ColorKey[]).map(key => [key, rgbOf(key)()]),
+        (Object.keys(METHODS) as ColorKey[]).map(key => [key, createRgbGetter(key)()]),
       );
       cleanups = [
         onEvent('visibility_changed', ({ is_visible }) => {
@@ -314,16 +168,20 @@ export function createMiniApp(theme: ThemeParamsComponent = defaultThemeParams):
         theme.state.subscribe(syncThemeColors),
       ];
     },
+    ready() {
+      getGlobals().postEvent('web_app_ready');
+    },
+    safeSetBgColor,
+    safeSetBottomBarColor,
+    safeSetHeaderColor,
+    setBgColor: throwingWithIsSupported(safeSetBgColor),
+    setBottomBarColor: throwingWithIsSupported(safeSetBottomBarColor),
+    setHeaderColor: throwingWithIsSupported(safeSetHeaderColor),
+    state: computedFromStore(state),
     unmount() {
       if (core.unmount()) {
         cleanups.forEach(cleanup => cleanup());
       }
-    },
-    close: withIsSupported((returnBack?: boolean) => {
-      getGlobals().postEvent('web_app_close', returnBack ? { return_back: true } : {});
-    }, isInitialized, { returnBack: () => isParamSupported('web_app_close', 'return_back') }),
-    ready() {
-      getGlobals().postEvent('web_app_ready');
     },
   };
 }

@@ -17,7 +17,7 @@ describe('initData', () => {
     expect(initData.state()).toBeUndefined();
     initData.restore();
     expect(initData.raw()).toBe(raw);
-    expect(initData.user()).toEqual({ id: 1, first_name: 'P' });
+    expect(initData.user()).toEqual({ first_name: 'P', id: 1 });
     expect(initData.authDate()).toEqual(new Date(1000));
     expect(initData.canSendAfterDate()).toEqual(new Date(11000));
     expect(initData.canSendAfterDate()).toBe(initData.canSendAfterDate());

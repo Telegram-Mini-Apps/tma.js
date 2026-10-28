@@ -82,10 +82,10 @@ describe('setEmojiStatus', () => {
 
 describe('isSupported', () => {
   it.each([
-    { name: 'requestEmojiStatusAccess', fn: requestEmojiStatusAccess, supported: '8.0', unsupported: '7.10' },
-    { name: 'safeRequestEmojiStatusAccess', fn: safeRequestEmojiStatusAccess, supported: '8.0', unsupported: '7.10' },
-    { name: 'setEmojiStatus', fn: setEmojiStatus, supported: '8.0', unsupported: '7.10' },
-    { name: 'safeSetEmojiStatus', fn: safeSetEmojiStatus, supported: '8.0', unsupported: '7.10' },
+    { fn: requestEmojiStatusAccess, name: 'requestEmojiStatusAccess', supported: '8.0', unsupported: '7.10' },
+    { fn: safeRequestEmojiStatusAccess, name: 'safeRequestEmojiStatusAccess', supported: '8.0', unsupported: '7.10' },
+    { fn: setEmojiStatus, name: 'setEmojiStatus', supported: '8.0', unsupported: '7.10' },
+    { fn: safeSetEmojiStatus, name: 'safeSetEmojiStatus', supported: '8.0', unsupported: '7.10' },
   ])('$name should check the Mini Apps version', ({ fn, supported, unsupported }) => {
     expect(fn.isSupported()).toBe(false);
     setup({ version: unsupported });

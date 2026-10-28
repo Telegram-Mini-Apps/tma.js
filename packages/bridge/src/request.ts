@@ -27,18 +27,18 @@ export interface RequestOptions<E extends AnyEventName> {
    */
   capture?: (value: RequestResult<E>) => boolean;
   /**
-   * Time in milliseconds to wait for the event. When reached, the request fails with
-   * `TimeoutError`.
+   * Custom function to call the method.
    */
-  timeout?: number;
+  postEvent?: PostEventFn;
   /**
    * Signal to abort the request. When aborted, the request is rejected with `signal.reason`.
    */
   signal?: AbortSignal;
   /**
-   * Custom function to call the method.
+   * Time in milliseconds to wait for the event. When reached, the request fails with
+   * `TimeoutError`.
    */
-  postEvent?: PostEventFn;
+  timeout?: number;
 }
 
 /**
@@ -83,10 +83,10 @@ export function safeRequest<M extends MethodName, E extends AnyEventName>(
 ): Promise<Result<TimeoutError, RequestResult<E>>> {
   const {
     capture = () => true,
-    timeout,
-    signal,
     params,
     postEvent = defaultPostEvent,
+    signal,
+    timeout,
   } = (args[0] || {}) as RequestOptions<E> & { params?: unknown };
 
   return new Promise<Result<TimeoutError, RequestResult<E>>>((resolve, reject) => {

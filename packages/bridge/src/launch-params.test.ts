@@ -30,11 +30,11 @@ function mockNavigationEntry(name?: string) {
 describe('parseLaunchParams', () => {
   it('should parse launch parameters', () => {
     expect(parseLaunchParams(QUERY)).toEqual({
-      tgWebAppVersion: '9.0',
-      tgWebAppPlatform: 'ios',
       tgWebAppData: 'user=1',
-      tgWebAppThemeParams: { bg_color: '#ffffff' },
       tgWebAppFullscreen: true,
+      tgWebAppPlatform: 'ios',
+      tgWebAppThemeParams: { bg_color: '#ffffff' },
+      tgWebAppVersion: '9.0',
     });
   });
 
@@ -59,9 +59,9 @@ describe('parseLaunchParams', () => {
     ['not an object', '"#ffffff"'],
   ])('should throw if theme parameters contain %s', (_, json) => {
     const query = new URLSearchParams({
-      tgWebAppVersion: '9.0',
       tgWebAppPlatform: 'ios',
       tgWebAppThemeParams: json,
+      tgWebAppVersion: '9.0',
     });
     expect(catchError(() => parseLaunchParams(query)))
       .toSatisfy(e => InvalidLaunchParamsError.is(e));
@@ -69,9 +69,9 @@ describe('parseLaunchParams', () => {
 
   it('should convert numeric theme colors and accept short colors', () => {
     const query = new URLSearchParams({
-      tgWebAppVersion: '9.0',
       tgWebAppPlatform: 'ios',
       tgWebAppThemeParams: JSON.stringify({ bg_color: 0xFF00AA, text_color: '#FFF' }),
+      tgWebAppVersion: '9.0',
     });
     expect(parseLaunchParams(query).tgWebAppThemeParams)
       .toEqual({ bg_color: '#ff00aa', text_color: '#FFF' });
@@ -79,13 +79,13 @@ describe('parseLaunchParams', () => {
 
   it('should drop unknown parameters', () => {
     expect(parseLaunchParams('tgWebAppVersion=9.0&tgWebAppPlatform=ios&foo=bar'))
-      .toEqual({ tgWebAppVersion: '9.0', tgWebAppPlatform: 'ios', tgWebAppThemeParams: {} });
+      .toEqual({ tgWebAppPlatform: 'ios', tgWebAppThemeParams: {}, tgWebAppVersion: '9.0' });
   });
 });
 
 describe('safeParseLaunchParams', () => {
   it('should return launch parameters', () => {
-    expect(safeParseLaunchParams(QUERY)).toEqual({ ok: true, data: parseLaunchParams(QUERY) });
+    expect(safeParseLaunchParams(QUERY)).toEqual({ data: parseLaunchParams(QUERY), ok: true });
   });
 
   it('should return InvalidLaunchParamsError instead of throwing it', () => {
@@ -126,14 +126,14 @@ describe('retrieveRawLaunchParams', () => {
     mockLocation('https://example.com');
     mockNavigationEntry();
     sessionStorage.setItem('__telegram__initParams', JSON.stringify({
-      tgWebAppVersion: '8.0',
-      tgWebAppPlatform: 'android',
       tgWebAppData: 'user=1&hash=2',
+      tgWebAppPlatform: 'android',
+      tgWebAppVersion: '8.0',
     }));
     expect(retrieveLaunchParams()).toMatchObject({
-      tgWebAppVersion: '8.0',
-      tgWebAppPlatform: 'android',
       tgWebAppData: 'user=1&hash=2',
+      tgWebAppPlatform: 'android',
+      tgWebAppVersion: '8.0',
     });
   });
 
@@ -160,9 +160,9 @@ describe('retrieveRawInitData', () => {
 describe('safe retrieve functions', () => {
   it('should return launch parameters', () => {
     mockLocation(`https://example.com#${QUERY}`);
-    expect(safeRetrieveRawLaunchParams()).toEqual({ ok: true, data: QUERY });
-    expect(safeRetrieveLaunchParams()).toEqual({ ok: true, data: parseLaunchParams(QUERY) });
-    expect(safeRetrieveRawInitData()).toEqual({ ok: true, data: 'user=1' });
+    expect(safeRetrieveRawLaunchParams()).toEqual({ data: QUERY, ok: true });
+    expect(safeRetrieveLaunchParams()).toEqual({ data: parseLaunchParams(QUERY), ok: true });
+    expect(safeRetrieveRawInitData()).toEqual({ data: 'user=1', ok: true });
   });
 
   it('should return LaunchParamsRetrieveError if there are no launch parameters', () => {

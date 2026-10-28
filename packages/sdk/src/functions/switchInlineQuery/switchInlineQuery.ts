@@ -24,11 +24,11 @@ export const switchInlineQuery = /* @__PURE__ */ withIsSupported(
     query: string,
     chatTypes: SwitchInlineQueryChatType[] = [],
   ): void {
-    const { postEvent, launchParams } = requireMethod('web_app_switch_inline_query');
+    const { launchParams, postEvent } = requireMethod('web_app_switch_inline_query');
     if (!launchParams.tgWebAppBotInline) {
       throw new InvalidEnvError('The mini app must be launched in inline mode');
     }
-    postEvent('web_app_switch_inline_query', { query, chat_types: chatTypes });
+    postEvent('web_app_switch_inline_query', { chat_types: chatTypes, query });
   },
   isSwitchInlineQuerySupported,
 );

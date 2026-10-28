@@ -46,16 +46,22 @@ export interface BottomButton<S extends BottomButtonState> extends ButtonCompone
    * The background color, or the default one if it was not set.
    */
   bgColor: Computed<RGB>;
-  /**
-   * The text color, or the default one if it was not set.
-   */
-  textColor: Computed<RGB>;
+  disable: () => void;
+  disableShineEffect: WithIsSupported<() => void>;
+  enable: () => void;
+  enableShineEffect: WithIsSupported<() => void>;
   hasShineEffect: Computed<boolean>;
+  hide: () => void;
+  hideLoader: () => void;
   iconCustomEmojiId: Computed<string | undefined>;
   isEnabled: Computed<boolean>;
   isLoaderVisible: Computed<boolean>;
   isVisible: Computed<boolean>;
-  text: Computed<string>;
+  setBgColor: (color: RGB) => void;
+  /**
+   * @since Mini Apps v9.5
+   */
+  setIconCustomEmojiId: WithIsSupported<(id: string) => void>;
   /**
    * Updates several button parameters at once. Undefined values are ignored.
    * @example
@@ -63,30 +69,24 @@ export interface BottomButton<S extends BottomButtonState> extends ButtonCompone
    * mainButton.setParams.supports('iconCustomEmojiId'); // true since Mini Apps v9.5
    */
   setParams: WithSupports<(params: Partial<S>) => void, BottomButtonFeature>;
-  show: () => void;
-  hide: () => void;
-  enable: () => void;
-  disable: () => void;
-  showLoader: () => void;
-  hideLoader: () => void;
-  enableShineEffect: WithIsSupported<() => void>;
-  disableShineEffect: WithIsSupported<() => void>;
   setText: (text: string) => void;
-  setBgColor: (color: RGB) => void;
   setTextColor: (color: RGB) => void;
+  show: () => void;
+  showLoader: () => void;
+  text: Computed<string>;
   /**
-   * @since Mini Apps v9.5
+   * The text color, or the default one if it was not set.
    */
-  setIconCustomEmojiId: WithIsSupported<(id: string) => void>;
+  textColor: Computed<RGB>;
 }
 
 export interface CreateBottomButtonOptions<S extends BottomButtonState> {
-  name: string;
-  method: 'web_app_setup_main_button' | 'web_app_setup_secondary_button';
   clickEvent: ButtonClickEvent;
-  initialState: S;
   defaultBgColor: () => RGB;
   defaultTextColor: () => RGB;
+  initialState: S;
+  method: 'web_app_setup_main_button' | 'web_app_setup_secondary_button';
+  name: string;
   /**
    * Changes sources the default colors depend on.
    */
@@ -123,7 +123,7 @@ export function createBottomButton<S extends BottomButtonState>({
       ...toParams && toParams(state),
     }),
   });
-  const { core, setter, setState } = button;
+  const { core, setState, setter } = button;
   const get = <K extends keyof S>(key: K) => computedPick(core.state, key);
   const features: Record<BottomButtonFeature, () => boolean> = {
     hasShineEffect: () => isParamSupported(options.method, 'has_shine_effect'),
@@ -133,32 +133,32 @@ export function createBottomButton<S extends BottomButtonState>({
   const component: BottomButton<S> = {
     ...button.component,
     bgColor: computed(() => core.state.get().bgColor || defaultBgColor(), core.subscribe),
-    textColor: computed(() => core.state.get().textColor || defaultTextColor(), core.subscribe),
+    disable: setter('isEnabled', false),
+    disableShineEffect: withIsSupported(setter('hasShineEffect', false), features.hasShineEffect),
+    enable: setter('isEnabled', true),
+    enableShineEffect: withIsSupported(setter('hasShineEffect', true), features.hasShineEffect),
     hasShineEffect: get('hasShineEffect'),
+    hide: setter('isVisible', false),
+    hideLoader: setter('isLoaderVisible', false),
     iconCustomEmojiId: get('iconCustomEmojiId'),
     isEnabled: get('isEnabled'),
     isLoaderVisible: get('isLoaderVisible'),
     isVisible: get('isVisible'),
-    text: get('text'),
+    setBgColor: bgColor => setState({ bgColor } as Partial<S>),
+    setIconCustomEmojiId: withIsSupported((iconCustomEmojiId: string) => {
+      setState({ iconCustomEmojiId } as Partial<S>);
+    }, features.iconCustomEmojiId),
     setParams: withIsSupported(
       (params: Partial<S>) => setState(params),
       () => isMethodSupported(options.method),
       features,
     ),
-    show: setter('isVisible', true),
-    hide: setter('isVisible', false),
-    enable: setter('isEnabled', true),
-    disable: setter('isEnabled', false),
-    showLoader: setter('isLoaderVisible', true),
-    hideLoader: setter('isLoaderVisible', false),
-    enableShineEffect: withIsSupported(setter('hasShineEffect', true), features.hasShineEffect),
-    disableShineEffect: withIsSupported(setter('hasShineEffect', false), features.hasShineEffect),
     setText: text => setState({ text } as Partial<S>),
-    setBgColor: bgColor => setState({ bgColor } as Partial<S>),
     setTextColor: textColor => setState({ textColor } as Partial<S>),
-    setIconCustomEmojiId: withIsSupported((iconCustomEmojiId: string) => {
-      setState({ iconCustomEmojiId } as Partial<S>);
-    }, features.iconCustomEmojiId),
+    show: setter('isVisible', true),
+    showLoader: setter('isLoaderVisible', true),
+    text: get('text'),
+    textColor: computed(() => core.state.get().textColor || defaultTextColor(), core.subscribe),
   };
   return { ...button, component };
 }

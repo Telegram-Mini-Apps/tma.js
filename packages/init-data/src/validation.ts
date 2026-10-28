@@ -58,7 +58,7 @@ function prepare(
   { expiresIn = 86400 }: ValidateOptions,
 ): Result<
   SignatureMissingError | AuthDateInvalidError | ExpiredError,
-  { signature: string; dataCheckString: string }
+  { dataCheckString: string; signature: string }
 > {
   const query = new URLSearchParams(value);
   const signature = query.get(param);
@@ -81,8 +81,8 @@ function prepare(
   }
 
   return ok({
-    signature,
     dataCheckString: createDataCheckString([...query].filter(([key]) => !exclude.includes(key))),
+    signature,
   });
 }
 
@@ -95,7 +95,7 @@ async function verify(
   if (!prepared.ok) {
     return prepared;
   }
-  const { signature, dataCheckString } = prepared.data;
+  const { dataCheckString, signature } = prepared.data;
   // crypto.subtle.verify compares signatures in constant time, which protects from timing
   // attacks.
   const verified = /^[\da-f]{64}$/i.test(signature) && await crypto.subtle.verify(
@@ -116,7 +116,7 @@ async function verify3rd(
   if (!prepared.ok) {
     return prepared;
   }
-  const { signature, dataCheckString } = prepared.data;
+  const { dataCheckString, signature } = prepared.data;
 
   let signatureBytes: Uint8Array<ArrayBuffer>;
   try {

@@ -15,21 +15,21 @@ export interface ClosingBehaviorState {
 export interface ClosingBehavior extends StatefulComponent<ClosingBehaviorState>,
   MountableComponent {
   /**
-   * @returns True if the SDK is initialized.
+   * Allows closing the mini app without confirmation.
    */
-  isSupported: () => boolean;
-  /**
-   * True if the user is asked to confirm closing the mini app.
-   */
-  isConfirmationEnabled: Computed<boolean>;
+  disableConfirmation: () => void;
   /**
    * Makes the Telegram client ask the user to confirm closing the mini app.
    */
   enableConfirmation: () => void;
   /**
-   * Allows closing the mini app without confirmation.
+   * True if the user is asked to confirm closing the mini app.
    */
-  disableConfirmation: () => void;
+  isConfirmationEnabled: Computed<boolean>;
+  /**
+   * @returns True if the SDK is initialized.
+   */
+  isSupported: () => boolean;
   /**
    * Mounts the component. If the page was reloaded, the state saved before the reload is
    * restored.
@@ -55,16 +55,16 @@ export function createClosingBehavior(): ClosingBehavior {
   };
 
   return {
-    isSupported: () => isMethodSupported(METHOD),
-    isConfirmationEnabled: computedPick(core.state, 'isConfirmationEnabled'),
-    enableConfirmation: set(true),
     disableConfirmation: set(false),
-    state: computedFromStore(core.state),
+    enableConfirmation: set(true),
+    isConfirmationEnabled: computedPick(core.state, 'isConfirmationEnabled'),
     isMounted: computedFromStore(core.mounted),
+    isSupported: () => isMethodSupported(METHOD),
     mount() {
       requireMethod(METHOD);
       core.mount();
     },
+    state: computedFromStore(core.state),
     unmount() {
       core.unmount();
     },

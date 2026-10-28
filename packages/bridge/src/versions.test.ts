@@ -52,7 +52,7 @@ describe('createPostEvent', () => {
 
   it('should throw in strict mode', () => {
     const postEvent = createPostEvent('6.0');
-    const popup = { title: '', message: '', buttons: [] };
+    const popup = { buttons: [], message: '', title: '' };
     expect(catchError(() => postEvent('web_app_open_popup', popup)))
       .toSatisfy(e => MethodUnsupportedError.is(e));
     const setColor = createPostEvent('6.1');
@@ -62,7 +62,7 @@ describe('createPostEvent', () => {
 
   it('should warn in non-strict mode', () => {
     const warn = vi.fn();
-    setLogger({ log: vi.fn(), warn, error: vi.fn() });
+    setLogger({ error: vi.fn(), log: vi.fn(), warn });
     createPostEvent('6.0', 'non-strict')('web_app_request_phone');
     expect(warn).toHaveBeenCalledOnce();
   });
@@ -73,9 +73,9 @@ describe('createPostEvent', () => {
       icon_custom_emoji_id: '1',
     });
     expect(onUnsupported).toHaveBeenCalledWith({
-      version: '9.4',
       method: 'web_app_setup_main_button',
       param: 'icon_custom_emoji_id',
+      version: '9.4',
     });
   });
 });

@@ -8,9 +8,9 @@ describe('locationManager', () => {
     setup({
       onMethod(call) {
         respond('web_app_check_location', 'location_checked', {
-          available: true,
-          access_requested: true,
           access_granted: null,
+          access_requested: true,
+          available: true,
         })(call);
         respond('web_app_request_location', 'location_requested', {
           available: true,
@@ -22,9 +22,9 @@ describe('locationManager', () => {
     const manager = createLocationManager();
     await manager.mount();
     expect(manager.state()).toEqual({
-      available: true,
-      accessRequested: true,
       accessGranted: false,
+      accessRequested: true,
+      available: true,
     });
     await expect(manager.requestLocation()).resolves.toEqual({ latitude: 1, longitude: 2 });
   });

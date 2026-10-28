@@ -39,15 +39,30 @@ export type CloudStorageError =
  * @since Mini Apps v6.9
  */
 export interface CloudStorage {
+  clear: (options?: AsyncOptions) => Promise<void>;
+  deleteItem: (keyOrKeys: string | string[], options?: AsyncOptions) => Promise<void>;
+  getItem: (key: string, options?: AsyncOptions) => Promise<string>;
+  getItems: <K extends string>(keys: K[], options?: AsyncOptions) => Promise<Record<K, string>>;
+  getKeys: (options?: AsyncOptions) => Promise<string[]>;
   /**
    * @returns True if the SDK is initialized and the storage is supported.
    */
   isSupported: () => boolean;
   /**
+   * Removes all keys.
+   */
+  safeClear: (options?: AsyncOptions) => Promise<Result<CloudStorageError, void>>;
+  /**
+   * Removes the key or keys.
+   */
+  safeDeleteItem: (
+    keyOrKeys: string | string[],
+    options?: AsyncOptions,
+  ) => Promise<Result<CloudStorageError, void>>;
+  /**
    * @returns Value of the key, or an empty string if it is missing.
    */
   safeGetItem: (key: string, options?: AsyncOptions) => Promise<Result<CloudStorageError, string>>;
-  getItem: (key: string, options?: AsyncOptions) => Promise<string>;
   /**
    * @returns Values of the keys. Missing keys have empty strings.
    */
@@ -55,12 +70,10 @@ export interface CloudStorage {
     keys: K[],
     options?: AsyncOptions,
   ) => Promise<Result<CloudStorageError, Record<K, string>>>;
-  getItems: <K extends string>(keys: K[], options?: AsyncOptions) => Promise<Record<K, string>>;
   /**
    * @returns All keys of the storage.
    */
   safeGetKeys: (options?: AsyncOptions) => Promise<Result<CloudStorageError, string[]>>;
-  getKeys: (options?: AsyncOptions) => Promise<string[]>;
   /**
    * Saves the value.
    * @param key - key, 1-128 characters. Only `A-Z`, `a-z`, `0-9`, `_` and `-` are allowed.
@@ -72,19 +85,6 @@ export interface CloudStorage {
     options?: AsyncOptions,
   ) => Promise<Result<CloudStorageError, void>>;
   setItem: (key: string, value: string, options?: AsyncOptions) => Promise<void>;
-  /**
-   * Removes the key or keys.
-   */
-  safeDeleteItem: (
-    keyOrKeys: string | string[],
-    options?: AsyncOptions,
-  ) => Promise<Result<CloudStorageError, void>>;
-  deleteItem: (keyOrKeys: string | string[], options?: AsyncOptions) => Promise<void>;
-  /**
-   * Removes all keys.
-   */
-  safeClear: (options?: AsyncOptions) => Promise<Result<CloudStorageError, void>>;
-  clear: (options?: AsyncOptions) => Promise<void>;
 }
 
 const METHOD = 'web_app_invoke_custom_method';
@@ -111,13 +111,38 @@ async function invoke<T>(
  * @since Mini Apps v6.9
  */
 export const cloudStorage: CloudStorage = {
-  isSupported: () => isMethodSupported(METHOD),
-  async safeGetItem(key, options) {
-    const result = await cloudStorage.safeGetItems([key], options);
-    return result.ok ? ok(result.data[key]) : result;
+  async clear(options) {
+    return unwrap(await cloudStorage.safeClear(options));
+  },
+  async deleteItem(keyOrKeys, options) {
+    return unwrap(await cloudStorage.safeDeleteItem(keyOrKeys, options));
   },
   async getItem(key, options) {
     return unwrap(await cloudStorage.safeGetItem(key, options));
+  },
+  async getItems(keys, options) {
+    return unwrap(await cloudStorage.safeGetItems(keys, options));
+  },
+  async getKeys(options) {
+    return unwrap(await cloudStorage.safeGetKeys(options));
+  },
+  isSupported: () => isMethodSupported(METHOD),
+  async safeClear(options) {
+    const keys = await cloudStorage.safeGetKeys(options);
+    return keys.ok ? cloudStorage.safeDeleteItem(keys.data, options) : keys;
+  },
+  async safeDeleteItem(keyOrKeys, options) {
+    const keys = Array.isArray(keyOrKeys) ? keyOrKeys : [keyOrKeys];
+    if (!keys.length) {
+      requireMethod(METHOD);
+      return ok(undefined);
+    }
+    const result = await invoke('deleteStorageValues', { keys }, unknown(), options);
+    return result.ok ? ok(undefined) : result;
+  },
+  async safeGetItem(key, options) {
+    const result = await cloudStorage.safeGetItems([key], options);
+    return result.ok ? ok(result.data[key]) : result;
   },
   async safeGetItems(keys, options) {
     if (!keys.length) {
@@ -138,37 +163,12 @@ export const cloudStorage: CloudStorage = {
       >)
       : result;
   },
-  async getItems(keys, options) {
-    return unwrap(await cloudStorage.safeGetItems(keys, options));
-  },
   safeGetKeys: options => invoke('getStorageKeys', {}, array(string()), options),
-  async getKeys(options) {
-    return unwrap(await cloudStorage.safeGetKeys(options));
-  },
   async safeSetItem(key, value, options) {
     const result = await invoke('saveStorageValue', { key, value }, unknown(), options);
     return result.ok ? ok(undefined) : result;
   },
   async setItem(key, value, options) {
     return unwrap(await cloudStorage.safeSetItem(key, value, options));
-  },
-  async safeDeleteItem(keyOrKeys, options) {
-    const keys = Array.isArray(keyOrKeys) ? keyOrKeys : [keyOrKeys];
-    if (!keys.length) {
-      requireMethod(METHOD);
-      return ok(undefined);
-    }
-    const result = await invoke('deleteStorageValues', { keys }, unknown(), options);
-    return result.ok ? ok(undefined) : result;
-  },
-  async deleteItem(keyOrKeys, options) {
-    return unwrap(await cloudStorage.safeDeleteItem(keyOrKeys, options));
-  },
-  async safeClear(options) {
-    const keys = await cloudStorage.safeGetKeys(options);
-    return keys.ok ? cloudStorage.safeDeleteItem(keys.data, options) : keys;
-  },
-  async clear(options) {
-    return unwrap(await cloudStorage.safeClear(options));
   },
 };

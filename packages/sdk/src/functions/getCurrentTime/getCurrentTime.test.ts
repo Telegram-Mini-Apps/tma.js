@@ -26,8 +26,8 @@ describe('getCurrentTime', () => {
 
 describe('isSupported', () => {
   it.each([
-    { name: 'getCurrentTime', fn: getCurrentTime },
-    { name: 'safeGetCurrentTime', fn: safeGetCurrentTime },
+    { fn: getCurrentTime, name: 'getCurrentTime' },
+    { fn: safeGetCurrentTime, name: 'safeGetCurrentTime' },
   ])('$name should check the Mini Apps version', ({ fn }) => {
     expect(fn.isSupported()).toBe(false);
     setup({ version: '6.8' });

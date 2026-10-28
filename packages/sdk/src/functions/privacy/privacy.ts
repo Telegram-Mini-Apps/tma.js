@@ -100,28 +100,28 @@ export const requestWriteAccess = /* @__PURE__ */ throwingWithIsSupported(safeRe
  * Contact shared by the user.
  */
 export interface RequestedContact {
+  [key: string]: unknown;
+  auth_date: Date;
   contact: {
-    user_id: number;
-    phone_number: string;
+    [key: string]: unknown;
     first_name: string;
     last_name?: string;
-    [key: string]: unknown;
+    phone_number: string;
+    user_id: number;
   };
-  auth_date: Date;
   /**
    * Hash to validate the contact with the bot token, the same way as init data.
    */
   hash: string;
-  [key: string]: unknown;
 }
 
 export interface RequestedContactComplete {
+  parsed: RequestedContact;
   /**
    * Contact in the raw format, as it was received from the Telegram client. Use it to validate
    * the contact on the server.
    */
   raw: string;
-  parsed: RequestedContact;
 }
 
 export type RequestContactError =
@@ -130,13 +130,13 @@ export type RequestContactError =
   | TimeoutError;
 
 const ContactSchema: GenericSchema<unknown, RequestedContact> = looseObject({
+  auth_date: pipe(string(), transform(value => new Date(Number(value) * 1000))),
   contact: pipe(string(), parseJson(), looseObject({
-    user_id: number(),
-    phone_number: string(),
     first_name: string(),
     last_name: optional(string()),
+    phone_number: string(),
+    user_id: number(),
   })),
-  auth_date: pipe(string(), transform(value => new Date(Number(value) * 1000))),
   hash: string(),
 });
 
@@ -180,7 +180,7 @@ async function safeGetRequestedContact(
   }
   const parsed = safeParse(ContactSchema, Object.fromEntries(new URLSearchParams(raw)));
   return parsed.success
-    ? ok({ raw, parsed: parsed.output })
+    ? ok({ parsed: parsed.output, raw })
     : err(new InvalidResponseError(raw, new ValiError(parsed.issues)));
 }
 
@@ -200,7 +200,7 @@ export const safeRequestContactComplete = /* @__PURE__ */ withIsSupported(
     options: AsyncOptions = {},
   ): Promise<Result<RequestContactError, RequestedContactComplete>> {
     requireMethod('web_app_request_phone');
-    const { timeout, signal } = options;
+    const { signal, timeout } = options;
     const deadline = timeout ? Date.now() + timeout : Infinity;
     const remaining = () => (timeout ? Math.max(deadline - Date.now(), 1) : undefined);
 

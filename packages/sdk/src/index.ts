@@ -81,12 +81,8 @@ export {
   type LocationManagerState,
 } from './components/locationManager/locationManager.js';
 export { mainButton, type MainButton, type MainButtonState } from './components/mainButton/mainButton.js';
-export {
-  miniApp,
-  type AnyColor,
-  type MiniApp,
-  type MiniAppState,
-} from './components/miniApp/miniApp.js';
+export { miniApp } from './components/miniApp/miniApp.js';
+export type { AnyColor, MiniApp, MiniAppState } from './components/miniApp/types.js';
 export {
   popup,
   preparePopupParams,
@@ -128,12 +124,8 @@ export {
   type SwipeBehaviorState,
 } from './components/swipeBehavior/swipeBehavior.js';
 export { themeParams, type ThemeParamsComponent } from './components/themeParams/themeParams.js';
-export {
-  viewport,
-  type Viewport,
-  type ViewportCSSVarKey,
-  type ViewportState,
-} from './components/viewport/viewport.js';
+export { viewport } from './components/viewport/viewport.js';
+export type { Viewport, ViewportCSSVarKey, ViewportState } from './components/viewport/types.js';
 //#endregion
 
 //#region Functions.

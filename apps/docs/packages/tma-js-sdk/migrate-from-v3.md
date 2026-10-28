@@ -651,7 +651,6 @@ backButton.offClick(listener);
 
 ### Viewport
 
-- `isStable` was removed. Use `viewport.height() === viewport.stableHeight()`.
 - `safeAreaInsetTop`, `safeAreaInsetBottom`, `safeAreaInsetLeft`, `safeAreaInsetRight` and the
   same `contentSafeAreaInset*` values were removed. Use `safeAreaInsets()` and
   `contentSafeAreaInsets()`. The related CSS variables are still created by `bindCssVars`.
@@ -664,14 +663,12 @@ backButton.offClick(listener);
 import { viewport } from '@tma.js/sdk';
 
 viewport.safeAreaInsetTop();
-viewport.isStable();
 ```
 
 ```ts [After]
 import { viewport } from '@tma.js/sdk';
 
 viewport.safeAreaInsets().top;
-viewport.height() === viewport.stableHeight();
 ```
 
 :::

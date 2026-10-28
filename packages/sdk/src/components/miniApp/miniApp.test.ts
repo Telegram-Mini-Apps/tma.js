@@ -6,14 +6,14 @@ import { setup } from '../../../test/utils.js';
 import { NotMountedError, UnknownThemeParamsKeyError } from '../../errors.js';
 import { createThemeParams } from '../themeParams/themeParams.js';
 
-const theme = { bg_color: '#ffffff', secondary_bg_color: '#eeeeee', button_color: '#2481cc' } as const;
+const theme = { bg_color: '#ffffff', button_color: '#2481cc', secondary_bg_color: '#eeeeee' } as const;
 
 function mount(version?: string) {
-  const calls = setup({ version, launchParams: { tgWebAppThemeParams: theme } });
+  const calls = setup({ launchParams: { tgWebAppThemeParams: theme }, version });
   const themeParams = createThemeParams();
   const app = createMiniApp(themeParams);
   app.mount();
-  return { calls, app, themeParams };
+  return { app, calls, themeParams };
 }
 
 describe('miniApp', () => {

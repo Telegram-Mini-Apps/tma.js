@@ -11,11 +11,11 @@ export interface ShareStoryOptions {
    * Link added to the story. Only premium subscribers can post stories with links.
    */
   widgetLink?: {
-    url: string;
     /**
      * Link name, 0-48 characters.
      */
     name?: string;
+    url: string;
   };
 }
 

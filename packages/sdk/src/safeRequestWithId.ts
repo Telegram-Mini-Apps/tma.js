@@ -39,14 +39,14 @@ export async function safeRequestWithId<E extends EventName>(
   options?: AsyncOptions,
 ): Promise<Result<
   TimeoutError,
-  { failed: false; payload: EventPayload<E> } | { failed: true; error: string }
+  { failed: false; payload: EventPayload<E> } | { error: string; failed: true }
 >> {
   const { postEvent } = requireMethod(method);
   const reqId = createRequestId();
   const response = await (safeRequest as LooseRequest)(method, [failedEvent, event], {
     ...options,
-    params: { ...params, req_id: reqId },
     capture: (value: { payload: { req_id: string } }) => value.payload.req_id === reqId,
+    params: { ...params, req_id: reqId },
     postEvent,
   });
   if (!response.ok) {
@@ -54,6 +54,6 @@ export async function safeRequestWithId<E extends EventName>(
   }
   const { event: received, payload } = response.data;
   return ok(received === failedEvent
-    ? { failed: true, error: (payload as { error?: string }).error || 'UNKNOWN_ERROR' }
+    ? { error: (payload as { error?: string }).error || 'UNKNOWN_ERROR', failed: true }
     : { failed: false, payload });
 }

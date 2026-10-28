@@ -58,7 +58,7 @@ describe('onEvent / offEvent', () => {
 
   it('should isolate listener errors', () => {
     const error = vi.fn();
-    setLogger({ log: vi.fn(), warn: vi.fn(), error });
+    setLogger({ error, log: vi.fn(), warn: vi.fn() });
     const listener = vi.fn();
     onEvent('back_button_pressed', () => {
       throw new Error('oops');
@@ -179,11 +179,11 @@ describe('payload normalization', () => {
     expect(listener.mock.calls).toEqual([
       [{
         height: window.innerHeight,
-        width: window.innerWidth,
         is_expanded: true,
         is_state_stable: true,
+        width: window.innerWidth,
       }],
-      [{ height: 1, width: window.innerWidth, is_expanded: false, is_state_stable: false }],
+      [{ height: 1, is_expanded: false, is_state_stable: false, width: window.innerWidth }],
     ]);
   });
 
@@ -209,14 +209,14 @@ describe('payload normalization', () => {
 describe('payload validation', () => {
   it.each([
     ['clipboard_text_received', { data: 'text' }],
-    ['custom_method_invoked', { req_id: '1', error: 1 }],
+    ['custom_method_invoked', { error: 1, req_id: '1' }],
     ['popup_closed', { button_id: 1 }],
     ['theme_changed', { theme_params: { bg_color: 'red' } }],
     ['theme_changed', {}],
     ['viewport_changed', { height: '1', is_expanded: true, is_state_stable: true }],
   ] as const)('should drop invalid %s payload and log the error', (event, payload) => {
     const error = vi.fn();
-    setLogger({ log: vi.fn(), warn: vi.fn(), error });
+    setLogger({ error, log: vi.fn(), warn: vi.fn() });
     const listener = vi.fn();
     onEvent(event, listener);
     receive(event, payload);

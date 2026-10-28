@@ -1,7 +1,7 @@
 export interface Logger {
+  error: (...args: unknown[]) => void;
   log: (...args: unknown[]) => void;
   warn: (...args: unknown[]) => void;
-  error: (...args: unknown[]) => void;
 }
 
 const PREFIX = [
@@ -10,9 +10,9 @@ const PREFIX = [
 ];
 
 const consoleLogger: Logger = {
+  error: (...args) => console.error(...PREFIX, ...args),
   log: (...args) => console.log(...PREFIX, ...args),
   warn: (...args) => console.warn(...PREFIX, ...args),
-  error: (...args) => console.error(...PREFIX, ...args),
 };
 
 let debug = false;

@@ -59,7 +59,7 @@ export function safeInit(
   const version = launchParams.tgWebAppVersion;
   const postEvent = options.postEvent || createPostEvent(version);
   setGlobals({ launchParams, postEvent, version });
-  cleanupPrevious && cleanupPrevious();
+  cleanupPrevious?.();
 
   const cleanups: VoidFunction[] = [];
   // Telegram Web clients run mini apps in an iframe and communicate with them using these

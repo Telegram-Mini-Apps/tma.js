@@ -33,7 +33,7 @@ describe('invokeCustomMethod', () => {
   });
 
   it('should reject with InvokeCustomMethodFailedError', async () => {
-    mockProxy(req_id => emitEvent('custom_method_invoked', { req_id, error: 'ERR' }));
+    mockProxy(req_id => emitEvent('custom_method_invoked', { error: 'ERR', req_id }));
     await expect(invokeCustomMethod('getCurrentTime', {}))
       .rejects
       .toSatisfy(e => InvokeCustomMethodFailedError.is(e));
@@ -45,14 +45,14 @@ describe('safeInvokeCustomMethod', () => {
     mockProxy(req_id => emitEvent('custom_method_invoked', { req_id, result: 1 }));
     await expect(safeInvokeCustomMethod('getCurrentTime', {}))
       .resolves
-      .toEqual({ ok: true, data: 1 });
+      .toEqual({ data: 1, ok: true });
   });
 
   it('should resolve with InvokeCustomMethodFailedError', async () => {
-    mockProxy(req_id => emitEvent('custom_method_invoked', { req_id, error: 'ERR' }));
+    mockProxy(req_id => emitEvent('custom_method_invoked', { error: 'ERR', req_id }));
     await expect(safeInvokeCustomMethod('getCurrentTime', {}))
       .resolves
-      .toEqual({ ok: false, error: new InvokeCustomMethodFailedError('ERR') });
+      .toEqual({ error: new InvokeCustomMethodFailedError('ERR'), ok: false });
   });
 
   it('should resolve with TimeoutError', async () => {
@@ -60,7 +60,7 @@ describe('safeInvokeCustomMethod', () => {
     mockProxy(() => undefined);
     const promise = safeInvokeCustomMethod('getCurrentTime', {}, { timeout: 100 });
     vi.advanceTimersByTime(100);
-    await expect(promise).resolves.toEqual({ ok: false, error: new TimeoutError(100) });
+    await expect(promise).resolves.toEqual({ error: new TimeoutError(100), ok: false });
     vi.useRealTimers();
   });
 });

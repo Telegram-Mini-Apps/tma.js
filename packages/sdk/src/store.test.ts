@@ -33,7 +33,7 @@ describe('createStore', () => {
 
   it('should call other listeners if one throws', () => {
     const error = vi.fn();
-    setLogger({ log: vi.fn(), warn: vi.fn(), error });
+    setLogger({ error, log: vi.fn(), warn: vi.fn() });
     const store = createStore(1);
     const listener = vi.fn();
     store.subscribe(() => {

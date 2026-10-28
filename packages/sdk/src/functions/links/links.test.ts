@@ -27,10 +27,10 @@ describe('isTelegramHostname', () => {
 describe('openLink', () => {
   it('should open the link', () => {
     const calls = setup();
-    openLink('https://example.com', { tryInstantView: true, tryBrowser: 'chrome' });
+    openLink('https://example.com', { tryBrowser: 'chrome', tryInstantView: true });
     expect(calls).toHaveBeenCalledWith({
       name: 'web_app_open_link',
-      params: { url: 'https://example.com/', try_browser: 'chrome', try_instant_view: true },
+      params: { try_browser: 'chrome', try_instant_view: true, url: 'https://example.com/' },
     });
   });
 
@@ -47,7 +47,7 @@ describe('openTelegramLink', () => {
     openTelegramLink('https://t.me/heyqbnk?start=1', { forceRequest: true });
     expect(calls).toHaveBeenCalledWith({
       name: 'web_app_open_tg_link',
-      params: { path_full: '/heyqbnk?start=1', force_request: true },
+      params: { force_request: true, path_full: '/heyqbnk?start=1' },
     });
   });
 
@@ -93,11 +93,11 @@ describe('shareURL', () => {
 
 describe('isSupported', () => {
   it.each([
-    { name: 'openLink', fn: openLink },
-    { name: 'safeOpenLink', fn: safeOpenLink },
-    { name: 'openTelegramLink', fn: openTelegramLink },
-    { name: 'safeOpenTelegramLink', fn: safeOpenTelegramLink },
-    { name: 'shareURL', fn: shareURL },
+    { fn: openLink, name: 'openLink' },
+    { fn: safeOpenLink, name: 'safeOpenLink' },
+    { fn: openTelegramLink, name: 'openTelegramLink' },
+    { fn: safeOpenTelegramLink, name: 'safeOpenTelegramLink' },
+    { fn: shareURL, name: 'shareURL' },
   ])(
     '$name should check if the SDK is initialized',
     ({ fn }) => {
@@ -110,8 +110,8 @@ describe('isSupported', () => {
 
 describe('supports', () => {
   it.each([
-    { name: 'openLink', fn: openLink },
-    { name: 'safeOpenLink', fn: safeOpenLink },
+    { fn: openLink, name: 'openLink' },
+    { fn: safeOpenLink, name: 'safeOpenLink' },
   ])('$name should check the options support', ({ fn }) => {
     expect(fn.supports('tryInstantView')).toBe(false);
     setup({ version: '6.3' });

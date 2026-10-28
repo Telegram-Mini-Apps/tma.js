@@ -9,14 +9,14 @@ describe('shareStory', () => {
     const calls = setup();
     shareStory('https://example.com/a.png', {
       text: 't',
-      widgetLink: { url: 'https://t.me', name: 'n' },
+      widgetLink: { name: 'n', url: 'https://t.me' },
     });
     expect(calls).toHaveBeenCalledWith({
       name: 'web_app_share_to_story',
       params: {
         media_url: 'https://example.com/a.png',
         text: 't',
-        widget_link: { url: 'https://t.me', name: 'n' },
+        widget_link: { name: 'n', url: 'https://t.me' },
       },
     });
   });

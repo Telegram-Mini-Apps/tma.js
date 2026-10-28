@@ -19,7 +19,7 @@ describe('deviceStorage', () => {
     setup({
       onMethod: respond('web_app_device_storage_clear', 'device_storage_failed', (
         params: { req_id: string },
-      ) => ({ req_id: params.req_id, error: 'FAILED' })),
+      ) => ({ error: 'FAILED', req_id: params.req_id })),
     });
     const result = await deviceStorage.safeClear();
     expect(!result.ok && DeviceStorageMethodError.is(result.error) && result.error.data)

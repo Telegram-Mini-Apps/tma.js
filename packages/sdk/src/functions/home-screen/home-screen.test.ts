@@ -51,9 +51,9 @@ describe('checkHomeScreenStatus', () => {
 
 describe('isSupported', () => {
   it.each([
-    { name: 'addToHomeScreen', fn: addToHomeScreen, supported: '8.0', unsupported: '7.10' },
-    { name: 'checkHomeScreenStatus', fn: checkHomeScreenStatus, supported: '8.0', unsupported: '7.10' },
-    { name: 'safeCheckHomeScreenStatus', fn: safeCheckHomeScreenStatus, supported: '8.0', unsupported: '7.10' },
+    { fn: addToHomeScreen, name: 'addToHomeScreen', supported: '8.0', unsupported: '7.10' },
+    { fn: checkHomeScreenStatus, name: 'checkHomeScreenStatus', supported: '8.0', unsupported: '7.10' },
+    { fn: safeCheckHomeScreenStatus, name: 'safeCheckHomeScreenStatus', supported: '8.0', unsupported: '7.10' },
   ])('$name should check the Mini Apps version', ({ fn, supported, unsupported }) => {
     expect(fn.isSupported()).toBe(false);
     setup({ version: unsupported });

@@ -10,6 +10,13 @@ export interface BackButtonState {
  */
 export interface BackButton extends ButtonComponent<BackButtonState> {
   /**
+   * Hides the button.
+   * @throws {NotInitializedError} The SDK is not initialized.
+   * @throws {MethodUnsupportedError} The button is unsupported.
+   * @throws {NotMountedError} The button is not mounted.
+   */
+  hide: () => void;
+  /**
    * True if the button is visible.
    */
   isVisible: Computed<boolean>;
@@ -20,31 +27,24 @@ export interface BackButton extends ButtonComponent<BackButtonState> {
    * @throws {NotMountedError} The button is not mounted.
    */
   show: () => void;
-  /**
-   * Hides the button.
-   * @throws {NotInitializedError} The SDK is not initialized.
-   * @throws {MethodUnsupportedError} The button is unsupported.
-   * @throws {NotMountedError} The button is not mounted.
-   */
-  hide: () => void;
 }
 
 /**
  * @internal
  */
 export function createBackButton(): BackButton {
-  const { core, setter, component } = createButton({
-    name: 'backButton',
-    method: 'web_app_setup_back_button',
+  const { component, core, setter } = createButton({
     clickEvent: 'back_button_pressed',
     initialState: { isVisible: false },
+    method: 'web_app_setup_back_button',
+    name: 'backButton',
     toParams: state => ({ is_visible: state.isVisible }),
   });
   return {
     ...component,
+    hide: setter('isVisible', false),
     isVisible: computedPick(core.state, 'isVisible'),
     show: setter('isVisible', true),
-    hide: setter('isVisible', false),
   };
 }
 

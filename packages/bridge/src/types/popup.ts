@@ -3,17 +3,17 @@
  */
 export interface PopupParams {
   /**
-   * The text to be displayed in the popup title, 0-64 characters.
+   * List of buttons to be displayed in the popup, 1-3 buttons.
    */
-  title: string;
+  buttons: PopupButton[];
   /**
    * The message to be displayed in the body of the popup, 1-256 characters.
    */
   message: string;
   /**
-   * List of buttons to be displayed in the popup, 1-3 buttons.
+   * The text to be displayed in the popup title, 0-64 characters.
    */
-  buttons: PopupButton[];
+  title: string;
 }
 
 /**
@@ -27,16 +27,16 @@ export type PopupButton = {
   id: string;
 } & ({
   /**
+   * The text to be displayed on the button, 0-64 characters.
+   */
+  text: string;
+  /**
    * Type of the button:
    * - `default`, a button with the default style;
    * - `destructive`, a button with a style that indicates a destructive
    * action (e.g. "Remove", "Delete", etc.).
    */
   type: 'default' | 'destructive';
-  /**
-   * The text to be displayed on the button, 0-64 characters.
-   */
-  text: string;
 } | {
   /**
    * Type of the button:

@@ -5,14 +5,14 @@ import type { Computed } from './store.js';
  */
 export interface AsyncOptions {
   /**
+   * Signal to abort the operation. When aborted, the function is rejected with `signal.reason`.
+   */
+  signal?: AbortSignal;
+  /**
    * Time in milliseconds to wait for the operation to complete. When reached, the function
    * returns `TimeoutError`.
    */
   timeout?: number;
-  /**
-   * Signal to abort the operation. When aborted, the function is rejected with `signal.reason`.
-   */
-  signal?: AbortSignal;
 }
 
 /**

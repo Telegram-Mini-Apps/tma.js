@@ -60,8 +60,8 @@ describe('validate', () => {
       const error = await validate(INIT_DATA, BOT_TOKEN, { expiresIn: 10 }).catch(e => e);
       expect(error).toBeInstanceOf(ExpiredError);
       expect((error as ExpiredError).data).toEqual({
-        issuedAt: new Date(AUTH_DATE),
         expiresAt: new Date(AUTH_DATE + 10000),
+        issuedAt: new Date(AUTH_DATE),
         now: new Date(AUTH_DATE + 11000),
       });
     } finally {
@@ -95,17 +95,17 @@ describe('validate', () => {
 describe('safeValidate', () => {
   it('should return parsed init data if it is valid', async () => {
     await expect(safeValidate(INIT_DATA, BOT_TOKEN, NO_EXPIRATION))
-      .resolves.toEqual({ ok: true, data: parse(INIT_DATA) });
+      .resolves.toEqual({ data: parse(INIT_DATA), ok: true });
   });
 
   it('should return the error instead of throwing it', async () => {
     await expect(safeValidate('auth_date=1', BOT_TOKEN)).resolves.toEqual({
-      ok: false,
       error: new SignatureMissingError('hash'),
+      ok: false,
     });
     await expect(safeValidate(INIT_DATA, `${BOT_TOKEN}A`, NO_EXPIRATION)).resolves.toEqual({
-      ok: false,
       error: new SignatureInvalidError(),
+      ok: false,
     });
   });
 
@@ -187,17 +187,17 @@ describe('validate3rd', () => {
 describe('safeValidate3rd', () => {
   it('should return parsed init data if it is valid', async () => {
     await expect(safeValidate3rd(INIT_DATA, BOT_ID, NO_EXPIRATION))
-      .resolves.toEqual({ ok: true, data: parse(INIT_DATA) });
+      .resolves.toEqual({ data: parse(INIT_DATA), ok: true });
   });
 
   it('should return the error instead of throwing it', async () => {
     await expect(safeValidate3rd(INIT_DATA, BOT_ID + 1, NO_EXPIRATION)).resolves.toEqual({
-      ok: false,
       error: new SignatureInvalidError(),
+      ok: false,
     });
     await expect(safeValidate3rd('auth_date=1', BOT_ID)).resolves.toEqual({
-      ok: false,
       error: new SignatureMissingError('signature'),
+      ok: false,
     });
   });
 });

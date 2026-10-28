@@ -37,8 +37,8 @@ describe('requestChat', () => {
 
 describe('isSupported', () => {
   it.each([
-    { name: 'requestChat', fn: requestChat },
-    { name: 'safeRequestChat', fn: safeRequestChat },
+    { fn: requestChat, name: 'requestChat' },
+    { fn: safeRequestChat, name: 'safeRequestChat' },
   ])('$name should check the Mini Apps version', ({ fn }) => {
     expect(fn.isSupported()).toBe(false);
     setup({ version: '9.5' });

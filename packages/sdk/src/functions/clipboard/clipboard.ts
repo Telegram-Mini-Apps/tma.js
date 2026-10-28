@@ -59,7 +59,7 @@ export const safeReadTextFromClipboard = /* @__PURE__ */ withIsSupported(
     const response = await safeRequest(
       'web_app_read_text_from_clipboard',
       'clipboard_text_received',
-      { ...options, params: { req_id: reqId }, capture: captureSameReq(reqId), postEvent },
+      { ...options, capture: captureSameReq(reqId), params: { req_id: reqId }, postEvent },
     );
     return response.ok ? ok(response.data.data ?? null) : response;
   },

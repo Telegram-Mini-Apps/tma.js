@@ -19,19 +19,19 @@ describe('serverless', () => {
     const fetch = mockFetch({ ok: true, result: { a: 1 } });
     await expect(serverless.call('getData', { b: 2 })).resolves.toEqual({ a: 1 });
     expect(fetch).toHaveBeenCalledWith('/api/getData', expect.objectContaining({
-      method: 'POST',
       body: '{"b":2}',
       headers: { Authorization: `TMA ${btoa('query')}`, 'Content-Type': 'application/json' },
+      method: 'POST',
     }));
   });
 
   it('should return ServerlessError if the endpoint failed', async () => {
     setup({ launchParams: { tgWebAppData: 'query' } });
-    mockFetch({ ok: false, description: 'Oops', error_code: 400, error_type: 'ENDPOINT_ERROR' });
+    mockFetch({ description: 'Oops', error_code: 400, error_type: 'ENDPOINT_ERROR', ok: false });
     const result = await serverless.safeCall('getData');
     const error = !result.ok && ServerlessError.is(result.error) && result.error;
     expect(error && [error.message, error.data])
-      .toEqual(['Oops', { status: 400, type: 'ENDPOINT_ERROR', parameters: undefined }]);
+      .toEqual(['Oops', { parameters: undefined, status: 400, type: 'ENDPOINT_ERROR' }]);
   });
 
   it('should return ServerlessError for unexpected responses and network errors', async () => {

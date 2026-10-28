@@ -125,6 +125,16 @@ In directories holding many modules, like `components` and `functions` in `@tma.
 lives in its own folder named after it, together with its tests: `components/backButton/backButton.ts` and
 `components/backButton/backButton.test.ts`. Such folders have no `index.ts` files.
 
+## Object Keys Order
+
+Keys in object literals, interfaces and object types are sorted alphabetically. ESLint enforces it
+with [eslint-plugin-perfectionist](https://perfectionist.dev/), and `pnpm run packages:lint:fix`
+sorts them for you. Spread elements split an object into groups sorted separately, so keys are
+never moved across a spread.
+
+When the order matters, for example, it defines a serialized message or a query string, keep it and
+disable the rule on that line with a comment explaining why.
+
 ## Valibot Schemas
 
 [Valibot](https://valibot.dev/) schema names start with a capital letter and end with `Schema`:

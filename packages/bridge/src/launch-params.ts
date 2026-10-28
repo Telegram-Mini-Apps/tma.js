@@ -191,27 +191,27 @@ export function saveLaunchParams(value: string): void {
 /**
  * Retrieves launch parameters from any known source and saves them in the session storage.
  */
-function retrieve(): Result<LaunchParamsRetrieveError, { raw: string; parsed: LaunchParams }> {
-  const errors: { source: string; error: unknown }[] = [];
+function retrieve(): Result<LaunchParamsRetrieveError, { parsed: LaunchParams; raw: string }> {
+  const errors: { error: unknown; source: string }[] = [];
   for (const [source, retrieveSource] of sources) {
     let raw: string | null | undefined;
     try {
       raw = retrieveSource();
     } catch (error) {
-      errors.push({ source, error });
+      errors.push({ error, source });
       continue;
     }
     if (!raw) {
-      errors.push({ source, error: new Error('Source is empty') });
+      errors.push({ error: new Error('Source is empty'), source });
       continue;
     }
     const parsed = safeParseLaunchParams(raw);
     if (!parsed.ok) {
-      errors.push({ source, error: parsed.error });
+      errors.push({ error: parsed.error, source });
       continue;
     }
     saveLaunchParams(raw);
-    return ok({ raw, parsed: parsed.data });
+    return ok({ parsed: parsed.data, raw });
   }
   return err(new LaunchParamsRetrieveError(errors));
 }

@@ -15,7 +15,7 @@ describe('downloadFile', () => {
     await expect(downloadFile('https://example.com/a.txt', 'a.txt')).resolves.toBeUndefined();
     expect(calls).toHaveBeenCalledWith({
       name: 'web_app_request_file_download',
-      params: { url: 'https://example.com/a.txt', file_name: 'a.txt' },
+      params: { file_name: 'a.txt', url: 'https://example.com/a.txt' },
     });
   });
 
@@ -46,8 +46,8 @@ describe('downloadFile', () => {
 
 describe('isSupported', () => {
   it.each([
-    { name: 'downloadFile', fn: downloadFile },
-    { name: 'safeDownloadFile', fn: safeDownloadFile },
+    { fn: downloadFile, name: 'downloadFile' },
+    { fn: safeDownloadFile, name: 'safeDownloadFile' },
   ])('$name should check the Mini Apps version', ({ fn }) => {
     expect(fn.isSupported()).toBe(false);
     setup({ version: '7.10' });

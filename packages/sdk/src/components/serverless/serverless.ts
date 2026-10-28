@@ -17,6 +17,12 @@ export type ServerlessCallError = InvalidArgumentsError | ServerlessError;
  */
 export interface Serverless {
   /**
+   * Throwing version of `safeCall`.
+   * @throws {InvalidArgumentsError} The input is not an object.
+   * @throws {ServerlessError} The endpoint failed or the request could not be completed.
+   */
+  call: <T = unknown>(name: string, input?: object, options?: ServerlessCallOptions) => Promise<T>;
+  /**
    * Calls the endpoint with the specified name. Init data is passed in the `Authorization`
    * header, so the endpoint knows the user.
    * @param name - endpoint name.
@@ -34,21 +40,15 @@ export interface Serverless {
     input?: object,
     options?: ServerlessCallOptions,
   ) => Promise<Result<ServerlessCallError, T>>;
-  /**
-   * Throwing version of `safeCall`.
-   * @throws {InvalidArgumentsError} The input is not an object.
-   * @throws {ServerlessError} The endpoint failed or the request could not be completed.
-   */
-  call: <T = unknown>(name: string, input?: object, options?: ServerlessCallOptions) => Promise<T>;
 }
 
 interface Envelope {
-  ok: boolean;
-  result?: unknown;
   description?: string;
   error_code?: number;
   error_type?: string;
+  ok: boolean;
   parameters?: unknown;
+  result?: unknown;
 }
 
 async function parseResponse(
@@ -73,9 +73,9 @@ async function parseResponse(
     : err(new ServerlessError(
       envelope.description || `Endpoint ${name} failed (HTTP ${response.status})`,
       {
+        parameters: envelope.parameters,
         status: envelope.error_code || response.status,
         type: envelope.error_type || undefined,
-        parameters: envelope.parameters,
       },
     ));
 }
@@ -84,6 +84,9 @@ async function parseResponse(
  * Endpoints deployed with Telegram serverless functions.
  */
 export const serverless: Serverless = {
+  async call(name, input, options) {
+    return unwrap(await serverless.safeCall(name, input, options));
+  },
   async safeCall(name, input = {}, { signal } = {}) {
     const initData = getGlobals().launchParams.tgWebAppData;
     if (!initData) {
@@ -95,13 +98,13 @@ export const serverless: Serverless = {
     let response: Response;
     try {
       response = await fetch(`/api/${name}`, {
-        method: 'POST',
+        body: JSON.stringify(input),
+        credentials: 'omit',
         headers: {
           Authorization: `TMA ${btoa(initData)}`,
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(input),
-        credentials: 'omit',
+        method: 'POST',
         signal,
       });
     } catch (e) {
@@ -115,8 +118,5 @@ export const serverless: Serverless = {
       ));
     }
     return parseResponse(name, response);
-  },
-  async call(name, input, options) {
-    return unwrap(await serverless.safeCall(name, input, options));
   },
 };

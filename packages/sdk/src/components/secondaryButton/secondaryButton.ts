@@ -2,7 +2,8 @@ import type { SecondaryButtonPosition } from '@tma.js/bridge';
 
 import { type BottomButton, type BottomButtonState, createBottomButton } from '../../createBottomButton.js';
 import { type Computed, computedPick } from '../../store.js';
-import { type MiniApp, miniApp as defaultMiniApp } from '../miniApp/miniApp.js';
+import { miniApp as defaultMiniApp } from '../miniApp/miniApp.js';
+import type { MiniApp } from '../miniApp/types.js';
 import { themeParams as defaultThemeParams, type ThemeParamsComponent } from '../themeParams/themeParams.js';
 
 export interface SecondaryButtonState extends BottomButtonState {
@@ -33,10 +34,10 @@ export function createSecondaryButton(
   theme: ThemeParamsComponent = defaultThemeParams,
   app: MiniApp = defaultMiniApp,
 ): SecondaryButton {
-  const { core, setState, component } = createBottomButton<SecondaryButtonState>({
-    name: 'secondaryButton',
-    method: 'web_app_setup_secondary_button',
+  const { component, core, setState } = createBottomButton<SecondaryButtonState>({
     clickEvent: 'secondary_button_pressed',
+    defaultBgColor: () => app.bottomBarColorRgb() || theme.secondaryBgColor() || '#ffffff',
+    defaultTextColor: () => theme.buttonColor() || '#2481cc',
     initialState: {
       hasShineEffect: false,
       isEnabled: true,
@@ -45,8 +46,8 @@ export function createSecondaryButton(
       position: 'left',
       text: 'Cancel',
     },
-    defaultBgColor: () => app.bottomBarColorRgb() || theme.secondaryBgColor() || '#ffffff',
-    defaultTextColor: () => theme.buttonColor() || '#2481cc',
+    method: 'web_app_setup_secondary_button',
+    name: 'secondaryButton',
     sources: [theme.state.subscribe, app.bottomBarColorRgb.subscribe],
     toParams: state => ({ position: state.position }),
   });

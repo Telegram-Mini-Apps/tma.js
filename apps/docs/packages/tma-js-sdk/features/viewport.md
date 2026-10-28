@@ -72,10 +72,11 @@ viewport.height(); // number
 viewport.stableHeight(); // number
 viewport.width(); // number
 viewport.isExpanded(); // boolean
+viewport.isStable(); // boolean
 ```
 
 `height` changes while the user is dragging the mini app, and `stableHeight` is the height in the
-last stable viewport state. To learn more about the difference between them, visit the
+last stable viewport state. `isStable` is `true` if the viewport is currently in a stable state. To learn more about the difference between them, visit the
 [Viewport](../../../platform/viewport.md) page.
 
 ## Expanding
@@ -157,6 +158,7 @@ viewport.state();
 //   height: 675,
 //   isExpanded: true,
 //   isFullscreen: false,
+//   isStable: true,
 //   safeAreaInsets: { top: 0, bottom: 0, left: 0, right: 0 },
 //   stableHeight: 675,
 //   width: 320,

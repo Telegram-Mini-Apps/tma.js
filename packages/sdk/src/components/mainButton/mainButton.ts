@@ -10,9 +10,9 @@ export type MainButton = BottomButton<MainButtonState>;
  */
 export function createMainButton(theme: ThemeParamsComponent = defaultThemeParams): MainButton {
   return createBottomButton<MainButtonState>({
-    name: 'mainButton',
-    method: 'web_app_setup_main_button',
     clickEvent: 'main_button_pressed',
+    defaultBgColor: () => theme.buttonColor() || '#2481cc',
+    defaultTextColor: () => theme.buttonTextColor() || '#ffffff',
     initialState: {
       hasShineEffect: false,
       isEnabled: true,
@@ -20,8 +20,8 @@ export function createMainButton(theme: ThemeParamsComponent = defaultThemeParam
       isVisible: false,
       text: 'Continue',
     },
-    defaultBgColor: () => theme.buttonColor() || '#2481cc',
-    defaultTextColor: () => theme.buttonTextColor() || '#ffffff',
+    method: 'web_app_setup_main_button',
+    name: 'mainButton',
     sources: [theme.state.subscribe],
   }).component;
 }

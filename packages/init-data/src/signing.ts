@@ -39,7 +39,7 @@ async function importHmacKey(raw: BufferSource): Promise<CryptoKey> {
   return crypto.subtle.importKey(
     'raw',
     raw,
-    { name: 'HMAC', hash: 'SHA-256' },
+    { hash: 'SHA-256', name: 'HMAC' },
     false,
     ['sign', 'verify'],
   );
