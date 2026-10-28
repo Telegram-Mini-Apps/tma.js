@@ -33,6 +33,11 @@ export interface ButtonComponent<S> extends StatefulComponent<S>, MountableCompo
    */
   mount: () => void;
   /**
+   * Removes a button click listener.
+   * @param listener - listener to remove.
+   */
+  offClick: (listener: VoidFunction) => void;
+  /**
    * Adds a button click listener.
    * @param listener - listener to add.
    * @param options - additional options.
@@ -44,34 +49,29 @@ export interface ButtonComponent<S> extends StatefulComponent<S>, MountableCompo
    * });
    */
   onClick: (listener: VoidFunction, options?: OnOptions) => VoidFunction;
-  /**
-   * Removes a button click listener.
-   * @param listener - listener to remove.
-   */
-  offClick: (listener: VoidFunction) => void;
 }
 
 export interface CreateButtonOptions<S extends object, M extends MethodName> {
-  name: string;
-  method: M;
   clickEvent: ButtonClickEvent;
   initialState: S;
-  /**
-   * @returns Method parameters reflecting the state.
-   */
-  toParams: (state: S) => MethodParams<M>;
+  method: M;
+  name: string;
   /**
    * Additional changes sources the button depends on.
    */
   sources?: SubscribeFn[];
+  /**
+   * @returns Method parameters reflecting the state.
+   */
+  toParams: (state: S) => MethodParams<M>;
 }
 
 export interface Button<S extends object> {
-  core: ComponentCore<S>;
   /**
    * Public API shared by all buttons.
    */
   component: ButtonComponent<S>;
+  core: ComponentCore<S>;
   /**
    * Updates the button state. Undefined values are ignored.
    * @throws {NotInitializedError} The SDK is not initialized.
@@ -100,12 +100,12 @@ export function removeUndefined<T extends object>(value: T): T {
  * @internal
  */
 export function createButton<S extends object, M extends MethodName>({
-  name,
-  method,
   clickEvent,
   initialState,
-  toParams,
+  method,
+  name,
   sources = [],
+  toParams,
 }: CreateButtonOptions<S, M>): Button<S> {
   const core = createComponentCore(name, initialState, ...sources);
   const setState = (update: Partial<S>) => {
@@ -121,24 +121,24 @@ export function createButton<S extends object, M extends MethodName>({
   };
 
   return {
-    core,
-    setState,
-    setter: (key, value) => () => setState({ [key]: value } as unknown as Partial<S>),
     component: {
-      isSupported: () => isMethodSupported(method),
       isMounted: computedFromStore(core.mounted),
-      state: computedFromStore(core.state),
+      isSupported: () => isMethodSupported(method),
       mount() {
         requireMethod(method);
         core.mount();
       },
-      unmount() {
-        core.unmount();
-      },
-      onClick: (listener, options) => onEvent(clickEvent, listener, options),
       offClick(listener) {
         offEvent(clickEvent, listener);
       },
+      onClick: (listener, options) => onEvent(clickEvent, listener, options),
+      state: computedFromStore(core.state),
+      unmount() {
+        core.unmount();
+      },
     },
+    core,
+    setState,
+    setter: (key, value) => () => setState({ [key]: value } as unknown as Partial<S>),
   };
 }

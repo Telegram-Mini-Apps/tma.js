@@ -10,8 +10,8 @@ it('should trigger haptic feedback', () => {
   hapticFeedback.notificationOccurred('error');
   hapticFeedback.selectionChanged();
   expect(calls.mock.calls.map(([call]) => call.params)).toEqual([
-    { type: 'impact', impact_style: 'heavy' },
-    { type: 'notification', notification_type: 'error' },
+    { impact_style: 'heavy', type: 'impact' },
+    { notification_type: 'error', type: 'notification' },
     { type: 'selection_change' },
   ]);
 });

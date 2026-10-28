@@ -9,6 +9,16 @@ import { getLogger } from '@tma.js/bridge';
 export type SubscribeFn = (listener: VoidFunction) => VoidFunction;
 
 /**
+ * Deeply readonly version of a type. Values returned by stores are frozen, so mutating them
+ * throws an error.
+ */
+export type DeepReadonly<T> = T extends Date | ((...args: any[]) => any)
+  ? T
+  : T extends object
+    ? { readonly [K in keyof T]: DeepReadonly<T[K]> }
+    : T;
+
+/**
  * Value computed from other values. Call it to get the current value, or subscribe to its
  * changes.
  * @example
@@ -19,9 +29,9 @@ export type SubscribeFn = (listener: VoidFunction) => VoidFunction;
  */
 export interface Computed<T> {
   /**
-   * @returns The current value.
+   * @returns The current value. It is frozen, so it can't be mutated.
    */
-  (): T;
+  (): DeepReadonly<T>;
   /**
    * Subscribes to the value changes. Listeners are called only if the value has changed, which
    * is checked using `Object.is`. Unlike Svelte stores, the listener is not called on subscribe.
@@ -30,12 +40,15 @@ export interface Computed<T> {
    * @param listener - function to call with the next and the previous values.
    * @returns Function removing the listener.
    */
-  subscribe: (listener: (next: T, prev: T) => void) => VoidFunction;
+  subscribe: (
+    listener: (next: DeepReadonly<T>, prev: DeepReadonly<T>) => void,
+  ) => VoidFunction;
 }
 
 export interface Store<T> {
   /**
-   * @returns The current value. The same reference is returned until the value changes.
+   * @returns The current value. The same reference is returned until the value changes. Plain
+   * objects and arrays are frozen.
    */
   get: () => T;
   /**
@@ -63,6 +76,38 @@ export function shallowEqual(a: object, b: object): boolean {
     });
 }
 
+function isPlainObject(value: unknown): value is Record<string, unknown> {
+  if (typeof value !== 'object' || value === null) {
+    return false;
+  }
+  const proto = Object.getPrototypeOf(value) as unknown;
+  return proto === Object.prototype || proto === null;
+}
+
+/**
+ * @returns Deeply frozen copy of the value. Only plain objects and arrays are copied and frozen,
+ * frozen ones are returned as is. This way, objects passed by other code, e.g. event payloads,
+ * stay mutable, and nested values keep their references when the containing object is updated.
+ * @param value - value to freeze.
+ * @internal
+ */
+export function deepFreeze<T>(value: T): T {
+  if (Object.isFrozen(value)) {
+    return value;
+  }
+  if (Array.isArray(value)) {
+    return Object.freeze(value.map(deepFreeze)) as T;
+  }
+  if (isPlainObject(value)) {
+    const copy: Record<string, unknown> = {};
+    Object.keys(value).forEach(key => {
+      copy[key] = deepFreeze(value[key]);
+    });
+    return Object.freeze(copy) as T;
+  }
+  return value;
+}
+
 /**
  * Calls the listeners with the arguments. Errors thrown by listeners are logged, so they don't
  * prevent other listeners from being called.
@@ -88,7 +133,7 @@ export function createStore<T>(
   initialValue: T,
   equals: (a: T, b: T) => boolean = Object.is,
 ): Store<T> {
-  let value = initialValue;
+  let value = deepFreeze(initialValue);
   const listeners = new Set<VoidFunction>();
 
   return {
@@ -97,7 +142,7 @@ export function createStore<T>(
       if (equals(value, next)) {
         return;
       }
-      value = next;
+      value = deepFreeze(next);
       notify(listeners);
     },
     subscribe(listener) {
@@ -144,6 +189,7 @@ export function combineSubscribe(...sources: SubscribeFn[]): SubscribeFn {
 /**
  * Creates a computed value. It is subscribed to the sources only while it has listeners.
  * @param get - function computing the value. It must return the same value until it changes.
+ * Objects must be taken from stores, so they are frozen.
  * @param sources - functions subscribing to changes of values the computed value depends on.
  * @internal
  */
@@ -176,7 +222,7 @@ export function computed<T>(get: () => T, ...sources: SubscribeFn[]): Computed<T
         }
       };
     },
-  });
+  }) as Computed<T>;
 }
 
 /**

@@ -7,28 +7,28 @@ import type { AsyncOptions } from '../../types.js';
 
 export interface QrScannerOpenOptions extends AsyncOptions {
   /**
-   * Text displayed under the scanner, 0-64 characters.
-   */
-  text?: string;
-  /**
    * Function called whenever a QR code is scanned. The scanner stays opened, call `close` to
    * close it.
    * @param qr - scanned QR code content.
    */
   onCaptured: (qr: string) => void;
-}
-
-export interface QrScannerCaptureOptions extends AsyncOptions {
   /**
    * Text displayed under the scanner, 0-64 characters.
    */
   text?: string;
+}
+
+export interface QrScannerCaptureOptions extends AsyncOptions {
   /**
    * @returns True if the scanned QR code should be captured. When it happens, the scanner is
    * closed. By default, the first scanned QR code is captured.
    * @param qr - scanned QR code content.
    */
   capture?: (qr: string) => boolean;
+  /**
+   * Text displayed under the scanner, 0-64 characters.
+   */
+  text?: string;
 }
 
 /**
@@ -42,27 +42,24 @@ export interface QrScannerCaptureOptions extends AsyncOptions {
  */
 export interface QrScanner {
   /**
-   * @returns True if the SDK is initialized and the scanner is supported.
+   * Throwing version of `safeCapture`.
+   * @throws {TimeoutError} Nothing was captured in time.
    */
-  isSupported: () => boolean;
+  capture: (options?: QrScannerCaptureOptions) => Promise<string | undefined>;
+  /**
+   * Closes the scanner.
+   * @throws {NotInitializedError} The SDK is not initialized.
+   * @throws {MethodUnsupportedError} The scanner is unsupported.
+   */
+  close: () => void;
   /**
    * True if the scanner is opened.
    */
   isOpened: Computed<boolean>;
   /**
-   * Opens the scanner and waits until it is closed.
-   * @param options - additional options.
-   * @returns `TimeoutError` if the scanner was not closed in time.
-   * @example
-   * await qrScanner.open({
-   *   onCaptured(qr) {
-   *     if (isValid(qr)) {
-   *       qrScanner.close();
-   *     }
-   *   },
-   * });
+   * @returns True if the SDK is initialized and the scanner is supported.
    */
-  safeOpen: (options: QrScannerOpenOptions) => Promise<Result<TimeoutError, void>>;
+  isSupported: () => boolean;
   /**
    * Throwing version of `safeOpen`.
    * @throws {TimeoutError} The scanner was not closed in time.
@@ -80,16 +77,19 @@ export interface QrScanner {
     options?: QrScannerCaptureOptions,
   ) => Promise<Result<TimeoutError, string | undefined>>;
   /**
-   * Throwing version of `safeCapture`.
-   * @throws {TimeoutError} Nothing was captured in time.
+   * Opens the scanner and waits until it is closed.
+   * @param options - additional options.
+   * @returns `TimeoutError` if the scanner was not closed in time.
+   * @example
+   * await qrScanner.open({
+   *   onCaptured(qr) {
+   *     if (isValid(qr)) {
+   *       qrScanner.close();
+   *     }
+   *   },
+   * });
    */
-  capture: (options?: QrScannerCaptureOptions) => Promise<string | undefined>;
-  /**
-   * Closes the scanner.
-   * @throws {NotInitializedError} The SDK is not initialized.
-   * @throws {MethodUnsupportedError} The scanner is unsupported.
-   */
-  close: () => void;
+  safeOpen: (options: QrScannerOpenOptions) => Promise<Result<TimeoutError, void>>;
 }
 
 /**
@@ -103,7 +103,7 @@ export function createQrScanner(): QrScanner {
     isOpened.set(false);
   };
 
-  const safeOpen: QrScanner['safeOpen'] = async ({ text, onCaptured, timeout, signal }) => {
+  const safeOpen: QrScanner['safeOpen'] = async ({ onCaptured, signal, text, timeout }) => {
     const { postEvent } = requireMethod('web_app_open_scan_qr_popup');
     if (isOpened.get()) {
       throw new ConcurrentCallError('The QR scanner is already opened');
@@ -171,13 +171,13 @@ export function createQrScanner(): QrScanner {
   };
 
   return {
-    isSupported: () => isMethodSupported('web_app_open_scan_qr_popup'),
-    isOpened: computedFromStore(isOpened),
-    safeOpen,
-    open: throwing(safeOpen),
-    safeCapture,
     capture: throwing(safeCapture),
     close,
+    isOpened: computedFromStore(isOpened),
+    isSupported: () => isMethodSupported('web_app_open_scan_qr_popup'),
+    open: throwing(safeOpen),
+    safeCapture,
+    safeOpen,
   };
 }
 

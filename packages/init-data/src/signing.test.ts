@@ -40,8 +40,8 @@ describe('createSecretKey', () => {
 describe('sign', () => {
   const data = {
     query_id: 'q',
-    user: { id: 1, first_name: 'Pavel', is_premium: true },
     start_param: 'debug',
+    user: { first_name: 'Pavel', id: 1, is_premium: true },
   };
 
   it('should create init data valid for the token', async () => {

@@ -27,16 +27,16 @@ export type PopupShowButton = {
 } & (
   | {
     /**
+     * Button text, 1-64 characters.
+     */
+    text: string;
+    /**
      * Button type:
      * - `default`, a button with the default style;
      * - `destructive`, a button with a style indicating a destructive action, e.g. "Delete".
      * @default "default"
      */
     type?: 'default' | 'destructive';
-    /**
-     * Button text, 1-64 characters.
-     */
-    text: string;
   }
   | {
     /**
@@ -51,19 +51,19 @@ export type PopupShowButton = {
  */
 export interface PopupShowOptions extends AsyncOptions {
   /**
-   * Popup title, 0-64 characters.
-   * @default ""
+   * Popup buttons, 1-3 buttons.
+   * @default [{ type: 'close' }]
    */
-  title?: string;
+  buttons?: PopupShowButton[];
   /**
    * Popup message, 1-256 characters.
    */
   message: string;
   /**
-   * Popup buttons, 1-3 buttons.
-   * @default [{ type: 'close' }]
+   * Popup title, 0-64 characters.
+   * @default ""
    */
-  buttons?: PopupShowButton[];
+  title?: string;
 }
 
 /**
@@ -71,13 +71,13 @@ export interface PopupShowOptions extends AsyncOptions {
  */
 export interface Popup {
   /**
-   * @returns True if the SDK is initialized and popups are supported.
-   */
-  isSupported: () => boolean;
-  /**
    * True if a popup is opened.
    */
   isOpened: Computed<boolean>;
+  /**
+   * @returns True if the SDK is initialized and popups are supported.
+   */
+  isSupported: () => boolean;
   /**
    * Shows a native popup and waits until it is closed.
    * @param options - popup parameters and additional options.
@@ -140,14 +140,14 @@ export function preparePopupParams(
           `Button with index ${index} has invalid text: ${text}`,
         ));
       }
-      buttons.push({ type: button.type || 'default', text, id });
+      buttons.push({ id, text, type: button.type || 'default' });
     } else {
-      buttons.push({ type: button.type, id });
+      buttons.push({ id, type: button.type });
     }
   }
-  buttons.length || buttons.push({ type: 'close', id: '' });
+  buttons.length || buttons.push({ id: '', type: 'close' });
 
-  return ok({ title, message, buttons });
+  return ok({ buttons, message, title });
 }
 
 const METHOD = 'web_app_open_popup';
@@ -158,12 +158,12 @@ const METHOD = 'web_app_open_popup';
 export function createPopup(): Popup {
   const isOpened = createStore(false);
 
-  const safeShow: Popup['safeShow'] = async ({ title, message, buttons, ...options }) => {
+  const safeShow: Popup['safeShow'] = async ({ buttons, message, title, ...options }) => {
     const { postEvent } = requireMethod(METHOD);
     if (isOpened.get()) {
       throw new ConcurrentCallError('A popup is already opened');
     }
-    const params = preparePopupParams({ title, message, buttons });
+    const params = preparePopupParams({ buttons, message, title });
     if (!params.ok) {
       return params;
     }
@@ -181,8 +181,8 @@ export function createPopup(): Popup {
   };
 
   return {
-    isSupported: () => isMethodSupported(METHOD),
     isOpened: computedFromStore(isOpened),
+    isSupported: () => isMethodSupported(METHOD),
     safeShow,
     show: throwing(safeShow),
   };

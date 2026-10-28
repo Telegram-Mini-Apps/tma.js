@@ -10,8 +10,8 @@ import { createViewport } from './viewport.js';
 import { mockPageReload, respond, setup } from '../../../test/utils.js';
 import { FullscreenFailedError, NotInitializedError } from '../../errors.js';
 
-const insets = { top: 1, bottom: 2, left: 3, right: 4 };
-const noInsets = { top: 0, bottom: 0, left: 0, right: 0 };
+const insets = { bottom: 2, left: 3, right: 4, top: 1 };
+const noInsets = { bottom: 0, left: 0, right: 0, top: 0 };
 
 /**
  * Responds to the safe areas requests.
@@ -23,16 +23,17 @@ function respondInsets(call: MockedMethodCall): void {
 
 describe('mount', () => {
   it('should use the window size on desktop platforms', async () => {
-    const calls = setup({ version: '7.0', launchParams: { tgWebAppFullscreen: true } });
+    const calls = setup({ launchParams: { tgWebAppFullscreen: true }, version: '7.0' });
     const viewport = createViewport();
     await viewport.mount();
     expect(calls).not.toHaveBeenCalled();
     expect(viewport.state()).toEqual({
-      contentSafeAreaInsets: { top: 0, bottom: 0, left: 0, right: 0 },
+      contentSafeAreaInsets: { bottom: 0, left: 0, right: 0, top: 0 },
       height: window.innerHeight,
       isExpanded: true,
       isFullscreen: true,
-      safeAreaInsets: { top: 0, bottom: 0, left: 0, right: 0 },
+      isStable: true,
+      safeAreaInsets: { bottom: 0, left: 0, right: 0, top: 0 },
       stableHeight: window.innerHeight,
       width: window.innerWidth,
     });
@@ -44,9 +45,9 @@ describe('mount', () => {
       onMethod(call) {
         respond('web_app_request_viewport', 'viewport_changed', {
           height: 100,
-          width: 50,
           is_expanded: false,
           is_state_stable: false,
+          width: 50,
         })(call);
         respond('web_app_request_safe_area', 'safe_area_changed', insets)(call);
         respond('web_app_request_content_safe_area', 'content_safe_area_changed', insets)(call);
@@ -59,12 +60,13 @@ describe('mount', () => {
     expect(viewport.isMounting()).toBe(false);
     expect(viewport.isMounted()).toBe(true);
     expect(viewport.state()).toMatchObject({
-      height: 100,
-      width: 50,
-      isExpanded: false,
-      stableHeight: 0,
-      safeAreaInsets: insets,
       contentSafeAreaInsets: insets,
+      height: 100,
+      isExpanded: false,
+      isStable: false,
+      safeAreaInsets: insets,
+      stableHeight: 0,
+      width: 50,
     });
   });
 
@@ -85,7 +87,7 @@ describe('mount', () => {
     const viewport = createViewport();
     const promise = viewport.mount({ timeout: 1000 });
     viewport.unmount();
-    emitEvent('viewport_changed', { height: 1, width: 1, is_expanded: true, is_state_stable: true });
+    emitEvent('viewport_changed', { height: 1, is_expanded: true, is_state_stable: true, width: 1 });
     emitEvent('safe_area_changed', noInsets);
     emitEvent('content_safe_area_changed', noInsets);
     await promise;
@@ -104,9 +106,9 @@ describe('mount', () => {
     await viewport.mount();
     emitEvent('viewport_changed', {
       height: 10,
-      width: 20,
       is_expanded: true,
       is_state_stable: true,
+      width: 20,
     });
 
     mockPageReload();
@@ -122,11 +124,13 @@ it('should follow viewport events', async () => {
   setup({ onMethod: respondInsets });
   const viewport = createViewport();
   await viewport.mount();
-  emitEvent('viewport_changed', { height: 10, width: 20, is_expanded: true, is_state_stable: false });
+  emitEvent('viewport_changed', { height: 10, is_expanded: true, is_state_stable: false, width: 20 });
   expect(viewport.height()).toBe(10);
   expect(viewport.stableHeight()).toBe(window.innerHeight);
-  emitEvent('viewport_changed', { height: 30, width: 20, is_expanded: true, is_state_stable: true });
+  expect(viewport.isStable()).toBe(false);
+  emitEvent('viewport_changed', { height: 30, is_expanded: true, is_state_stable: true, width: 20 });
   expect(viewport.stableHeight()).toBe(30);
+  expect(viewport.isStable()).toBe(true);
   emitEvent('fullscreen_changed', { is_fullscreen: true });
   expect(viewport.isFullscreen()).toBe(true);
   emitEvent('safe_area_changed', insets);
@@ -135,7 +139,7 @@ it('should follow viewport events', async () => {
   expect(viewport.contentSafeAreaInsets()).toEqual(insets);
 
   viewport.unmount();
-  emitEvent('viewport_changed', { height: 1, width: 1, is_expanded: true, is_state_stable: true });
+  emitEvent('viewport_changed', { height: 1, is_expanded: true, is_state_stable: true, width: 1 });
   expect(viewport.height()).toBe(30);
 });
 

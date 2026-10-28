@@ -10,7 +10,7 @@ describe('mainButton', () => {
     const calls = setup();
     const button = createMainButton(createThemeParams());
     button.mount();
-    button.setParams({ text: 'Submit', isVisible: true, bgColor: undefined });
+    button.setParams({ bgColor: undefined, isVisible: true, text: 'Submit' });
     expect(calls).toHaveBeenCalledWith({
       name: 'web_app_setup_main_button',
       params: {

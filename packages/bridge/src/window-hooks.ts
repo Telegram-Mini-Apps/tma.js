@@ -32,8 +32,8 @@ export function composeFn(obj: AnyObj, key: string, fn: AnyFn): Restore {
       Object.defineProperty(obj, key, {
         configurable: true,
         enumerable: true,
-        writable: true,
         value: external,
+        writable: true,
       });
     } else {
       delete obj[key];
@@ -63,8 +63,8 @@ export function mergeOnAssign(obj: AnyObj, key: string): Restore {
     Object.defineProperty(obj, key, {
       configurable: true,
       enumerable: true,
-      writable: true,
       value,
+      writable: true,
     });
   };
 }

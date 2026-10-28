@@ -13,13 +13,13 @@ describe('mockTelegramEnv', () => {
   it('should save launch parameters', () => {
     mockTelegramEnv({
       launchParams: {
-        tgWebAppVersion: '9.0',
         tgWebAppPlatform: 'tdesktop',
         tgWebAppThemeParams: { bg_color: '#000000' },
+        tgWebAppVersion: '9.0',
       },
     });
     expect(sessionStorage.getItem('tma.js/launch-params')).toBe(
-      'tgWebAppVersion=9.0&tgWebAppPlatform=tdesktop&tgWebAppThemeParams=%7B%22bg_color%22%3A%22%23000000%22%7D',
+      'tgWebAppPlatform=tdesktop&tgWebAppThemeParams=%7B%22bg_color%22%3A%22%23000000%22%7D&tgWebAppVersion=9.0',
     );
   });
 

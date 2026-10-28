@@ -16,6 +16,14 @@ export interface SwipeBehaviorState {
  */
 export interface SwipeBehavior extends StatefulComponent<SwipeBehaviorState>, MountableComponent {
   /**
+   * Prevents the user from minimizing or closing the mini app with a vertical swipe.
+   */
+  disableVertical: () => void;
+  /**
+   * Allows the user to minimize or close the mini app with a vertical swipe.
+   */
+  enableVertical: () => void;
+  /**
    * @returns True if the SDK is initialized and the component is supported by the Telegram
    * client.
    */
@@ -24,14 +32,6 @@ export interface SwipeBehavior extends StatefulComponent<SwipeBehaviorState>, Mo
    * True if the user can minimize or close the mini app with a vertical swipe.
    */
   isVerticalEnabled: Computed<boolean>;
-  /**
-   * Allows the user to minimize or close the mini app with a vertical swipe.
-   */
-  enableVertical: () => void;
-  /**
-   * Prevents the user from minimizing or closing the mini app with a vertical swipe.
-   */
-  disableVertical: () => void;
   /**
    * Mounts the component. If the page was reloaded, the state saved before the reload is
    * restored.
@@ -58,16 +58,16 @@ export function createSwipeBehavior(): SwipeBehavior {
   };
 
   return {
+    disableVertical: set(false),
+    enableVertical: set(true),
+    isMounted: computedFromStore(core.mounted),
     isSupported: () => isMethodSupported(METHOD),
     isVerticalEnabled: computedPick(core.state, 'isVerticalEnabled'),
-    enableVertical: set(true),
-    disableVertical: set(false),
-    state: computedFromStore(core.state),
-    isMounted: computedFromStore(core.mounted),
     mount() {
       requireMethod(METHOD);
       core.mount();
     },
+    state: computedFromStore(core.state),
     unmount() {
       core.unmount();
     },

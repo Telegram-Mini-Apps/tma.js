@@ -29,6 +29,10 @@ export type Platform =
  */
 export interface ThemeParams {
   /**
+   * Keys unknown at the moment of the package release.
+   */
+  [key: string]: RGB | undefined;
+  /**
    * @since v6.10
    */
   accent_text_color?: RGB;
@@ -67,8 +71,4 @@ export interface ThemeParams {
    */
   subtitle_text_color?: RGB;
   text_color?: RGB;
-  /**
-   * Keys unknown at the moment of the package release.
-   */
-  [key: string]: RGB | undefined;
 }

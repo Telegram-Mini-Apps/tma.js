@@ -22,15 +22,15 @@ function safeToURL(url: string | URL): Result<InvalidArgumentsError, URL> {
 
 export interface OpenLinkOptions {
   /**
-   * Open the link in the Instant View mode, if possible.
-   * @since Mini Apps v6.4
-   */
-  tryInstantView?: boolean;
-  /**
    * Preferred browser to open the link in.
    * @since Mini Apps v7.6
    */
   tryBrowser?: OpenLinkBrowser;
+  /**
+   * Open the link in the Instant View mode, if possible.
+   * @since Mini Apps v6.4
+   */
+  tryInstantView?: boolean;
 }
 
 /**
@@ -57,16 +57,16 @@ export const safeOpenLink = /* @__PURE__ */ withIsSupported(
       return parsed;
     }
     postEvent('web_app_open_link', {
-      url: parsed.data.toString(),
       try_browser: options.tryBrowser,
       try_instant_view: options.tryInstantView,
+      url: parsed.data.toString(),
     });
     return ok(undefined);
   },
   isInitialized,
   {
-    tryInstantView: () => isParamSupported('web_app_open_link', 'try_instant_view'),
     tryBrowser: () => isParamSupported('web_app_open_link', 'try_browser'),
+    tryInstantView: () => isParamSupported('web_app_open_link', 'try_instant_view'),
   },
 );
 
@@ -145,6 +145,8 @@ export const openTelegramLink = /* @__PURE__ */ throwingWithIsSupported(safeOpen
  */
 export const shareURL = /* @__PURE__ */ withIsSupported(
   function(url: string, text?: string): void {
+    // The order defines the query, keep "url" first as the official SDK does.
+    // eslint-disable-next-line perfectionist/sort-objects
     const query = new URLSearchParams({ url, text: text || '' })
       .toString()
       // Telegram processes "+" incorrectly, so spaces are encoded with "%20".

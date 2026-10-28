@@ -39,8 +39,8 @@ describe('createStartParam / decodeStartParam', () => {
   });
 
   it('should return StartParamTooLongError from safeCreateStartParam', () => {
-    expect(safeCreateStartParam('42')).toEqual({ ok: true, data: createStartParam('42') });
+    expect(safeCreateStartParam('42')).toEqual({ data: createStartParam('42'), ok: true });
     expect(safeCreateStartParam('a'.repeat(400)))
-      .toEqual({ ok: false, error: new StartParamTooLongError(534) });
+      .toEqual({ error: new StartParamTooLongError(534), ok: false });
   });
 });

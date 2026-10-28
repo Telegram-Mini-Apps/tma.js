@@ -2,22 +2,22 @@
  * Result of an operation which can fail with one of the known errors. Unlike a thrown error,
  * the error type here is checked by the compiler.
  */
-export type Result<E, T> = { ok: false; error: E } | { ok: true; data: T };
+export type Result<E, T> = { error: E; ok: false } | { data: T; ok: true };
 
 /**
  * @returns A successful result.
  * @param data - result data.
  */
-export function ok<T>(data: T): { ok: true; data: T } {
-  return { ok: true, data };
+export function ok<T>(data: T): { data: T; ok: true } {
+  return { data, ok: true };
 }
 
 /**
  * @returns A failed result.
  * @param error - result error.
  */
-export function err<E>(error: E): { ok: false; error: E } {
-  return { ok: false, error };
+export function err<E>(error: E): { error: E; ok: false } {
+  return { error, ok: false };
 }
 
 /**

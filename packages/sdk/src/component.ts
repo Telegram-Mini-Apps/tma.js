@@ -40,18 +40,9 @@ function writeSessionStorage(key: string, value: unknown): void {
 
 export interface ComponentCore<S extends object> {
   /**
-   * Component state. It is saved in the session storage on each change.
+   * @throws {NotMountedError} The component is not mounted.
    */
-  state: Store<S> & { update: (value: Partial<S>) => void };
-  /**
-   * True if the component is mounted.
-   */
-  mounted: Store<boolean>;
-  /**
-   * Subscribes to changes of the component state, its mount status, and the additional sources
-   * passed to `createComponentCore`.
-   */
-  subscribe: SubscribeFn;
+  assertMounted: () => void;
   /**
    * Marks the component as mounted. If the page was reloaded, the state saved before the reload
    * is restored. Otherwise, the passed state is applied.
@@ -60,19 +51,28 @@ export interface ComponentCore<S extends object> {
    */
   mount: (state?: S) => boolean;
   /**
+   * True if the component is mounted.
+   */
+  mounted: Store<boolean>;
+  /**
    * @returns The state saved before the page reload, if the page was reloaded and the component
    * was not mounted since then.
    */
   restoreState: () => S | undefined;
   /**
+   * Component state. It is saved in the session storage on each change.
+   */
+  state: Store<S> & { update: (value: Partial<S>) => void };
+  /**
+   * Subscribes to changes of the component state, its mount status, and the additional sources
+   * passed to `createComponentCore`.
+   */
+  subscribe: SubscribeFn;
+  /**
    * Marks the component as unmounted.
    * @returns False if the component was not mounted.
    */
   unmount: () => boolean;
-  /**
-   * @throws {NotMountedError} The component is not mounted.
-   */
-  assertMounted: () => void;
 }
 
 /**
@@ -99,9 +99,11 @@ export function createComponentCore<S extends object>(
   };
 
   return {
-    state,
-    mounted,
-    subscribe: combineSubscribe(state.subscribe, mounted.subscribe, ...sources),
+    assertMounted() {
+      if (!mounted.get()) {
+        throw new NotMountedError(name);
+      }
+    },
     mount(value) {
       if (mounted.get()) {
         return false;
@@ -112,7 +114,10 @@ export function createComponentCore<S extends object>(
       mounted.set(true);
       return true;
     },
+    mounted,
     restoreState,
+    state,
+    subscribe: combineSubscribe(state.subscribe, mounted.subscribe, ...sources),
     unmount() {
       if (!mounted.get()) {
         return false;
@@ -120,15 +125,14 @@ export function createComponentCore<S extends object>(
       mounted.set(false);
       return true;
     },
-    assertMounted() {
-      if (!mounted.get()) {
-        throw new NotMountedError(name);
-      }
-    },
   };
 }
 
 export interface AsyncMount<E> {
+  /**
+   * Cancels pending mounts, so they don't mount the component when they complete.
+   */
+  cancel: VoidFunction;
   /**
    * True if the component is mounting.
    */
@@ -138,10 +142,6 @@ export interface AsyncMount<E> {
    * mounts the component.
    */
   safeMount: (options?: AsyncOptions) => Promise<Result<E, void>>;
-  /**
-   * Cancels pending mounts, so they don't mount the component when they complete.
-   */
-  cancel: VoidFunction;
 }
 
 /**
@@ -163,6 +163,9 @@ export function createAsyncMount<S extends object, E>(
   let generation = 0;
 
   return {
+    cancel() {
+      generation++;
+    },
     mounting,
     async safeMount(options) {
       if (core.mounted.get()) {
@@ -185,9 +188,6 @@ export function createAsyncMount<S extends object, E>(
       } finally {
         mounting.set(!!--pending);
       }
-    },
-    cancel() {
-      generation++;
     },
   };
 }

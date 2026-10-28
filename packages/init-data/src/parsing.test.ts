@@ -7,21 +7,21 @@ import { INIT_DATA } from '../test/fixtures.js';
 describe('parse', () => {
   it('should parse init data', () => {
     expect(parse(INIT_DATA)).toEqual({
-      user: {
-        id: 279058397,
-        first_name: 'Vladislav + - ? /',
-        last_name: 'Kibenko',
-        username: 'vdkfrost',
-        language_code: 'ru',
-        is_premium: true,
-        allows_write_to_pm: true,
-        photo_url: 'https://t.me/i/userpic/320/4FPEE4tmP3ATHa57u6MqTDih13LTOiMoKoLDRG4PnSA.svg',
-      },
+      auth_date: new Date(1733584787000),
       chat_instance: '8134722200314281151',
       chat_type: 'private',
-      auth_date: new Date(1733584787000),
-      signature: 'zL-ucjNyREiHDE8aihFwpfR9aggP2xiAo3NSpfe-p7IbCisNlDKlo7Kb6G4D0Ao2mBrSgEk4maLSdv6MLIlADQ',
       hash: '2174df5b000556d044f3f020384e879c8efcab55ddea2ced4eb752e93e7080d6',
+      signature: 'zL-ucjNyREiHDE8aihFwpfR9aggP2xiAo3NSpfe-p7IbCisNlDKlo7Kb6G4D0Ao2mBrSgEk4maLSdv6MLIlADQ',
+      user: {
+        allows_write_to_pm: true,
+        first_name: 'Vladislav + - ? /',
+        id: 279058397,
+        is_premium: true,
+        language_code: 'ru',
+        last_name: 'Kibenko',
+        photo_url: 'https://t.me/i/userpic/320/4FPEE4tmP3ATHa57u6MqTDih13LTOiMoKoLDRG4PnSA.svg',
+        username: 'vdkfrost',
+      },
     });
   });
 
@@ -29,22 +29,22 @@ describe('parse', () => {
     const query = new URLSearchParams({
       auth_date: '1',
       can_send_after: '10',
-      chat: JSON.stringify({ id: 1, type: 'group', title: 'Chat', unknown: 1 }),
+      chat: JSON.stringify({ id: 1, title: 'Chat', type: 'group', unknown: 1 }),
       chat_join_request_query_id: 'join',
       hash: 'h',
       query_id: 'q',
-      receiver: JSON.stringify({ id: 2, first_name: 'Bot', is_bot: true }),
+      receiver: JSON.stringify({ first_name: 'Bot', id: 2, is_bot: true }),
       start_param: 'start',
       unknown: '1',
     });
     expect(parse(query)).toEqual({
       auth_date: new Date(1000),
       can_send_after: 10,
-      chat: { id: 1, type: 'group', title: 'Chat' },
+      chat: { id: 1, title: 'Chat', type: 'group' },
       chat_join_request_query_id: 'join',
       hash: 'h',
       query_id: 'q',
-      receiver: { id: 2, first_name: 'Bot', is_bot: true },
+      receiver: { first_name: 'Bot', id: 2, is_bot: true },
       start_param: 'start',
     });
   });
@@ -73,7 +73,7 @@ describe('parse', () => {
 
 describe('safeParse', () => {
   it('should return parsed init data', () => {
-    expect(safeParse(INIT_DATA)).toEqual({ ok: true, data: parse(INIT_DATA) });
+    expect(safeParse(INIT_DATA)).toEqual({ data: parse(INIT_DATA), ok: true });
   });
 
   it('should return InvalidInitDataError instead of throwing it', () => {
@@ -90,7 +90,7 @@ describe('serialize', () => {
   });
 
   it('should convert dates to Unix time and skip undefined values', () => {
-    expect(serialize({ auth_date: new Date(1999), query_id: undefined, can_send_after: 5 }))
+    expect(serialize({ auth_date: new Date(1999), can_send_after: 5, query_id: undefined }))
       .toBe('auth_date=1&can_send_after=5');
   });
 });

@@ -15,25 +15,23 @@ import type { AsyncOptions, MountableComponent, StatefulComponent } from '../../
 
 export interface LocationManagerState {
   /**
-   * True if location data is available on the current device.
+   * True if the permission to use location was granted.
    */
-  available: boolean;
+  accessGranted: boolean;
   /**
    * True if the permission to use location was requested.
    */
   accessRequested: boolean;
   /**
-   * True if the permission to use location was granted.
+   * True if location data is available on the current device.
    */
-  accessGranted: boolean;
+  available: boolean;
 }
 
 /**
  * @see https://core.telegram.org/bots/webapps#locationdata
  */
 export interface LocationData {
-  latitude: number;
-  longitude: number;
   /**
    * Altitude above sea level in meters.
    */
@@ -43,25 +41,27 @@ export interface LocationData {
    */
   course?: number | null;
   /**
-   * Speed in meters per second.
-   */
-  speed?: number | null;
-  /**
-   * Accuracy of the latitude and longitude in meters.
-   */
-  horizontal_accuracy?: number | null;
-  /**
-   * Accuracy of the altitude in meters.
-   */
-  vertical_accuracy?: number | null;
-  /**
    * Accuracy of the course in degrees.
    */
   course_accuracy?: number | null;
   /**
+   * Accuracy of the latitude and longitude in meters.
+   */
+  horizontal_accuracy?: number | null;
+  latitude: number;
+  longitude: number;
+  /**
+   * Speed in meters per second.
+   */
+  speed?: number | null;
+  /**
    * Accuracy of the speed in meters per second.
    */
   speed_accuracy?: number | null;
+  /**
+   * Accuracy of the altitude in meters.
+   */
+  vertical_accuracy?: number | null;
 }
 
 /**
@@ -72,17 +72,33 @@ export interface LocationData {
  */
 export interface LocationManager extends StatefulComponent<LocationManagerState>,
   MountableComponent {
-  /**
-   * @returns True if the SDK is initialized and the location manager is supported.
-   */
-  isSupported: () => boolean;
-  isAvailable: Computed<boolean>;
-  isAccessRequested: Computed<boolean>;
   isAccessGranted: Computed<boolean>;
+  isAccessRequested: Computed<boolean>;
+  isAvailable: Computed<boolean>;
   /**
    * True if the component is mounting.
    */
   isMounting: Computed<boolean>;
+  /**
+   * @returns True if the SDK is initialized and the location manager is supported.
+   */
+  isSupported: () => boolean;
+  /**
+   * Throwing version of `safeMount`.
+   * @throws {TimeoutError} The Telegram client didn't respond in time.
+   */
+  mount: (options?: AsyncOptions) => Promise<void>;
+  /**
+   * Opens the location settings. Use it when the user denied the access, but the mini app needs
+   * it. Call it only in response to the user interaction.
+   */
+  openSettings: () => void;
+  /**
+   * Throwing version of `safeRequestLocation`.
+   * @throws {NotMountedError} The component is not mounted.
+   * @throws {TimeoutError} The Telegram client didn't respond in time.
+   */
+  requestLocation: (options?: AsyncOptions) => Promise<LocationData | null>;
   /**
    * Mounts the component. If the page was reloaded, the state saved before the reload is
    * restored. Otherwise, it is requested from the Telegram client. Each call
@@ -91,11 +107,6 @@ export interface LocationManager extends StatefulComponent<LocationManagerState>
    * @returns `TimeoutError` if the Telegram client didn't respond in time.
    */
   safeMount: (options?: AsyncOptions) => Promise<Result<TimeoutError, void>>;
-  /**
-   * Throwing version of `safeMount`.
-   * @throws {TimeoutError} The Telegram client didn't respond in time.
-   */
-  mount: (options?: AsyncOptions) => Promise<void>;
   /**
    * Requests the device location. Requires the component to be mounted.
    * @param options - additional options.
@@ -106,27 +117,16 @@ export interface LocationManager extends StatefulComponent<LocationManagerState>
   safeRequestLocation: (
     options?: AsyncOptions,
   ) => Promise<Result<TimeoutError, LocationData | null>>;
-  /**
-   * Throwing version of `safeRequestLocation`.
-   * @throws {NotMountedError} The component is not mounted.
-   * @throws {TimeoutError} The Telegram client didn't respond in time.
-   */
-  requestLocation: (options?: AsyncOptions) => Promise<LocationData | null>;
-  /**
-   * Opens the location settings. Use it when the user denied the access, but the mini app needs
-   * it. Call it only in response to the user interaction.
-   */
-  openSettings: () => void;
 }
 
 function toState(payload: EventPayload<'location_checked'>): LocationManagerState {
   return payload.available
     ? {
-      available: true,
       accessGranted: !!payload.access_granted,
       accessRequested: !!payload.access_requested,
+      available: true,
     }
-    : { available: false, accessGranted: false, accessRequested: false };
+    : { accessGranted: false, accessRequested: false, available: false };
 }
 
 const METHOD = 'web_app_check_location';
@@ -136,9 +136,9 @@ const METHOD = 'web_app_check_location';
  */
 export function createLocationManager(): LocationManager {
   const core = createComponentCore<LocationManagerState>('locationManager', {
-    available: false,
     accessGranted: false,
     accessRequested: false,
+    available: false,
   });
   const { state } = core;
   let stopListening: VoidFunction | undefined;
@@ -177,25 +177,25 @@ export function createLocationManager(): LocationManager {
   };
 
   return {
-    isSupported: () => isMethodSupported(METHOD),
-    isAvailable: computedPick(state, 'available'),
-    isAccessRequested: computedPick(state, 'accessRequested'),
     isAccessGranted: computedPick(state, 'accessGranted'),
-    state: computedFromStore(state),
+    isAccessRequested: computedPick(state, 'accessRequested'),
+    isAvailable: computedPick(state, 'available'),
     isMounted: computedFromStore(core.mounted),
     isMounting: computedFromStore(asyncMount.mounting),
-    safeMount,
+    isSupported: () => isMethodSupported(METHOD),
     mount: throwing(safeMount),
+    openSettings() {
+      requireMethod('web_app_open_location_settings').postEvent('web_app_open_location_settings');
+    },
+    requestLocation: throwing(safeRequestLocation),
+    safeMount,
+    safeRequestLocation,
+    state: computedFromStore(state),
     unmount() {
       asyncMount.cancel();
       if (core.unmount()) {
         stopListening && stopListening();
       }
-    },
-    safeRequestLocation,
-    requestLocation: throwing(safeRequestLocation),
-    openSettings() {
-      requireMethod('web_app_open_location_settings').postEvent('web_app_open_location_settings');
     },
   };
 }

@@ -8,29 +8,29 @@ import { request } from './request.js';
  */
 export interface TelegramWindow {
   /**
-   * Telegram for iOS, macOS, Android and Telegram Desktop.
-   */
-  TelegramWebviewProxy?: {
-    postEvent: (eventType: string, eventData: string) => void;
-  };
-  /**
    * Telegram for Windows Phone.
    */
   external?: {
     notify?: (message: string) => void;
   };
   Telegram?: {
-    WebView?: {
-      receiveEvent?: ReceiveEventFn;
-      [key: string]: unknown;
-    };
     [key: string]: unknown;
+    WebView?: {
+      [key: string]: unknown;
+      receiveEvent?: ReceiveEventFn;
+    };
   };
   TelegramGameProxy?: {
-    receiveEvent?: ReceiveEventFn;
     [key: string]: unknown;
+    receiveEvent?: ReceiveEventFn;
   };
   TelegramGameProxy_receiveEvent?: ReceiveEventFn;
+  /**
+   * Telegram for iOS, macOS, Android and Telegram Desktop.
+   */
+  TelegramWebviewProxy?: {
+    postEvent: (eventType: string, eventData: string) => void;
+  };
 }
 
 export type ReceiveEventFn = (eventType: string, eventData?: unknown) => void;
@@ -88,14 +88,14 @@ export function isTMA(): boolean {
  */
 export async function isTMAAsync(options: {
   /**
+   * Signal to abort the check.
+   */
+  signal?: AbortSignal;
+  /**
    * Time in milliseconds to wait for the response.
    * @default 100
    */
   timeout?: number;
-  /**
-   * Signal to abort the check.
-   */
-  signal?: AbortSignal;
 } = {}): Promise<boolean> {
   if (hasWebviewProxy()) {
     return true;

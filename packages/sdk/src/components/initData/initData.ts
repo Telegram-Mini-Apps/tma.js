@@ -16,10 +16,6 @@ import type { StatefulComponent } from '../../types.js';
  * Getters return `undefined` until init data is restored.
  */
 export interface InitDataComponent extends StatefulComponent<InitData | undefined> {
-  /**
-   * Init data in the raw format. Pass it to your server to authorize the user.
-   */
-  raw: Computed<string | undefined>;
   authDate: Computed<Date | undefined>;
   canSendAfter: Computed<number | undefined>;
   /**
@@ -32,10 +28,17 @@ export interface InitDataComponent extends StatefulComponent<InitData | undefine
   chatType: Computed<ChatType | undefined>;
   hash: Computed<string | undefined>;
   queryId: Computed<string | undefined>;
+  /**
+   * Init data in the raw format. Pass it to your server to authorize the user.
+   */
+  raw: Computed<string | undefined>;
   receiver: Computed<User | undefined>;
-  signature: Computed<string | undefined>;
-  startParam: Computed<string | undefined>;
-  user: Computed<User | undefined>;
+  /**
+   * Throwing version of `safeRestore`.
+   * @throws {NotInitializedError} The SDK is not initialized.
+   * @throws {InvalidInitDataError} Init data is invalid.
+   */
+  restore: () => void;
   /**
    * Restores init data from launch parameters. If launch parameters have no init data, getters
    * keep returning `undefined`.
@@ -43,19 +46,16 @@ export interface InitDataComponent extends StatefulComponent<InitData | undefine
    * @throws {NotInitializedError} The SDK is not initialized.
    */
   safeRestore: () => Result<InvalidInitDataError, void>;
-  /**
-   * Throwing version of `safeRestore`.
-   * @throws {NotInitializedError} The SDK is not initialized.
-   * @throws {InvalidInitDataError} Init data is invalid.
-   */
-  restore: () => void;
+  signature: Computed<string | undefined>;
+  startParam: Computed<string | undefined>;
+  user: Computed<User | undefined>;
 }
 
 /**
  * @internal
  */
 export function createInitData(): InitDataComponent {
-  const store = createStore<{ raw?: string; parsed?: InitData; canSendAfterDate?: Date }>({});
+  const store = createStore<{ canSendAfterDate?: Date; parsed?: InitData; raw?: string }>({});
   const select = <T>(get: (value: ReturnType<typeof store.get>) => T) => {
     return computed(() => get(store.get()), store.subscribe);
   };
@@ -72,19 +72,17 @@ export function createInitData(): InitDataComponent {
     }
     const { auth_date, can_send_after } = parsed.data;
     store.set({
-      raw,
-      parsed: parsed.data,
       // Computed once, so the getter returns the same object until init data changes.
       canSendAfterDate: can_send_after === undefined
         ? undefined
         : new Date(auth_date.getTime() + (can_send_after * 1000)),
+      parsed: parsed.data,
+      raw,
     });
     return ok(undefined);
   };
 
   return {
-    state: select(value => value.parsed),
-    raw: select(value => value.raw),
     authDate: get('auth_date'),
     canSendAfter: get('can_send_after'),
     canSendAfterDate: select(value => value.canSendAfterDate),
@@ -93,12 +91,14 @@ export function createInitData(): InitDataComponent {
     chatType: get('chat_type'),
     hash: get('hash'),
     queryId: get('query_id'),
+    raw: select(value => value.raw),
     receiver: get('receiver'),
+    restore: throwing(safeRestore),
+    safeRestore,
     signature: get('signature'),
     startParam: get('start_param'),
+    state: select(value => value.parsed),
     user: get('user'),
-    safeRestore,
-    restore: throwing(safeRestore),
   };
 }
 

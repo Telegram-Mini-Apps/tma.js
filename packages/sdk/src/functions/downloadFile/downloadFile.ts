@@ -25,7 +25,7 @@ export const safeDownloadFile = /* @__PURE__ */ withIsSupported(
     const { postEvent } = requireMethod('web_app_request_file_download');
     const response = await safeRequest('web_app_request_file_download', 'file_download_requested', {
       ...options,
-      params: { url, file_name: fileName },
+      params: { file_name: fileName, url },
       postEvent,
     });
     if (!response.ok) {

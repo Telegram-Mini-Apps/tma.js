@@ -19,13 +19,24 @@ import type { AsyncOptions } from '../../types.js';
  */
 export interface Invoice {
   /**
+   * True if an invoice is opened.
+   */
+  isOpened: Computed<boolean>;
+  /**
    * @returns True if the SDK is initialized and invoices are supported.
    */
   isSupported: () => boolean;
   /**
-   * True if an invoice is opened.
+   * Throwing version of `safeOpenSlug`.
+   * @throws {TimeoutError} The invoice was not closed in time.
    */
-  isOpened: Computed<boolean>;
+  openSlug: (slug: string, options?: AsyncOptions) => Promise<InvoiceStatus>;
+  /**
+   * Throwing version of `safeOpenUrl`.
+   * @throws {InvalidArgumentsError} The URL is not an invoice link.
+   * @throws {TimeoutError} The invoice was not closed in time.
+   */
+  openUrl: (url: string, options?: AsyncOptions) => Promise<InvoiceStatus>;
   /**
    * Opens an invoice by its slug and waits until it is closed.
    * @param slug - invoice slug.
@@ -39,11 +50,6 @@ export interface Invoice {
     slug: string,
     options?: AsyncOptions,
   ) => Promise<Result<TimeoutError, InvoiceStatus>>;
-  /**
-   * Throwing version of `safeOpenSlug`.
-   * @throws {TimeoutError} The invoice was not closed in time.
-   */
-  openSlug: (slug: string, options?: AsyncOptions) => Promise<InvoiceStatus>;
   /**
    * Opens an invoice by its URL and waits until it is closed.
    * @param url - invoice URL in the format `https://t.me/invoice/{slug}` or
@@ -59,12 +65,6 @@ export interface Invoice {
     url: string,
     options?: AsyncOptions,
   ) => Promise<Result<InvalidArgumentsError | TimeoutError, InvoiceStatus>>;
-  /**
-   * Throwing version of `safeOpenUrl`.
-   * @throws {InvalidArgumentsError} The URL is not an invoice link.
-   * @throws {TimeoutError} The invoice was not closed in time.
-   */
-  openUrl: (url: string, options?: AsyncOptions) => Promise<InvoiceStatus>;
 }
 
 const METHOD = 'web_app_open_invoice';
@@ -84,8 +84,8 @@ export function createInvoice(): Invoice {
     try {
       const response = await safeRequest(METHOD, 'invoice_closed', {
         ...options,
-        params: { slug },
         capture: payload => payload.slug === slug,
+        params: { slug },
         postEvent,
       });
       return response.ok ? ok(response.data.status) : response;
@@ -116,12 +116,12 @@ export function createInvoice(): Invoice {
   };
 
   return {
-    isSupported: () => isMethodSupported(METHOD),
     isOpened: computedFromStore(isOpened),
-    safeOpenSlug,
+    isSupported: () => isMethodSupported(METHOD),
     openSlug: throwing(safeOpenSlug),
-    safeOpenUrl,
     openUrl: throwing(safeOpenUrl),
+    safeOpenSlug,
+    safeOpenUrl,
   };
 }
 

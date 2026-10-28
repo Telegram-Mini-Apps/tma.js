@@ -9,7 +9,7 @@ describe('request', () => {
     const postEvent = vi.fn(() => {
       emitEvent('popup_closed', { button_id: 'ok' });
     });
-    const params = { title: 't', message: 'm', buttons: [{ id: 'ok', type: 'ok' as const }] };
+    const params = { buttons: [{ id: 'ok', type: 'ok' as const }], message: 'm', title: 't' };
     await expect(request('web_app_open_popup', 'popup_closed', { params, postEvent }))
       .resolves
       .toEqual({ button_id: 'ok' });
@@ -29,22 +29,22 @@ describe('request', () => {
 
   it('should resolve only with the captured event', async () => {
     const promise = request('web_app_read_text_from_clipboard', 'clipboard_text_received', {
+      capture: captureSameReq('b'),
       params: { req_id: 'b' },
       postEvent: vi.fn(),
-      capture: captureSameReq('b'),
     });
-    emitEvent('clipboard_text_received', { req_id: 'a', data: 'a' });
-    emitEvent('clipboard_text_received', { req_id: 'b', data: 'b' });
-    await expect(promise).resolves.toEqual({ req_id: 'b', data: 'b' });
+    emitEvent('clipboard_text_received', { data: 'a', req_id: 'a' });
+    emitEvent('clipboard_text_received', { data: 'b', req_id: 'b' });
+    await expect(promise).resolves.toEqual({ data: 'b', req_id: 'b' });
   });
 
   it('should reject with the capture function error', async () => {
     const error = new Error('oops');
     const promise = request('web_app_request_theme', 'theme_changed', {
-      postEvent: vi.fn(),
       capture() {
         throw error;
       },
+      postEvent: vi.fn(),
     });
     emitEvent('theme_changed', { theme_params: {} });
     await expect(promise).rejects.toBe(error);
@@ -100,7 +100,7 @@ describe('safeRequest', () => {
     });
     await expect(safeRequest('web_app_request_phone', 'phone_requested', { postEvent }))
       .resolves
-      .toEqual({ ok: true, data: { status: 'sent' } });
+      .toEqual({ data: { status: 'sent' }, ok: true });
   });
 
   it('should resolve with TimeoutError', async () => {
@@ -110,7 +110,7 @@ describe('safeRequest', () => {
       timeout: 100,
     });
     vi.advanceTimersByTime(100);
-    await expect(promise).resolves.toEqual({ ok: false, error: new TimeoutError(100) });
+    await expect(promise).resolves.toEqual({ error: new TimeoutError(100), ok: false });
     vi.useRealTimers();
   });
 

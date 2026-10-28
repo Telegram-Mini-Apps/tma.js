@@ -20,17 +20,17 @@ import type { AsyncOptions, MountableComponent, StatefulComponent } from '../../
 
 export interface BiometryState {
   /**
-   * True if biometry is available on the current device.
+   * True if the permission to use biometry was granted.
    */
-  available: boolean;
+  accessGranted: boolean;
   /**
    * True if the permission to use biometry was requested.
    */
   accessRequested: boolean;
   /**
-   * True if the permission to use biometry was granted.
+   * True if biometry is available on the current device.
    */
-  accessGranted: boolean;
+  available: boolean;
   /**
    * Unique device identifier. Use it to match the token to the device.
    */
@@ -80,9 +80,11 @@ export interface BiometryAuthenticateResult {
  */
 export interface Biometry extends StatefulComponent<BiometryState>, MountableComponent {
   /**
-   * @returns True if the SDK is initialized and biometry is supported.
+   * Throwing version of `safeAuthenticate`.
+   * @throws {BiometryUnavailableError} Biometry is unavailable.
+   * @throws {TimeoutError} The user didn't respond in time.
    */
-  isSupported: () => boolean;
+  authenticate: (options?: BiometryReasonOptions) => Promise<BiometryAuthenticateResult>;
   /**
    * True if biometry is available on the current device.
    */
@@ -92,18 +94,25 @@ export interface Biometry extends StatefulComponent<BiometryState>, MountableCom
    */
   isMounting: Computed<boolean>;
   /**
-   * Mounts the component. If the page was reloaded, the state saved before the reload is
-   * restored. Otherwise, it is requested from the Telegram client. Each call
-   * retrieves the state independently.
-   * @param options - additional options.
-   * @returns `TimeoutError` if the Telegram client didn't respond in time.
+   * @returns True if the SDK is initialized and biometry is supported.
    */
-  safeMount: (options?: AsyncOptions) => Promise<Result<TimeoutError, void>>;
+  isSupported: () => boolean;
   /**
    * Throwing version of `safeMount`.
    * @throws {TimeoutError} The Telegram client didn't respond in time.
    */
   mount: (options?: AsyncOptions) => Promise<void>;
+  /**
+   * Opens the biometry settings. Use it when the user denied the access, but the mini app needs
+   * it. Call it only in response to the user interaction.
+   */
+  openSettings: () => void;
+  /**
+   * Throwing version of `safeRequestAccess`.
+   * @throws {BiometryUnavailableError} Biometry is unavailable.
+   * @throws {TimeoutError} The user didn't respond in time.
+   */
+  requestAccess: (options?: BiometryReasonOptions) => Promise<boolean>;
   /**
    * Authenticates the user using biometry. Requires the component to be mounted.
    * @param options - additional options.
@@ -114,11 +123,13 @@ export interface Biometry extends StatefulComponent<BiometryState>, MountableCom
     options?: BiometryReasonOptions,
   ) => Promise<Result<BiometryUnavailableError | TimeoutError, BiometryAuthenticateResult>>;
   /**
-   * Throwing version of `safeAuthenticate`.
-   * @throws {BiometryUnavailableError} Biometry is unavailable.
-   * @throws {TimeoutError} The user didn't respond in time.
+   * Mounts the component. If the page was reloaded, the state saved before the reload is
+   * restored. Otherwise, it is requested from the Telegram client. Each call
+   * retrieves the state independently.
+   * @param options - additional options.
+   * @returns `TimeoutError` if the Telegram client didn't respond in time.
    */
-  authenticate: (options?: BiometryReasonOptions) => Promise<BiometryAuthenticateResult>;
+  safeMount: (options?: AsyncOptions) => Promise<Result<TimeoutError, void>>;
   /**
    * Requests the permission to use biometry. Requires the component to be mounted.
    * @param options - additional options.
@@ -128,12 +139,6 @@ export interface Biometry extends StatefulComponent<BiometryState>, MountableCom
   safeRequestAccess: (
     options?: BiometryReasonOptions,
   ) => Promise<Result<BiometryUnavailableError | TimeoutError, boolean>>;
-  /**
-   * Throwing version of `safeRequestAccess`.
-   * @throws {BiometryUnavailableError} Biometry is unavailable.
-   * @throws {TimeoutError} The user didn't respond in time.
-   */
-  requestAccess: (options?: BiometryReasonOptions) => Promise<boolean>;
   /**
    * Updates the token saved in the device storage. Requires the component to be mounted.
    * @param options - additional options.
@@ -147,27 +152,22 @@ export interface Biometry extends StatefulComponent<BiometryState>, MountableCom
    * @throws {TimeoutError} The user didn't respond in time.
    */
   updateToken: (options?: BiometryUpdateTokenOptions) => Promise<BiometryTokenUpdateStatus>;
-  /**
-   * Opens the biometry settings. Use it when the user denied the access, but the mini app needs
-   * it. Call it only in response to the user interaction.
-   */
-  openSettings: () => void;
 }
 
 function toState(payload: EventPayload<'biometry_info_received'>): BiometryState {
   return payload.available
     ? {
-      available: true,
       accessGranted: payload.access_granted,
       accessRequested: payload.access_requested,
+      available: true,
       deviceId: payload.device_id,
       tokenSaved: payload.token_saved,
       type: payload.type,
     }
     : {
-      available: false,
       accessGranted: false,
       accessRequested: false,
+      available: false,
       deviceId: '',
       tokenSaved: false,
       type: 'unknown',
@@ -256,10 +256,10 @@ export function createBiometry(): Biometry {
 
   const safeUpdateToken: Biometry['safeUpdateToken'] = exclusive(async (options = {}) => {
     const { postEvent } = requireMounted();
-    const { token, reason, ...rest } = options;
+    const { reason, token, ...rest } = options;
     const response = await safeRequest('web_app_biometry_update_token', 'biometry_token_updated', {
       ...rest,
-      params: { token: token || '', reason: reason && reason.trim() },
+      params: { reason: reason && reason.trim(), token: token || '' },
       postEvent,
     });
     if (!response.ok) {
@@ -272,28 +272,28 @@ export function createBiometry(): Biometry {
   });
 
   return {
-    isSupported: () => isMethodSupported('web_app_biometry_request_auth'),
+    authenticate: throwing(safeAuthenticate),
     isAvailable: computedPick(state, 'available'),
-    state: computedFromStore(state),
     isMounted: computedFromStore(core.mounted),
     isMounting: computedFromStore(asyncMount.mounting),
-    safeMount,
+    isSupported: () => isMethodSupported('web_app_biometry_request_auth'),
     mount: throwing(safeMount),
+    openSettings() {
+      requireMethod('web_app_biometry_open_settings').postEvent('web_app_biometry_open_settings');
+    },
+    requestAccess: throwing(safeRequestAccess),
+    safeAuthenticate,
+    safeMount,
+    safeRequestAccess,
+    safeUpdateToken,
+    state: computedFromStore(state),
     unmount() {
       asyncMount.cancel();
       if (core.unmount()) {
         stopListening && stopListening();
       }
     },
-    safeAuthenticate,
-    authenticate: throwing(safeAuthenticate),
-    safeRequestAccess,
-    requestAccess: throwing(safeRequestAccess),
-    safeUpdateToken,
     updateToken: throwing(safeUpdateToken),
-    openSettings() {
-      requireMethod('web_app_biometry_open_settings').postEvent('web_app_biometry_open_settings');
-    },
   };
 }
 

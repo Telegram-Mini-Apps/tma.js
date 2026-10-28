@@ -39,8 +39,8 @@ describe('shareMessage', () => {
 
 describe('isSupported', () => {
   it.each([
-    { name: 'shareMessage', fn: shareMessage },
-    { name: 'safeShareMessage', fn: safeShareMessage },
+    { fn: shareMessage, name: 'shareMessage' },
+    { fn: safeShareMessage, name: 'safeShareMessage' },
   ])('$name should check the Mini Apps version', ({ fn }) => {
     expect(fn.isSupported()).toBe(false);
     setup({ version: '7.10' });

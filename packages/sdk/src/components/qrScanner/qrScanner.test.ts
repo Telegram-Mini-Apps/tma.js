@@ -9,7 +9,7 @@ describe('qrScanner', () => {
   it('should capture the matching QR code and close the scanner', async () => {
     const calls = setup();
     const scanner = createQrScanner();
-    const promise = scanner.capture({ text: 'Scan', capture: qr => qr === 'b' });
+    const promise = scanner.capture({ capture: qr => qr === 'b', text: 'Scan' });
     expect(scanner.isOpened()).toBe(true);
     emitEvent('qr_text_received', { data: 'a' });
     emitEvent('qr_text_received', { data: 'b' });

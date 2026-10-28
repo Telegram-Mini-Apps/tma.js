@@ -69,6 +69,8 @@ export const postEvent: PostEventFn = (method, ...args) => {
   const [params = ''] = args as [unknown?];
   debugLog('Posting method:', method, params);
 
+  // Keep the same key order as the official SDK sends.
+  // eslint-disable-next-line perfectionist/sort-objects
   const message = JSON.stringify({ eventType: method, eventData: params });
 
   // Unlike the official SDK, the iframe check goes first. Telegram clients also define

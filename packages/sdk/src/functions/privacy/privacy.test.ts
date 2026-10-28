@@ -15,8 +15,8 @@ import { respond, respondCustomMethod, setup } from '../../../test/utils.js';
 import { AccessDeniedError, InvalidResponseError } from '../../errors.js';
 
 const rawContact = new URLSearchParams({
-  contact: JSON.stringify({ user_id: 1, phone_number: '123', first_name: 'P' }),
   auth_date: '1',
+  contact: JSON.stringify({ first_name: 'P', phone_number: '123', user_id: 1 }),
   hash: 'h',
 }).toString();
 
@@ -41,8 +41,8 @@ it('should request phone and write access', async () => {
 });
 
 it.each([
-  { name: 'safeRequestPhoneAccess', fn: safeRequestPhoneAccess },
-  { name: 'safeRequestWriteAccess', fn: safeRequestWriteAccess },
+  { fn: safeRequestPhoneAccess, name: 'safeRequestPhoneAccess' },
+  { fn: safeRequestWriteAccess, name: 'safeRequestWriteAccess' },
 ])('$name should return TimeoutError if the user did not respond in time', async ({ fn }) => {
   vi.useFakeTimers();
   setup();
@@ -57,15 +57,15 @@ describe('requestContact', () => {
   it('should return the contact shared earlier', async () => {
     const calls = setup({ onMethod: respondContact(rawContact) });
     await expect(safeRequestContactComplete()).resolves.toEqual({
-      ok: true,
       data: {
-        raw: rawContact,
         parsed: {
-          contact: { user_id: 1, phone_number: '123', first_name: 'P' },
           auth_date: new Date(1000),
+          contact: { first_name: 'P', phone_number: '123', user_id: 1 },
           hash: 'h',
         },
+        raw: rawContact,
       },
+      ok: true,
     });
     expect(calls).toHaveBeenCalledOnce();
   });
@@ -73,8 +73,8 @@ describe('requestContact', () => {
   it('should return the contact in raw and parsed formats', async () => {
     setup({ onMethod: respondContact(rawContact) });
     await expect(requestContactComplete()).resolves.toMatchObject({
-      raw: rawContact,
       parsed: { hash: 'h' },
+      raw: rawContact,
     });
   });
 
@@ -192,14 +192,14 @@ describe('requestContact', () => {
 
 describe('isSupported', () => {
   it.each([
-    { name: 'requestPhoneAccess', fn: requestPhoneAccess, supported: '6.9', unsupported: '6.8' },
-    { name: 'safeRequestPhoneAccess', fn: safeRequestPhoneAccess, supported: '6.9', unsupported: '6.8' },
-    { name: 'requestWriteAccess', fn: requestWriteAccess, supported: '6.9', unsupported: '6.8' },
-    { name: 'safeRequestWriteAccess', fn: safeRequestWriteAccess, supported: '6.9', unsupported: '6.8' },
-    { name: 'requestContact', fn: requestContact, supported: '6.9', unsupported: '6.8' },
-    { name: 'safeRequestContact', fn: safeRequestContact, supported: '6.9', unsupported: '6.8' },
-    { name: 'requestContactComplete', fn: requestContactComplete, supported: '6.9', unsupported: '6.8' },
-    { name: 'safeRequestContactComplete', fn: safeRequestContactComplete, supported: '6.9', unsupported: '6.8' },
+    { fn: requestPhoneAccess, name: 'requestPhoneAccess', supported: '6.9', unsupported: '6.8' },
+    { fn: safeRequestPhoneAccess, name: 'safeRequestPhoneAccess', supported: '6.9', unsupported: '6.8' },
+    { fn: requestWriteAccess, name: 'requestWriteAccess', supported: '6.9', unsupported: '6.8' },
+    { fn: safeRequestWriteAccess, name: 'safeRequestWriteAccess', supported: '6.9', unsupported: '6.8' },
+    { fn: requestContact, name: 'requestContact', supported: '6.9', unsupported: '6.8' },
+    { fn: safeRequestContact, name: 'safeRequestContact', supported: '6.9', unsupported: '6.8' },
+    { fn: requestContactComplete, name: 'requestContactComplete', supported: '6.9', unsupported: '6.8' },
+    { fn: safeRequestContactComplete, name: 'safeRequestContactComplete', supported: '6.9', unsupported: '6.8' },
   ])('$name should check the Mini Apps version', ({ fn, supported, unsupported }) => {
     expect(fn.isSupported()).toBe(false);
     setup({ version: unsupported });

@@ -70,7 +70,7 @@ describe('readTextFromClipboard', () => {
   function respondText(data?: string | null) {
     return (call: MockedMethodCall) => {
       const { req_id } = call.params as { req_id: string };
-      emitEvent('clipboard_text_received', { req_id, data });
+      emitEvent('clipboard_text_received', { data, req_id });
     };
   }
 
@@ -91,7 +91,7 @@ describe('readTextFromClipboard', () => {
   it('should ignore responses to other requests', async () => {
     setup({
       onMethod(call) {
-        emitEvent('clipboard_text_received', { req_id: 'other', data: 'other' });
+        emitEvent('clipboard_text_received', { data: 'other', req_id: 'other' });
         respondText('text')(call);
       },
     });
@@ -120,8 +120,8 @@ describe('readTextFromClipboard', () => {
 
 describe('isSupported', () => {
   it.each([
-    { name: 'readTextFromClipboard', fn: readTextFromClipboard, supported: '6.4', unsupported: '6.3' },
-    { name: 'safeReadTextFromClipboard', fn: safeReadTextFromClipboard, supported: '6.4', unsupported: '6.3' },
+    { fn: readTextFromClipboard, name: 'readTextFromClipboard', supported: '6.4', unsupported: '6.3' },
+    { fn: safeReadTextFromClipboard, name: 'safeReadTextFromClipboard', supported: '6.4', unsupported: '6.3' },
   ])('$name should check the Mini Apps version', ({ fn, supported, unsupported }) => {
     expect(fn.isSupported()).toBe(false);
     setup({ version: unsupported });

@@ -5,6 +5,7 @@ import stylistic from '@stylistic/eslint-plugin';
 import pluginVitest from '@vitest/eslint-plugin';
 import tseslint from 'typescript-eslint';
 import importPlugin from 'eslint-plugin-import';
+import perfectionist from 'eslint-plugin-perfectionist';
 
 export default tseslint.config(
   {
@@ -56,7 +57,7 @@ export default tseslint.config(
         'node': true,
       },
     },
-    plugins: { '@stylistic': stylistic },
+    plugins: { '@stylistic': stylistic, perfectionist },
     rules: {
       //#region typescript-eslint
       '@typescript-eslint/no-empty-object-type': 0,
@@ -97,6 +98,12 @@ export default tseslint.config(
       'import/enforce-node-protocol-usage': ['error', 'always'],
       'import/no-relative-packages': ['error'],
       'import/no-useless-path-segments': ['error'],
+      //#endregion
+
+      //#region perfectionist
+      'perfectionist/sort-objects': ['error', { type: 'natural' }],
+      'perfectionist/sort-interfaces': ['error', { type: 'natural' }],
+      'perfectionist/sort-object-types': ['error', { type: 'natural' }],
       //#endregion
 
       //#region stylistic

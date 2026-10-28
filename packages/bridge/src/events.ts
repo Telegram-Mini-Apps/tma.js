@@ -59,7 +59,7 @@ let restoreWindow: Restore | undefined;
 export const MiniAppsMessageSchema = pipe(
   string(),
   parseJson(),
-  looseObject({ eventType: string(), eventData: optional(unknown()) }),
+  looseObject({ eventData: optional(unknown()), eventType: string() }),
 );
 
 /**
@@ -67,13 +67,13 @@ export const MiniAppsMessageSchema = pipe(
  */
 const payloadSchemas: { [E in EventName]?: GenericSchema<unknown, EventListenerPayload<E>> } = {
   clipboard_text_received: looseObject({
-    req_id: string(),
     data: nullish(string()),
+    req_id: string(),
   }),
   custom_method_invoked: looseObject({
+    error: optional(string()),
     req_id: string(),
     result: optional(unknown()),
-    error: optional(string()),
   }),
   popup_closed: pipe(
     nullish(looseObject({ button_id: nullish(string()) })),
@@ -83,16 +83,16 @@ const payloadSchemas: { [E in EventName]?: GenericSchema<unknown, EventListenerP
   viewport_changed: nullish(
     looseObject({
       height: number(),
-      width: nullish(number(), () => window.innerWidth),
       is_expanded: boolean(),
       is_state_stable: boolean(),
+      width: nullish(number(), () => window.innerWidth),
     }),
     // macOS client sends null instead of the payload.
     () => ({
       height: window.innerHeight,
-      width: window.innerWidth,
       is_expanded: true,
       is_state_stable: true,
+      width: window.innerWidth,
     }),
   ),
 };
@@ -292,7 +292,7 @@ export function emitEvent<E extends EventName>(event: E, ...args: EmitEventArgs<
     return;
   }
   window.dispatchEvent(new MessageEvent('message', {
-    data: JSON.stringify({ eventType: event, eventData }),
+    data: JSON.stringify({ eventData, eventType: event }),
     source: window.parent,
   }));
 }

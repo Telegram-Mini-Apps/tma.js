@@ -33,6 +33,7 @@
     "eslint": "^9.16.0",
     "eslint-import-resolver-typescript": "^4.4.4",
     "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-perfectionist": "^5.13.0",
     "husky": "^9.1.7",
     "rimraf": "^6.0.1",
     "rollup-plugin-preserve-shebang": "^1.0.1",

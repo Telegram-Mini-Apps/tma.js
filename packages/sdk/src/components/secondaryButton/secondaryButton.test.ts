@@ -40,7 +40,7 @@ describe('secondaryButton', () => {
   it('should take default colors from the bottom bar and the theme', () => {
     setup({
       launchParams: {
-        tgWebAppThemeParams: { secondary_bg_color: '#111111', button_color: '#222222' },
+        tgWebAppThemeParams: { button_color: '#222222', secondary_bg_color: '#111111' },
       },
     });
     const theme = createThemeParams();

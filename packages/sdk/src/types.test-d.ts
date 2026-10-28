@@ -114,6 +114,14 @@ export function checkTypes(): void {
   // @ts-expect-error The setter has no features released later than the method itself.
   void miniApp.setBgColor.supports;
 
+  // Values are readonly.
+  expectTypeOf(() => {
+    // @ts-expect-error Insets are readonly.
+    viewport.safeAreaInsets().top = 0;
+    // @ts-expect-error State is readonly.
+    viewport.state().height = 0;
+  }).toBeFunction();
+
   // Errors are matched exhaustively.
   expectTypeOf(async () => {
     const result = await popup.safeShow({ message: 'm' });

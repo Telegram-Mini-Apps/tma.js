@@ -37,18 +37,18 @@ export async function checkTypes(): Promise<void> {
     expectTypeOf(validated.error).toEqualTypeOf<ValidateError>();
 
     matchError(validated.error, {
-      SignatureMissingError: () => null,
       AuthDateInvalidError: () => null,
       ExpiredError: () => null,
-      SignatureInvalidError: () => null,
       InvalidInitDataError: () => null,
+      SignatureInvalidError: () => null,
+      SignatureMissingError: () => null,
     });
     // @ts-expect-error Every error must be handled.
     matchError(validated.error, {
-      SignatureMissingError: () => null,
       AuthDateInvalidError: () => null,
       ExpiredError: () => null,
       SignatureInvalidError: () => null,
+      SignatureMissingError: () => null,
     });
   }
 

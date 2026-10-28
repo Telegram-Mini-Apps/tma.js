@@ -58,10 +58,6 @@ export type SwitchInlineQueryChatType = 'users' | 'bots' | 'groups' | 'channels'
 
 interface CreateInvokeCustomMethodParams<M extends string, Params extends object> {
   /**
-   * Unique request identifier.
-   */
-  req_id: string;
-  /**
    * Method name.
    */
   method: M;
@@ -69,6 +65,10 @@ interface CreateInvokeCustomMethodParams<M extends string, Params extends object
    * Method specific parameters.
    */
   params: Params;
+  /**
+   * Unique request identifier.
+   */
+  req_id: string;
 }
 
 export interface CustomMethodsParams {
@@ -124,6 +124,10 @@ type WithReqId<T = {}> = T & {
 
 interface ButtonParams {
   /**
+   * The button background color in `#RRGGBB` format.
+   */
+  color?: RGB;
+  /**
    * Should the button shine.
    * @since 7.10
    */
@@ -134,10 +138,6 @@ interface ButtonParams {
    */
   icon_custom_emoji_id?: string;
   /**
-   * Should the button be displayed.
-   */
-  is_visible?: boolean;
-  /**
    * Should the button be enabled.
    */
   is_active?: boolean;
@@ -147,13 +147,13 @@ interface ButtonParams {
    */
   is_progress_visible?: boolean;
   /**
+   * Should the button be displayed.
+   */
+  is_visible?: boolean;
+  /**
    * Text inside the button.
    */
   text?: string;
-  /**
-   * The button background color in `#RRGGBB` format.
-   */
-  color?: RGB;
   /**
    * The Main Button text color in `#RRGGBB` format.
    */
@@ -389,9 +389,10 @@ export interface Methods {
    */
   web_app_open_link: {
     /**
-     * URL to be opened by Telegram application. Should be a full path with `https` protocol.
+     * A preferred browser to open the link in.
+     * @since v7.6
      */
-    url: string;
+    try_browser?: OpenLinkBrowser;
     /**
      * Link will be opened in Instant View mode if possible.
      * @since v6.4
@@ -399,10 +400,9 @@ export interface Methods {
      */
     try_instant_view?: boolean;
     /**
-     * A preferred browser to open the link in.
-     * @since v7.6
+     * URL to be opened by Telegram application. Should be a full path with `https` protocol.
      */
-    try_browser?: OpenLinkBrowser;
+    url: string;
   };
   /**
    * Opens the location access settings for bots. Useful when you need to request location access
@@ -441,14 +441,14 @@ export interface Methods {
    */
   web_app_open_tg_link: {
     /**
+     * Should the client force the link request processing.
+     */
+    force_request?: boolean;
+    /**
      * Should be a value taken from the link of this format: `https://t.me/{path_full}`. Can
      * additionally contain query parameters.
      */
     path_full: string;
-    /**
-     * Should the client force the link request processing.
-     */
-    force_request?: boolean;
   };
   /**
    * Reads text from the clipboard. The method accepts a request identifier which is used to
@@ -489,13 +489,13 @@ export interface Methods {
    */
   web_app_request_file_download: {
     /**
-     * The HTTPS URL of the file to be downloaded.
-     */
-    url: string;
-    /**
      * The suggested name for the downloaded file.
      */
     file_name: string;
+    /**
+     * The HTTPS URL of the file to be downloaded.
+     */
+    url: string;
   };
   /**
    * Requests to open the mini app in fullscreen.
@@ -741,13 +741,13 @@ export interface Methods {
      */
     widget_link?: {
       /**
-       * The URL to be included in the story.
-       */
-      url: string;
-      /**
        * The name to be displayed for the widget link, 0-48 characters.
        */
       name?: string;
+      /**
+       * The URL to be included in the story.
+       */
+      url: string;
     };
   };
   /**
@@ -770,12 +770,6 @@ export interface Methods {
    */
   web_app_start_device_orientation: {
     /**
-     * The refresh rate in milliseconds, with acceptable values ranging from 20 to 1000.
-     * Note that refresh_rate may not be supported on all platforms, so the actual tracking
-     * frequency may differ from the specified value.
-     */
-    refresh_rate: number;
-    /**
      * Pass true to receive absolute orientation data, allowing you to determine the device's
      * attitude relative to magnetic north. Use this option if implementing features like a
      * compass in your app. If relative data is sufficient, pass false.
@@ -784,6 +778,12 @@ export interface Methods {
      * you will receive relative data even if need_absolute=true is passed.
      */
     need_absolute?: boolean;
+    /**
+     * The refresh rate in milliseconds, with acceptable values ranging from 20 to 1000.
+     * Note that refresh_rate may not be supported on all platforms, so the actual tracking
+     * frequency may differ from the specified value.
+     */
+    refresh_rate: number;
   };
 
   /**
@@ -828,14 +828,14 @@ export interface Methods {
    */
   web_app_switch_inline_query: {
     /**
+     * List of chat types which could be chosen to send the message. Could be empty list.
+     */
+    chat_types: SwitchInlineQueryChatType[];
+    /**
      * Text which should be inserted in the input after the current bot name. Max length is
      * 256 symbols.
      */
     query: string;
-    /**
-     * List of chat types which could be chosen to send the message. Could be empty list.
-     */
-    chat_types: SwitchInlineQueryChatType[];
   };
   /**
    * Locks the Mini App’s orientation to its current mode (either portrait or landscape). Once

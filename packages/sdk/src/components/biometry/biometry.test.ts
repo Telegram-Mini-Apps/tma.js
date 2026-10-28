@@ -6,9 +6,9 @@ import { respond, setup } from '../../../test/utils.js';
 import { BiometryUnavailableError, ConcurrentCallError, NotMountedError } from '../../errors.js';
 
 const info = {
-  available: true,
-  access_requested: true,
   access_granted: true,
+  access_requested: true,
+  available: true,
   device_id: 'device',
   token_saved: false,
   type: 'face',
@@ -20,9 +20,9 @@ describe('biometry', () => {
     const biometry = createBiometry();
     await biometry.mount();
     expect(biometry.state()).toEqual({
-      available: true,
-      accessRequested: true,
       accessGranted: true,
+      accessRequested: true,
+      available: true,
       deviceId: 'device',
       tokenSaved: false,
       type: 'face',
@@ -86,8 +86,8 @@ describe('biometry', () => {
       onMethod(call) {
         respond('web_app_biometry_get_info', 'biometry_info_received', {
           ...info,
-          access_requested: false,
           access_granted: false,
+          access_requested: false,
         })(call);
         respond('web_app_biometry_request_access', 'biometry_info_received', info)(call);
       },

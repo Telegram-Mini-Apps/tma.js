@@ -7,37 +7,37 @@ import { ConcurrentCallError, InvalidArgumentsError } from '../../errors.js';
 
 describe('preparePopupParams', () => {
   it('should trim values and add the close button if there are no buttons', () => {
-    expect(preparePopupParams({ title: ' t ', message: ' m ' })).toEqual({
+    expect(preparePopupParams({ message: ' m ', title: ' t ' })).toEqual({
+      data: { buttons: [{ id: '', type: 'close' }], message: 'm', title: 't' },
       ok: true,
-      data: { title: 't', message: 'm', buttons: [{ type: 'close', id: '' }] },
     });
   });
 
   it('should prepare buttons', () => {
     expect(preparePopupParams({
+      buttons: [{ text: ' a ' }, { id: 'b', text: 'b', type: 'destructive' }, { type: 'ok' }],
       message: 'm',
-      buttons: [{ text: ' a ' }, { id: 'b', type: 'destructive', text: 'b' }, { type: 'ok' }],
     })).toEqual({
-      ok: true,
       data: {
-        title: '',
-        message: 'm',
         buttons: [
-          { type: 'default', text: 'a', id: '' },
-          { type: 'destructive', text: 'b', id: 'b' },
-          { type: 'ok', id: '' },
+          { id: '', text: 'a', type: 'default' },
+          { id: 'b', text: 'b', type: 'destructive' },
+          { id: '', type: 'ok' },
         ],
+        message: 'm',
+        title: '',
       },
+      ok: true,
     });
   });
 
   it.each([
-    { title: 'a'.repeat(65), message: 'm' },
+    { message: 'm', title: 'a'.repeat(65) },
     { message: '' },
     { message: 'a'.repeat(257) },
-    { message: 'm', buttons: [{ type: 'ok' }, { type: 'ok' }, { type: 'ok' }, { type: 'ok' }] },
-    { message: 'm', buttons: [{ type: 'ok', id: 'a'.repeat(65) }] },
-    { message: 'm', buttons: [{ text: ' ' }] },
+    { buttons: [{ type: 'ok' }, { type: 'ok' }, { type: 'ok' }, { type: 'ok' }], message: 'm' },
+    { buttons: [{ id: 'a'.repeat(65), type: 'ok' }], message: 'm' },
+    { buttons: [{ text: ' ' }], message: 'm' },
   ] as const)('should return InvalidArgumentsError for %j', options => {
     const result = preparePopupParams(options as any);
     expect(!result.ok && InvalidArgumentsError.is(result.error)).toBe(true);
@@ -50,12 +50,12 @@ describe('popup', () => {
       onMethod: respond('web_app_open_popup', 'popup_closed', { button_id: 'ok' }),
     });
     const popup = createPopup();
-    await expect(popup.show({ message: 'm', buttons: [{ id: 'ok', type: 'ok' }] }))
+    await expect(popup.show({ buttons: [{ id: 'ok', type: 'ok' }], message: 'm' }))
       .resolves
       .toBe('ok');
     expect(calls).toHaveBeenCalledWith({
       name: 'web_app_open_popup',
-      params: { title: '', message: 'm', buttons: [{ type: 'ok', id: 'ok' }] },
+      params: { buttons: [{ id: 'ok', type: 'ok' }], message: 'm', title: '' },
     });
     expect(popup.isOpened()).toBe(false);
   });

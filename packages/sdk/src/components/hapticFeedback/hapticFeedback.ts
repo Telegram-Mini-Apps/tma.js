@@ -10,14 +10,14 @@ import { isMethodSupported, requireMethod } from '../../globals.js';
  */
 export interface HapticFeedback {
   /**
-   * @returns True if the SDK is initialized and haptic feedback is supported.
-   */
-  isSupported: () => boolean;
-  /**
    * Notifies that an impact occurred.
    * @param style - impact style.
    */
   impactOccurred: (style: ImpactHapticFeedbackStyle) => void;
+  /**
+   * @returns True if the SDK is initialized and haptic feedback is supported.
+   */
+  isSupported: () => boolean;
   /**
    * Notifies that a task or action succeeded, failed, or produced a warning.
    * @param type - notification type.
@@ -37,12 +37,12 @@ const METHOD = 'web_app_trigger_haptic_feedback';
  * @since Mini Apps v6.1
  */
 export const hapticFeedback: HapticFeedback = {
-  isSupported: () => isMethodSupported(METHOD),
   impactOccurred(style) {
-    requireMethod(METHOD).postEvent(METHOD, { type: 'impact', impact_style: style });
+    requireMethod(METHOD).postEvent(METHOD, { impact_style: style, type: 'impact' });
   },
+  isSupported: () => isMethodSupported(METHOD),
   notificationOccurred(type) {
-    requireMethod(METHOD).postEvent(METHOD, { type: 'notification', notification_type: type });
+    requireMethod(METHOD).postEvent(METHOD, { notification_type: type, type: 'notification' });
   },
   selectionChanged() {
     requireMethod(METHOD).postEvent(METHOD, { type: 'selection_change' });

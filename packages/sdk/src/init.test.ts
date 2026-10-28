@@ -11,8 +11,8 @@ import { init, safeInit } from './init.js';
 
 const launchParams = {
   tgWebAppPlatform: 'tdesktop',
-  tgWebAppVersion: '6.0',
   tgWebAppThemeParams: {},
+  tgWebAppVersion: '6.0',
 };
 
 describe('safeInit', () => {
@@ -34,9 +34,9 @@ describe('init', () => {
     mockTelegramEnv();
     init({ launchParams });
     expect(() => getGlobals().postEvent('web_app_open_popup', {
-      title: '',
-      message: 'm',
       buttons: [],
+      message: 'm',
+      title: '',
     })).toThrow(MethodUnsupportedError);
   });
 
@@ -77,7 +77,7 @@ describe('init', () => {
 
     it('should not add styles if acceptCustomStyles is false', () => {
       vi.spyOn(window, 'top', 'get').mockReturnValue({} as Window);
-      init({ launchParams, postEvent: vi.fn(), acceptCustomStyles: false });
+      init({ acceptCustomStyles: false, launchParams, postEvent: vi.fn() });
       expect(document.getElementById('telegram-custom-styles')).toBeNull();
     });
   });

@@ -28,6 +28,7 @@ const releases = {
     'web_app_set_header_color',
     'web_app_trigger_haptic_feedback',
   ],
+  '6.10': ['web_app_setup_settings_button'],
   6.2: ['web_app_open_popup'],
   6.4: [
     'web_app_close_scan_qr_popup',
@@ -42,7 +43,11 @@ const releases = {
     'web_app_request_phone',
     ['web_app_set_header_color', 'color'],
   ],
-  '6.10': ['web_app_setup_settings_button'],
+  '7.10': [
+    'web_app_setup_secondary_button',
+    'web_app_set_bottom_bar_color',
+    ['web_app_setup_main_button', 'has_shine_effect'],
+  ],
   7.2: [
     'web_app_biometry_get_info',
     'web_app_biometry_open_settings',
@@ -56,11 +61,6 @@ const releases = {
   ],
   7.7: ['web_app_setup_swipe_behavior'],
   7.8: ['web_app_share_to_story'],
-  '7.10': [
-    'web_app_setup_secondary_button',
-    'web_app_set_bottom_bar_color',
-    ['web_app_setup_main_button', 'has_shine_effect'],
-  ],
   '8.0': [
     'web_app_request_safe_area',
     'web_app_request_content_safe_area',
@@ -182,8 +182,8 @@ export function supports(method: MethodName, paramOrVersion: string, version?: V
 
 export type OnUnsupportedFn = (
   data:
-    | { version: Version; method: MethodName }
-    | { version: Version; method: MethodName; param: string },
+    | { method: MethodName; version: Version }
+    | { method: MethodName; param: string; version: Version },
 ) => void;
 
 /**
@@ -223,7 +223,7 @@ export function createPostEvent(
 
   return (method, ...args) => {
     if (!supports(method, version)) {
-      return handle({ version, method });
+      return handle({ method, version });
     }
     const [params] = args as [unknown?];
     for (const [checkedMethod, param] of checkedParams) {
@@ -234,7 +234,7 @@ export function createPostEvent(
         && param in params
         && !supports(checkedMethod as MethodNameWithVersionedParams, param as never, version)
       ) {
-        return handle({ version, method, param });
+        return handle({ method, param, version });
       }
     }
     postEvent(method, ...args);

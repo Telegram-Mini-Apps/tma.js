@@ -13,12 +13,12 @@ describe('useAndroidDeviceDataFrom', () => {
       return JSON.stringify(data);
     }
     expect(JSON.parse(renderToString(createElement(App)).replace(/&quot;/g, '"'))).toEqual({
+      androidVersion: '14',
       appVersion: '11.11.0',
       manufacturer: 'Samsung',
       model: 'SM-A155F',
-      androidVersion: '14',
-      sdkVersion: 34,
       performanceClass: 'AVERAGE',
+      sdkVersion: 34,
     });
   });
 });

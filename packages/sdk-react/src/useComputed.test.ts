@@ -49,8 +49,8 @@ describe('useComputed', () => {
     init({
       launchParams: {
         tgWebAppPlatform: 'tdesktop',
-        tgWebAppVersion: '9.0',
         tgWebAppThemeParams: {},
+        tgWebAppVersion: '9.0',
       },
     });
     backButton.mount();

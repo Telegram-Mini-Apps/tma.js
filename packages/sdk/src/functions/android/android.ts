@@ -3,12 +3,12 @@
  * @see https://core.telegram.org/bots/webapps#additional-data-in-user-agent
  */
 export interface AndroidDeviceData {
+  androidVersion?: string;
   appVersion?: string;
   manufacturer?: string;
   model?: string;
-  androidVersion?: string;
-  sdkVersion?: number;
   performanceClass?: 'LOW' | 'AVERAGE' | 'HIGH' | string;
+  sdkVersion?: number;
 }
 
 /**

@@ -31,8 +31,8 @@ describe('sendData', () => {
 
 describe('isSupported', () => {
   it.each([
-    { name: 'sendData', fn: sendData },
-    { name: 'safeSendData', fn: safeSendData },
+    { fn: sendData, name: 'sendData' },
+    { fn: safeSendData, name: 'safeSendData' },
   ])('$name should check if the SDK is initialized', ({ fn }) => {
     expect(fn.isSupported()).toBe(false);
     setup();
