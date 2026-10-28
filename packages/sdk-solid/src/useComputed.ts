@@ -1,4 +1,4 @@
-import type { Computed } from '@tma.js/sdk';
+import type { Computed, DeepReadonly } from '@tma.js/sdk';
 import { type Accessor, createSignal, getOwner, onCleanup } from 'solid-js';
 
 /**
@@ -8,7 +8,7 @@ import { type Accessor, createSignal, getOwner, onCleanup } from 'solid-js';
  * @example
  * const isVisible = useComputed(backButton.isVisible);
  */
-export function useComputed<T>(computed: Computed<T>): Accessor<T> {
+export function useComputed<T>(computed: Computed<T>): Accessor<DeepReadonly<T>> {
   const [value, setValue] = createSignal(computed());
   // Passing a function, as the setter would call the value if it is a function itself.
   const unsubscribe = computed.subscribe(next => setValue(() => next));

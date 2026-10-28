@@ -34,7 +34,8 @@ guide applies to them as well.
   cancelled with a standard `AbortSignal` passed in the `signal` option (previously
   `abortSignal`). The `.cancel()` method and `CancelledError` are gone.
 - **No signals.** Reactive values became [computed values](./features.md#computed-values) of the
-  `Computed` type with a single `subscribe` method. The `@tma.js/signals` package was removed.
+  `Computed` type with a single `subscribe` method. Objects and arrays they return are frozen. The
+  `@tma.js/signals` package was removed.
 - **No `isAvailable` and `ifAvailable`.** Use `isSupported()`, which is now a regular function,
   and `supports(feature)`. Calling an unsupported method, a method before `init`, or a method of
   an unmounted component throws.
@@ -377,6 +378,19 @@ const unsubscribeOnce = backButton.isVisible.subscribe(isVisible => {
 The listener still receives the next and the previous values, is called only when the value
 changes, and is not called on subscribe.
 
+::: warning
+Objects and arrays returned by computed values are now frozen and typed as `DeepReadonly`.
+Assigning their properties directly is a compilation error, but TypeScript allows passing them
+where a mutable type is expected, e.g. to `Object.assign` or your own function changing its
+argument. Such code compiles and throws `TypeError` at runtime. Copy values before changing them:
+
+```ts
+import { viewport } from '@tma.js/sdk';
+
+const insets = { ...viewport.safeAreaInsets(), top: 0 };
+```
+:::
+
 The SDK no longer exports a way to create your own reactive values. If you built computed values
 on top of SDK signals using `computed` from `@tma.js/signals`, use a third-party reactivity
 library or your framework's primitives, subscribing to SDK values with `subscribe`.
@@ -656,6 +670,7 @@ backButton.offClick(listener);
   `contentSafeAreaInsets()`. The related CSS variables are still created by `bindCssVars`.
 - New: `safeMount`, `isMounting`, `unmount`, `safeRequestFullscreen` and `safeExitFullscreen`.
 - `requestFullscreen` and `exitFullscreen` have their own `isSupported` method.
+- The state has the new `isStable` property.
 
 ::: code-group
 
@@ -674,7 +689,10 @@ viewport.safeAreaInsets().top;
 :::
 
 ::: warning
-`viewport.bindCssVars()` now throws `NotMountedError` if the component is not mounted.
+- `viewport.bindCssVars()` now throws `NotMountedError` if the component is not mounted.
+- `isStable()` is now taken from the `is_state_stable` flag sent by Telegram. Previously, it was
+  computed as `height() === stableHeight()`, so it returned `true` when the height being changed
+  matched the last stable height, e.g. while the user was dragging the mini app.
 :::
 
 ### Init Data
@@ -872,7 +890,7 @@ Other type changes:
 | `KnownThemeParamsKey`                                   | Removed                                   |
 | `MiniAppGetCssVarNameFn`, `ThemeParamsGetCssVarNameFn`  | Removed                                   |
 
-New types: `Computed`, `IsSupported`, `Supports`, `WithIsSupported`, `WithSupports`,
+New types: `Computed`, `DeepReadonly`, `IsSupported`, `Supports`, `WithIsSupported`, `WithSupports`,
 `StatefulComponent`, `MountableComponent`, `ButtonComponent`, `BottomButton`,
 `BottomButtonState`, `BottomButtonFeature`, `AnyColor`, `ViewportCSSVarKey`,
 `BiometryAuthenticateResult`, `CloudStorageError`, `SecureStorageItem`, `QrScannerOpenOptions`

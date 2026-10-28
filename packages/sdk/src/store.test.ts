@@ -8,6 +8,7 @@ import {
   createStore,
   computedFromStore,
   computedPick,
+  deepFreeze,
   shallowEqual,
 } from './store.js';
 
@@ -47,6 +48,26 @@ describe('createStore', () => {
 });
 
 describe('createObjectStore', () => {
+  it('should freeze the value without freezing the passed objects', () => {
+    const insets = { top: 1 };
+    const store = createObjectStore({ insets: { top: 0 }, size: 0 });
+    store.update({ insets });
+    expect(store.get().insets).toEqual({ top: 1 });
+    expect(Object.isFrozen(store.get())).toBe(true);
+    expect(Object.isFrozen(store.get().insets)).toBe(true);
+    expect(Object.isFrozen(insets)).toBe(false);
+    expect(() => {
+      store.get().insets.top = 2;
+    }).toThrow(TypeError);
+  });
+
+  it('should keep nested objects if they did not change', () => {
+    const store = createObjectStore({ insets: { top: 0 }, size: 0 });
+    const { insets } = store.get();
+    store.update({ size: 1 });
+    expect(store.get().insets).toBe(insets);
+  });
+
   it('should keep the same object if properties did not change', () => {
     const store = createObjectStore({ a: 1, b: 2 });
     const value = store.get();
@@ -54,6 +75,26 @@ describe('createObjectStore', () => {
     expect(store.get()).toBe(value);
     store.update({ a: 2 });
     expect(store.get()).toEqual({ a: 2, b: 2 });
+  });
+});
+
+describe('deepFreeze', () => {
+  it('should deeply freeze copies of plain objects and arrays', () => {
+    const value = { list: [{ a: 1 }] };
+    const frozen = deepFreeze(value);
+    expect(frozen).toEqual(value);
+    expect(Object.isFrozen(frozen)).toBe(true);
+    expect(Object.isFrozen(frozen.list)).toBe(true);
+    expect(Object.isFrozen(frozen.list[0])).toBe(true);
+    expect(Object.isFrozen(value)).toBe(false);
+  });
+
+  it('should return frozen values and non-plain objects as is', () => {
+    const frozen = Object.freeze({ a: 1 });
+    expect(deepFreeze(frozen)).toBe(frozen);
+    const date = new Date();
+    expect(deepFreeze(date)).toBe(date);
+    expect(Object.isFrozen(date)).toBe(false);
   });
 });
 

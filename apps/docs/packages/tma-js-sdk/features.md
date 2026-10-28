@@ -236,7 +236,17 @@ mainButton.state(); // { text: 'Continue', isVisible: false, ... }
 ```
 
 Computed values are read-only: they change only when the Telegram client sends an event or when
-you call a component method.
+you call a component method. Objects and arrays they return are frozen, and their types are
+wrapped into `DeepReadonly`, so mutating them is a compilation error and throws `TypeError` at
+runtime. To change a value, copy it first:
+
+```ts
+import { viewport } from '@tma.js/sdk';
+
+viewport.safeAreaInsets().top = 0; // TypeError.
+
+const insets = { ...viewport.safeAreaInsets(), top: 0 };
+```
 
 ### Using With Frameworks
 

@@ -1,11 +1,11 @@
-import { mainButton, type MainButtonState } from '@tma.js/sdk';
+import { type DeepReadonly, mainButton, type MainButtonState } from '@tma.js/sdk';
 import { describe, expectTypeOf, it } from 'vitest';
 
 import { useComputed } from './useComputed.js';
 
 describe('useComputed', () => {
   it('should return the computed value', () => {
-    expectTypeOf(useComputed(mainButton.state)).toEqualTypeOf<MainButtonState>();
+    expectTypeOf(useComputed(mainButton.state)).toEqualTypeOf<DeepReadonly<MainButtonState>>();
     expectTypeOf(useComputed(mainButton.isVisible)).toEqualTypeOf<boolean>();
   });
 

@@ -1,4 +1,4 @@
-import type { Computed } from '@tma.js/sdk';
+import type { Computed, DeepReadonly } from '@tma.js/sdk';
 import { type Readable, readable } from 'svelte/store';
 
 /**
@@ -9,7 +9,7 @@ import { type Readable, readable } from 'svelte/store';
  * const isVisible = useComputed(backButton.isVisible);
  * // In a component: {#if $isVisible}...{/if}
  */
-export function useComputed<T>(computed: Computed<T>): Readable<T> {
+export function useComputed<T>(computed: Computed<T>): Readable<DeepReadonly<T>> {
   return readable(computed(), set => {
     // The value could change while the store had no subscribers.
     set(computed());

@@ -1,4 +1,4 @@
-import type { Computed } from '@tma.js/sdk';
+import type { Computed, DeepReadonly } from '@tma.js/sdk';
 import { useSyncExternalStore } from 'react';
 
 /**
@@ -10,6 +10,9 @@ import { useSyncExternalStore } from 'react';
  * const isVisible = useComputed(backButton.isVisible);
  * const { text } = useComputed(mainButton.state);
  */
-export function useComputed<T>(computed: Computed<T>, getServerSnapshot: () => T = computed): T {
+export function useComputed<T>(
+  computed: Computed<T>,
+  getServerSnapshot: () => DeepReadonly<T> = computed,
+): DeepReadonly<T> {
   return useSyncExternalStore(computed.subscribe, computed, getServerSnapshot);
 }

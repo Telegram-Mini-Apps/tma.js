@@ -98,7 +98,9 @@ This change is silent:
   returns `true`.
 - Nested properties are not tracked separately. Every change of the computed value replaces the
   whole ref value, so watchers and computed properties reading nested properties are still
-  triggered, but mutating a nested property of the read object doesn't trigger anything.
+  triggered.
+- Objects read from the ref are frozen, so mutating them throws `TypeError` instead of changing
+  the object.
 :::
 
 The ref is still readonly. To change the state, call the component methods, e.g.

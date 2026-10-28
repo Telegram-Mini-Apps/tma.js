@@ -37,7 +37,7 @@ export type {
   WithIsSupported,
   WithSupports,
 } from './is-supported.js';
-export type { Computed } from './store.js';
+export type { Computed, DeepReadonly } from './store.js';
 export type { AsyncOptions, MountableComponent, StatefulComponent } from './types.js';
 
 //#region Components.
