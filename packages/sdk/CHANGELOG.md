@@ -1,5 +1,14 @@
 # @tma.js/sdk
 
+## 4.0.0-rc.1
+
+### Patch Changes
+
+- f65a764: Freeze objects and arrays returned by computed values, so mutating them no longer silently changes the component state. `Computed<T>` and `useComputed` return `DeepReadonly<T>`, which is exported from `@tma.js/sdk`.
+- f65a764: Bring back `viewport.isStable`. It is taken from the `is_state_stable` flag sent by Telegram and is also available in `viewport.state()`.
+- @tma.js/bridge@4.0.0-rc.1
+  - @tma.js/init-data@4.0.0-rc.1
+
 ## 4.0.0-rc.0
 
 ### Major Changes

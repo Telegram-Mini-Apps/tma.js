@@ -1,5 +1,14 @@
 # @tma.js/sdk-react
 
+## 4.0.0-rc.1
+
+### Patch Changes
+
+- f65a764: Freeze objects and arrays returned by computed values, so mutating them no longer silently changes the component state. `Computed<T>` and `useComputed` return `DeepReadonly<T>`, which is exported from `@tma.js/sdk`.
+- Updated dependencies [f65a764]
+- Updated dependencies [f65a764]
+  - @tma.js/sdk@4.0.0-rc.1
+
 ## 4.0.0-rc.0
 
 ### Major Changes
